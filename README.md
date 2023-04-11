@@ -13,5 +13,4 @@ Tasks:
     - Migrations: Dang
     - Draft of WS backend for private chats: Joman
     - Getting all data and displaying with pagination: Danilo
-    - Creating posts and creating comments: 
-    
+    - Creating posts and creating comments: Malin

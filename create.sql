@@ -25,6 +25,8 @@ CREATE TABLE group_relation (
     id INTEGER NOT NULL PRIMARY KEY,
     group_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
+    is_requested TINYINT(1),
+    is_approved TINYINT(1),
     FOREIGN KEY(group_id) REFERENCES user_group(id),
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
@@ -33,6 +35,7 @@ CREATE TABLE follow_relation (
     id INTEGER NOT NULL PRIMARY KEY,
     follower_id INTEGER NOT NULL,
     followed_id INTEGER NOT NULL,
+    is_approved TINYINT(1) NOT NULL,
     FOREIGN KEY(follower_id) REFERENCES user(id),
     FOREIGN KEY(followed_id) REFERENCES user(id)
 );
@@ -41,6 +44,7 @@ CREATE TABLE post (
     id INTEGER NOT NULL PRIMARY KEY,
     creator_id INTEGER NOT NULL,
     group_id INTEGER,
+    visibility TINYINT(2) NOT NULL,
     title VARCHAR(30) NOT NULL,
     content TEXT NOT NULL,
     created_at DATETIME NOT NULL,
@@ -53,7 +57,6 @@ CREATE TABLE post_visibility (
     id INTEGER NOT NULL PRIMARY KEY,
     post_id INTEGER NOT NULL,
     viewer_id INTEGER NOT NULL,
-    is_visible TINYINT(1) NOT NULL,
     FOREIGN KEY(post_id) REFERENCES post(id),
     FOREIGN KEY(viewer_id) REFERENCES user(id)
 );
@@ -64,6 +67,7 @@ CREATE TABLE comment (
     post_id INTEGER NOT NULL,
     content TEXT NOT NULL,
     created_at DATETIME NOT NULL,
+    img_url VARCHAR(100),
     FOREIGN KEY(creator_id) REFERENCES user(id),
     FOREIGN KEY(post_id) REFERENCES post(id)
 );
@@ -80,7 +84,6 @@ CREATE TABLE private_message (
     id INTEGER NOT NULL PRIMARY KEY,
     private_chatid INTEGER NOT NULL,
     content TEXT NOT NULL,
-    img_url VARCHAR(100),
     sender_id INTEGER NOT NULL,
     created_at DATETIME NOT NULL,
     FOREIGN KEY(private_chatid) REFERENCES private_chat(id),
@@ -97,7 +100,6 @@ CREATE TABLE group_message (
     id INTEGER NOT NULL PRIMARY KEY,
     group_chatid INTEGER NOT NULL,
     content TEXT NOT NULL,
-    img_url VARCHAR(100),
     sender_id INTEGER NOT NULL,
     created_at DATETIME NOT NULL,
     FOREIGN KEY(group_chatid) REFERENCES group_chat(id),
@@ -120,7 +122,8 @@ CREATE TABLE event_relation (
     id INTEGER NOT NULL PRIMARY KEY,
     event_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    is_going TINYINT(1) NOT NULL,
+    is_approved TINYINT(1) NOT NULL,
+    is_going TINYINT(2),
     FOREIGN KEY(event_id) REFERENCES event(id),
     FOREIGN KEY(user_id) REFERENCES user(id)
 );

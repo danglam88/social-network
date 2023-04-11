@@ -477,7 +477,7 @@ func (db *Db) CreateComment(user_id int, postID int, comment string, username st
 	return newComment
 }
 
-func (db *Db) GetGroupUserIds(groupId int) (users []MessageUser, err error) {
+func (db *Db) GetGroupUserIds(groupId int) (users []int, err error) {
 
 	query := "select user_id from group_user where group_id=?"
 	rows, err := db.connection.Query(query, groupId)
@@ -493,7 +493,7 @@ func (db *Db) GetGroupUserIds(groupId int) (users []MessageUser, err error) {
 			return users, err
 		}
 
-		users = append(users, MessageUser{Id: id})
+		users = append(users, id)
 	}
 
 	defer rows.Close()

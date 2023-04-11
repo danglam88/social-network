@@ -152,7 +152,7 @@ func (c *Client) readMessages() {
 					//send message to all users in group
 					for _, groupUserId := range groupUserIds {
 						for wsclient := range c.manager.clients {
-							if wsclient.userId == u || wsclient.userId == res.From {
+							if wsclient.userId == groupUserId || wsclient.userId == res.From {
 								wsclient.eggress <- message
 							}
 						}

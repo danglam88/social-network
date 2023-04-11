@@ -17,7 +17,8 @@ CREATE TABLE user_group (
     creator_id INTEGER NOT NULL,
     group_name VARCHAR(30) NOT NULL,
     descript VARCHAR(100) NOT NULL,
-    created_at DATETIME NOT NULL
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY(creator_id) REFERENCES user(id)
 );
 
 CREATE TABLE group_relation (
@@ -36,22 +37,15 @@ CREATE TABLE follow_relation (
     FOREIGN KEY(followed_id) REFERENCES user(id)
 );
 
-CREATE TABLE category (
-    id INTEGER NOT NULL PRIMARY KEY,
-    category_name VARCHAR(30) NOT NULL,
-    descript VARCHAR(100) NOT NULL,
-    created_at DATETIME NOT NULL
-);
-
 CREATE TABLE post (
     id INTEGER NOT NULL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
+    creator_id INTEGER NOT NULL,
     group_id INTEGER,
     title VARCHAR(30) NOT NULL,
     content TEXT NOT NULL,
     created_at DATETIME NOT NULL,
     img_url VARCHAR(100),
-    FOREIGN KEY(user_id) REFERENCES user(id),
+    FOREIGN KEY(creator_id) REFERENCES user(id),
     FOREIGN KEY(group_id) REFERENCES user_group(id)
 );
 
@@ -66,19 +60,11 @@ CREATE TABLE post_visibility (
 
 CREATE TABLE comment (
     id INTEGER NOT NULL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
+    creator_id INTEGER NOT NULL,
     post_id INTEGER NOT NULL,
     content TEXT NOT NULL,
     created_at DATETIME NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES user(id),
-    FOREIGN KEY(post_id) REFERENCES post(id)
-);
-
-CREATE TABLE category_relation (
-    id INTEGER NOT NULL PRIMARY KEY,
-    category_id INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    FOREIGN KEY(category_id) REFERENCES category(id),
+    FOREIGN KEY(creator_id) REFERENCES user(id),
     FOREIGN KEY(post_id) REFERENCES post(id)
 );
 
@@ -92,12 +78,12 @@ CREATE TABLE private_chat (
 
 CREATE TABLE private_message (
     id INTEGER NOT NULL PRIMARY KEY,
-    chat_id INTEGER NOT NULL,
+    private_chatid INTEGER NOT NULL,
     content TEXT NOT NULL,
     img_url VARCHAR(100),
     sender_id INTEGER NOT NULL,
     created_at DATETIME NOT NULL,
-    FOREIGN KEY(chat_id) REFERENCES private_chat(id),
+    FOREIGN KEY(private_chatid) REFERENCES private_chat(id),
     FOREIGN KEY(sender_id) REFERENCES user(id)
 );
 
@@ -136,13 +122,5 @@ CREATE TABLE event_relation (
     user_id INTEGER NOT NULL,
     is_going TINYINT(1) NOT NULL,
     FOREIGN KEY(event_id) REFERENCES event(id),
-    FOREIGN KEY(user_id) REFERENCES user(id)
-);
-
-CREATE TABLE notification (
-    id INTEGER NOT NULL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    notice_type VARCHAR(30) NOT NULL,
-    is_read TINYINT(1) NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );

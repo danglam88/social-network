@@ -142,7 +142,7 @@ CREATE TABLE event_relation (
 CREATE TABLE notification (
     id INTEGER NOT NULL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    type VARCHAR(30) NOT NULL,
+    notice_type VARCHAR(30) NOT NULL,
     is_read TINYINT(1) NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );

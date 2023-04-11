@@ -139,17 +139,35 @@ func (c *Client) readMessages() {
 
 		if res.From > 0 {
 			if res.Type == MESSAGE_TYPE && res.To > 0 {
-
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 
-				for wsclient := range c.manager.clients {
-					if wsclient.userId == res.To || wsclient.userId == res.From {
-						wsclient.eggress <- message
+				//check if message is to a group instead of a user
+				if isGroup(res.To) {
+					//get all users in group
+					groupUserIds, err := DB.GetGroupUserIds(res.To)
+					if err != nil {
+						log.Println(err)
 					}
-				}
+					//send message to all users in group
+					for _, groupUserId := range groupUserIds {
+						for wsclient := range c.manager.clients {
+							if wsclient.userId == u || wsclient.userId == res.From {
+								wsclient.eggress <- message
+							}
+						}
+					}
 
-				DB.AddMessage(res.From, res.To, res.Message, res.CreatedAt)
+				} else {
+
+					for wsclient := range c.manager.clients {
+						if wsclient.userId == res.To || wsclient.userId == res.From {
+							wsclient.eggress <- message
+						}
+					}
+
+					DB.AddMessage(res.From, res.To, res.Message, res.CreatedAt)
+				}
 
 			} else if res.Type == LOGOUT_TYPE {
 				for wsclient := range c.manager.clients {

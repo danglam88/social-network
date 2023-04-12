@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -71,11 +73,29 @@ type MessageUser struct {
 
 // Opening the database
 func OpenDatabase() Db {
-	db, err := sql.Open("sqlite3", "./backend/pkg/db/migrations/sqlite/socialnetwork.db?parseTime=true")
+	db, err := sql.Open("sqlite3", "./backend/pkg/db/socialnetwork.db?parseTime=true")
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		//todo
-		//return nil
+		fmt.Fprintln(os.Stderr, err, "Error opening the database")
+		return Db{}
+	}
+
+	existed := false
+	if _, err := os.Stat("./backend/pkg/db/socialnetwork.db"); err == nil {
+		existed = true
+	}
+
+	if !existed {
+		m, err := migrate.New("file://backend/pkg/db/migrations", "sqlite3://./backend/pkg/db/socialnetwork.db")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err, "Error fetching the migration")
+			return Db{}
+		}
+
+		err = m.Up()
+		if err != nil && err != migrate.ErrNoChange {
+			fmt.Fprintln(os.Stderr, err, "Error applying the migration")
+			return Db{}
+		}
 	}
 
 	return Db{connection: db}

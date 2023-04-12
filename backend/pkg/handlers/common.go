@@ -76,7 +76,7 @@ func GetErrResponse(w http.ResponseWriter, errorMess string, statusCode int) {
 	io.WriteString(w, string(res))
 }
 
-//for development mod only, should be deleted after
+// for development mod only, should be deleted after
 func enableCors(w *http.ResponseWriter, r *http.Request) {
 
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")

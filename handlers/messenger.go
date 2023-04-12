@@ -13,6 +13,8 @@ import (
 const MESSAGE_TYPE = "message"
 const LOGOUT_TYPE = "logout"
 const LOGIN_TYPE = "login"
+const GRPMESSAGE_TYPE = "groupmessage"
+const NOTIFICATION_TYPE = "notification"
 
 var (
 	websocketUpgrader = websocket.Upgrader{
@@ -112,12 +114,11 @@ func NewClient(conn *websocket.Conn, manager *Manager, id int) *Client {
 // appropriatly.
 // This is suppose to be ran as a goroutine
 func (c *Client) readMessages() {
-
 	defer func() {
-		//cleanup connection
+		// cleanup connection
 		c.manager.removeClient(c)
-
 	}()
+
 	// Loop Forever
 	for {
 		// ReadMessage is used to read the next message in queue
@@ -125,7 +126,7 @@ func (c *Client) readMessages() {
 		_, payload, err := c.connection.ReadMessage()
 
 		if err != nil {
-			// If Connection is closed, we will Recieve an error here
+			// If Connection is closed, we will receive an error here
 			// We only want to log Strange errors, but simple Disconnection
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error reading message: %v", err)
@@ -138,36 +139,36 @@ func (c *Client) readMessages() {
 		res.UserName, _ = DB.GetUserName(res.From)
 
 		if res.From > 0 {
-			if res.Type == MESSAGE_TYPE && res.To > 0 {
+			if res.Type == GRPMESSAGE_TYPE {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 
-				//check if message is to a group instead of a user
-				if isGroup(res.To) {
-					//get all users in group
-					groupUserIds, err := DB.GetGroupUserIds(res.To)
-					if err != nil {
-						log.Println(err)
-					}
-					//send message to all users in group
-					for _, groupUserId := range groupUserIds {
-						for wsclient := range c.manager.clients {
-							if wsclient.userId == groupUserId || wsclient.userId == res.From {
-								wsclient.eggress <- message
-							}
-						}
-					}
+				groupUsers, err := DB.GetGroupUserIds(res.To) //assuming res.To is group id
+				if err != nil {
+					log.Println(err)
+				}
 
-				} else {
-
+				for groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {
-						if wsclient.userId == res.To || wsclient.userId == res.From {
+						if wsclient.userId == groupUser {
 							wsclient.eggress <- message
 						}
 					}
-
-					DB.AddMessage(res.From, res.To, res.Message, res.CreatedAt)
 				}
+
+				//DB.AddGroupMessage(res.From, res.To, res.Message, res.CreatedAt)
+
+			} else if res.Type == MESSAGE_TYPE && res.To > 0 {
+				res.CreatedAt = DB.GetTime()
+				message, _ := json.Marshal(res)
+
+				for wsclient := range c.manager.clients {
+					if wsclient.userId == res.To || wsclient.userId == res.From {
+						wsclient.eggress <- message
+					}
+				}
+
+				DB.AddMessage(res.From, res.To, res.Message, res.CreatedAt)
 
 			} else if res.Type == LOGOUT_TYPE {
 				for wsclient := range c.manager.clients {

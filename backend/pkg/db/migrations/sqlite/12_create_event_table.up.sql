@@ -9,3 +9,8 @@ CREATE TABLE event (
     FOREIGN KEY(creator_id) REFERENCES user(id),
     FOREIGN KEY(group_id) REFERENCES user_group(id)
 );
+
+INSERT INTO event (id,creator_id,group_id,title,descript,occur_time,created_at)
+VALUES
+    (1,7,2,"Invasion Training","Let's do some practice for the Earth invasion campaign!",DateTime('now','localtime'),DateTime('now','localtime')),
+    (2,5,1,"Defense Training","Let's do some practice for protecting the Earth from Andromeda's invasion!",DateTime('now','localtime'),DateTime('now','localtime'));

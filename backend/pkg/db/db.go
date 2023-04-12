@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -18,12 +17,15 @@ type Db struct {
 }
 
 type Post struct {
-	ID        int
-	UserID    int
-	UserName  string
-	Title     string
-	Content   string
-	CreatedAt time.Time
+	ID          int
+	CreatorID   int
+	CreatorName string
+	GroupID     int
+	Visibility  int
+	Title       string
+	Content     string
+	CreatedAt   time.Time
+	ImgUrl      string
 }
 
 type PostFilter struct {
@@ -69,7 +71,7 @@ type MessageUser struct {
 
 // Opening the database
 func OpenDatabase() Db {
-	db, err := sql.Open("sqlite3", "./db/forum.db?parseTime=true")
+	db, err := sql.Open("sqlite3", "./backend/pkg/db/migrations/sqlite/socialnetwork.db?parseTime=true")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		//todo
@@ -91,22 +93,17 @@ func (db *Db) AddUser(username, password, email string, prev int) (bool, error) 
 	return err != nil, err
 }
 
-func (db *Db) GetPost(filter PostFilter) (posts []Post, err error) {
+// function in use
+func (db *Db) GetPost(userfilter, groupfilter int) (posts []Post, err error) {
 	var post Post
 	var query string
 
-	query = "select id,user_id,title,content,created_at from post"
+	query = "select id,creator_id,group_id,visibility,title,content,created_at,img_url from post"
 
-	if filter.ID > 0 {
-		query = query + fmt.Sprintf(" where id = %v limit 1", filter.ID)
-	} else if filter.CategoryID > 0 {
-
-		postsId, err := db.getPostsIdByCategory(filter.CategoryID)
-
-		if len(postsId) > 0 && err == nil {
-			//todo empty and err return
-			query = query + fmt.Sprintf(" where id in (%v)", strings.Join(postsId, ","))
-		}
+	if userfilter > 0 {
+		query = query + fmt.Sprintf(" where creator_id = %v", userfilter)
+	} else if groupfilter > 0 {
+		query = query + fmt.Sprintf(" where group_id = %v", groupfilter)
 	}
 
 	rows, err := db.connection.Query(query)
@@ -115,15 +112,15 @@ func (db *Db) GetPost(filter PostFilter) (posts []Post, err error) {
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&post.ID, &post.UserID, &post.Title, &post.Content, &post.CreatedAt)
+		err := rows.Scan(&post.ID, &post.CreatorID, &post.GroupID, &post.Visibility, &post.Title, &post.Content, &post.CreatedAt, &post.ImgUrl)
 		if err != nil {
 			return posts, err
 		}
-		username, err := db.GetUserName(post.UserID)
+		username, err := db.GetUserName(post.CreatorID)
 		if err != nil {
 			//handle
 		}
-		post.UserName = username
+		post.CreatorName = username
 		posts = append(posts, post)
 	}
 	defer rows.Close()
@@ -294,7 +291,7 @@ func (db *Db) GetUserName(id int) (string, error) {
 	var expected_user User
 	var err error
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,username from user where id = ?", id)
+	row := db.connection.QueryRow("select id,nickname from user where id = ?", id)
 	err = row.Scan(&expected_user.ID, &expected_user.Username)
 	if err != nil {
 		return "", err

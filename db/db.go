@@ -501,6 +501,18 @@ func (db *Db) GetGroupUserIds(groupId int) (users []int, err error) {
 	return users, err
 }
 
+func (db *Db) GetGroupOwnerId(groupId int) (ownerId int, err error) {
+
+	query := "select owner_id from groups where id=?"
+	row := db.connection.QueryRow(query, groupId)
+	err = row.Scan(&ownerId)
+	if err != nil {
+		return ownerId, err
+	}
+
+	return ownerId, err
+}
+
 func (db *Db) GetTime() string {
 	return time.Now().Local().Format(time_format)
 }

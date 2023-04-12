@@ -10,11 +10,17 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-const MESSAGE_TYPE = "message"
-const LOGOUT_TYPE = "logout"
-const LOGIN_TYPE = "login"
-const GRPMESSAGE_TYPE = "groupmessage"
-const NOTIFICATION_TYPE = "notification"
+//Rewrite the const declarations to be more readable
+const (
+	MESSAGE_TYPE             = "message"
+	LOGOUT_TYPE              = "logout"
+	LOGIN_TYPE               = "login"
+	GRPMESSAGE_TYPE          = "groupmessage"
+	FOLLOWNOTIFICATION_TYPE  = "follownotification"
+	INVITENOTIFICATION_TYPE  = "invitenotification"
+	JOINREQNOTIFICATION_TYPE = "joinrequestnotification"
+	EVENTNOTIFICATION_TYPE   = "eventnotification"
+)
 
 var (
 	websocketUpgrader = websocket.Upgrader{
@@ -143,7 +149,7 @@ func (c *Client) readMessages() {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 
-				groupUsers, err := DB.GetGroupUserIds(res.To) //assuming res.To is group id
+				groupUsers, err := DB.GetGroupUserIds(res.To) //assuming res.To is group id. Or group chat id?
 				if err != nil {
 					log.Println(err)
 				}
@@ -182,7 +188,53 @@ func (c *Client) readMessages() {
 						wsclient.eggress <- message
 					}
 				}
+			} else if res.Type == FOLLOWNOTIFICATION_TYPE {
+				//notify the user that he has a new follower
+				for wsclient := range c.manager.clients {
+					if wsclient.userId == res.To {
+						message, _ := json.Marshal(res)
+						wsclient.eggress <- message
+					}
+				}
+
+			} else if res.Type == INVITENOTIFICATION_TYPE {
+				// notify the user that he has a new group invitation
+				for wsclient := range c.manager.clients {
+					if wsclient.userId == res.To {
+						message, _ := json.Marshal(res)
+						wsclient.eggress <- message
+					}
+				}
+			} else if res.Type == JOINREQNOTIFICATION_TYPE {
+				// notify the owner of the group that he has a new join request
+				// get the owner of the group
+				ownerId, err := DB.GetGroupOwnerId(res.To) //assuming res.To is group id.
+				if err != nil {
+					log.Println(err)
+				}
+				for wsclient := range c.manager.clients {
+					if wsclient.userId == ownerId {
+						message, _ := json.Marshal(res)
+						wsclient.eggress <- message
+					}
+				}
+			} else if res.Type == EVENTNOTIFICATION_TYPE {
+				// notfiy the users in the group that event have been created
+				// get the users in the group
+				groupUsers, err := DB.GetGroupUserIds(res.To) //assuming res.To is group id.
+				if err != nil {
+					log.Println(err)
+				}
+				for groupUser := range groupUsers {
+					for wsclient := range c.manager.clients {
+						if wsclient.userId == groupUser {
+							message, _ := json.Marshal(res)
+							wsclient.eggress <- message
+						}
+					}
+				}
 			}
+
 		}
 	}
 }

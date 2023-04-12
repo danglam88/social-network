@@ -1,4 +1,4 @@
-module forum
+module socialnetwork
 
 go 1.18
 

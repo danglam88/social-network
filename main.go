@@ -1,7 +1,7 @@
 package main
 
 import (
-	"forum/handlers"
+	"socialnetwork/backend/pkg/handlers"
 )
 
 func main() {

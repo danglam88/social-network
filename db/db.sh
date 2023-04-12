@@ -1,1 +1,0 @@
-sqlite3 forum.db < create.sql

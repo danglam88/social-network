@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"forum/db"
 	"io"
 	"net/http"
+	"socialnetwork/backend/pkg/db"
 	"strconv"
 	"strings"
 )

@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-	"forum/db"
 	"io"
 	"log"
 	"net/http"
+	"socialnetwork/backend/pkg/db"
 )
 
 const RESPONSE_OK = "ok"

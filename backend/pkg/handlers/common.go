@@ -57,6 +57,8 @@ func Start(collection []Handler) {
 func GetFunc(handler Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		enableCors(&w, r)
+
 		if r.Method == "GET" && handler.GetFunction != nil {
 			handler.GetFunction(w, r)
 		} else if r.Method == "POST" && handler.PostFunction != nil {
@@ -72,4 +74,17 @@ func GetErrResponse(w http.ResponseWriter, errorMess string, statusCode int) {
 	response := ResponseError{Status: RESPONSE_ERR, Error: errorMess}
 	res, _ := json.Marshal(response)
 	io.WriteString(w, string(res))
+}
+
+//for development mod only, should be deleted after
+func enableCors(w *http.ResponseWriter, r *http.Request) {
+
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	if r.Method == "OPTIONS" {
+		(*w).WriteHeader(http.StatusOK)
+		return
+	}
 }

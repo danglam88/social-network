@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -75,7 +76,7 @@ type MessageUser struct {
 func OpenDatabase() Db {
 	db, err := sql.Open("sqlite3", "./backend/pkg/db/socialnetwork.db?parseTime=true")
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err, "Error opening the database")
+		fmt.Fprintln(os.Stderr, err)
 		return Db{}
 	}
 
@@ -85,15 +86,23 @@ func OpenDatabase() Db {
 	}
 
 	if !existed {
-		m, err := migrate.New("file://backend/pkg/db/migrations", "sqlite3://./backend/pkg/db/socialnetwork.db")
+		driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err, "Error fetching the migration")
+			fmt.Fprintln(os.Stderr, err)
+			return Db{}
+		}
+
+		m, err := migrate.NewWithDatabaseInstance(
+			"file://./backend/pkg/db/migrations",
+			"sqlite3", driver)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
 			return Db{}
 		}
 
 		err = m.Up()
 		if err != nil && err != migrate.ErrNoChange {
-			fmt.Fprintln(os.Stderr, err, "Error applying the migration")
+			fmt.Fprintln(os.Stderr, err)
 			return Db{}
 		}
 	}

@@ -477,6 +477,42 @@ func (db *Db) CreateComment(user_id int, postID int, comment string, username st
 	return newComment
 }
 
+func (db *Db) GetGroupUserIds(groupId int) (users []int, err error) {
+
+	query := "select user_id from group_user where group_id=?"
+	rows, err := db.connection.Query(query, groupId)
+	if err != nil {
+		return users, err
+	}
+
+	var id int
+	for rows.Next() {
+
+		err := rows.Scan(&id)
+		if err != nil {
+			return users, err
+		}
+
+		users = append(users, id)
+	}
+
+	defer rows.Close()
+
+	return users, err
+}
+
+func (db *Db) GetGroupOwnerId(groupId int) (ownerId int, err error) {
+
+	query := "select owner_id from groups where id=?"
+	row := db.connection.QueryRow(query, groupId)
+	err = row.Scan(&ownerId)
+	if err != nil {
+		return ownerId, err
+	}
+
+	return ownerId, err
+}
+
 func (db *Db) GetTime() string {
 	return time.Now().Local().Format(time_format)
 }

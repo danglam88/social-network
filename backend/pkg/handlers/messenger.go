@@ -10,9 +10,17 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-const MESSAGE_TYPE = "message"
-const LOGOUT_TYPE = "logout"
-const LOGIN_TYPE = "login"
+//Rewrite the const declarations to be more readable
+const (
+	MESSAGE_TYPE             = "message"
+	LOGOUT_TYPE              = "logout"
+	LOGIN_TYPE               = "login"
+	GRPMESSAGE_TYPE          = "groupmessage"
+	FOLLOWNOTIFICATION_TYPE  = "follownotification"
+	INVITENOTIFICATION_TYPE  = "invitenotification"
+	JOINREQNOTIFICATION_TYPE = "joinrequestnotification"
+	EVENTNOTIFICATION_TYPE   = "eventnotification"
+)
 
 var (
 	websocketUpgrader = websocket.Upgrader{
@@ -112,12 +120,11 @@ func NewClient(conn *websocket.Conn, manager *Manager, id int) *Client {
 // appropriatly.
 // This is suppose to be ran as a goroutine
 func (c *Client) readMessages() {
-
 	defer func() {
-		//cleanup connection
+		// cleanup connection
 		c.manager.removeClient(c)
-
 	}()
+
 	// Loop Forever
 	for {
 		// ReadMessage is used to read the next message in queue
@@ -125,7 +132,7 @@ func (c *Client) readMessages() {
 		_, payload, err := c.connection.ReadMessage()
 
 		if err != nil {
-			// If Connection is closed, we will Recieve an error here
+			// If Connection is closed, we will receive an error here
 			// We only want to log Strange errors, but simple Disconnection
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error reading message: %v", err)
@@ -138,8 +145,26 @@ func (c *Client) readMessages() {
 		res.UserName, _ = DB.GetUserName(res.From)
 
 		if res.From > 0 {
-			if res.Type == MESSAGE_TYPE && res.To > 0 {
+			if res.Type == GRPMESSAGE_TYPE {
+				res.CreatedAt = DB.GetTime()
+				message, _ := json.Marshal(res)
 
+				groupUsers, err := DB.GetGroupUserIds(res.To) //assuming res.To is group id. Or group chat id?
+				if err != nil {
+					log.Println(err)
+				}
+
+				for groupUser := range groupUsers {
+					for wsclient := range c.manager.clients {
+						if wsclient.userId == groupUser {
+							wsclient.eggress <- message
+						}
+					}
+				}
+
+				//DB.AddGroupMessage(res.From, res.To, res.Message, res.CreatedAt)
+
+			} else if res.Type == MESSAGE_TYPE && res.To > 0 {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 
@@ -163,7 +188,53 @@ func (c *Client) readMessages() {
 						wsclient.eggress <- message
 					}
 				}
+			} else if res.Type == FOLLOWNOTIFICATION_TYPE {
+				//notify the user that he has a new follower
+				for wsclient := range c.manager.clients {
+					if wsclient.userId == res.To {
+						message, _ := json.Marshal(res)
+						wsclient.eggress <- message
+					}
+				}
+
+			} else if res.Type == INVITENOTIFICATION_TYPE {
+				// notify the user that he has a new group invitation
+				for wsclient := range c.manager.clients {
+					if wsclient.userId == res.To {
+						message, _ := json.Marshal(res)
+						wsclient.eggress <- message
+					}
+				}
+			} else if res.Type == JOINREQNOTIFICATION_TYPE {
+				// notify the owner of the group that he has a new join request
+				// get the owner of the group
+				ownerId, err := DB.GetGroupOwnerId(res.To) //assuming res.To is group id.
+				if err != nil {
+					log.Println(err)
+				}
+				for wsclient := range c.manager.clients {
+					if wsclient.userId == ownerId {
+						message, _ := json.Marshal(res)
+						wsclient.eggress <- message
+					}
+				}
+			} else if res.Type == EVENTNOTIFICATION_TYPE {
+				// notfiy the users in the group that event have been created
+				// get the users in the group
+				groupUsers, err := DB.GetGroupUserIds(res.To) //assuming res.To is group id.
+				if err != nil {
+					log.Println(err)
+				}
+				for groupUser := range groupUsers {
+					for wsclient := range c.manager.clients {
+						if wsclient.userId == groupUser {
+							message, _ := json.Marshal(res)
+							wsclient.eggress <- message
+						}
+					}
+				}
 			}
+
 		}
 	}
 }

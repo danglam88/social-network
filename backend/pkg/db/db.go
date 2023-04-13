@@ -560,40 +560,40 @@ func (db *Db) AddGroupMessage(fromUserId, toGroupId int, message, createdAt stri
 	return err
 }
 
-func (db *Db) GetGroupUserIds(groupId int) (users []int, err error) {
+func (db *Db) GetGroupUserIds(groupId int) (userIds []int, err error) {
 
-	query := "select user_id from group_user where group_id=?"
+	query := "select user_id from group_relation where group_id=?"
 	rows, err := db.connection.Query(query, groupId)
 	if err != nil {
-		return users, err
+		return userIds, err
 	}
 
-	var id int
+	var user_id int
 	for rows.Next() {
 
-		err := rows.Scan(&id)
+		err := rows.Scan(&user_id)
 		if err != nil {
-			return users, err
+			return userIds, err
 		}
 
-		users = append(users, id)
+		userIds = append(userIds, user_id)
 	}
 
 	defer rows.Close()
 
-	return users, err
+	return userIds, err
 }
 
-func (db *Db) GetGroupOwnerId(groupId int) (ownerId int, err error) {
+func (db *Db) GetGroupCreatorId(groupId int) (creatorId int, err error) {
 
-	query := "select owner_id from groups where id=?"
+	query := "select creator_id from user_group where id=?"
 	row := db.connection.QueryRow(query, groupId)
-	err = row.Scan(&ownerId)
+	err = row.Scan(&creatorId)
 	if err != nil {
-		return ownerId, err
+		return creatorId, err
 	}
 
-	return ownerId, err
+	return creatorId, err
 }
 
 func (db *Db) GetTime() string {

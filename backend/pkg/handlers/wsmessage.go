@@ -209,14 +209,14 @@ func (c *Client) readMessages() {
 					}
 				}
 			} else if res.Type == JOINREQNOTIFICATION_TYPE {
-				// notify the owner of the group that he has a new join request
-				// get the owner of the group
-				ownerId, err := DB.GetGroupOwnerId(res.To) //assuming res.To is group id.
+				// notify the creator of the group that he has a new join request
+				// get the creator of the group
+				creatorId, err := DB.GetGroupCreatorId(res.To) //assuming res.To is group id.
 				if err != nil {
 					log.Println(err)
 				}
 				for wsclient := range c.manager.clients {
-					if wsclient.userId == ownerId {
+					if wsclient.userId == creatorId {
 						message, _ := json.Marshal(res)
 						wsclient.eggress <- message
 					}

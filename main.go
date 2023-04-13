@@ -39,6 +39,10 @@ func main() {
 			GetFunction: handlers.GetAllUsers,
 		},
 		{
+			Endpoint:    "/allgroups",
+			GetFunction: handlers.GetAllGroups,
+		},
+		{
 			Endpoint:    "/history",
 			GetFunction: handlers.GetHistory,
 		},

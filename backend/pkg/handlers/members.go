@@ -13,6 +13,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 
+	//replace with session when implemented
 	user_nick := "malin" //IsUser(w, r)
 	//user_id := DB.GetUserID(username)
 
@@ -28,5 +29,22 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusAccepted)
 	res, _ := json.Marshal(users)
+	io.WriteString(w, string(res))
+}
+
+func GetAllGroups(w http.ResponseWriter, r *http.Request) {
+
+	// if !IsOn(w, r) {
+	// 	GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
+	// 	return
+	// }
+
+	groups, err := DB.GetAllGroups()
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+	res, _ := json.Marshal(groups)
 	io.WriteString(w, string(res))
 }

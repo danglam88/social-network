@@ -61,6 +61,15 @@ type User struct {
 	AboutMe   string
 }
 
+type Group struct {
+	ID          int
+	CreatorId   int
+	GroupName   string
+	Description string
+	CreatedAt   time.Time
+	Members     []User
+}
+
 type Message struct {
 	From      int       `json:"from"`
 	To        int       `json:"to"`
@@ -168,26 +177,6 @@ func (db *Db) GetPost(userfilter, groupfilter int) (posts []Post, err error) {
 	return posts, err
 }
 
-func (db *Db) getPostsIdByCategory(categoryId int) (postsId []string, err error) {
-
-	var postId string
-	rows, err := db.connection.Query("select post_id from category_relation where category_id = ?", categoryId)
-	if err != nil {
-		return postsId, err
-	}
-
-	for rows.Next() {
-		err := rows.Scan(&postId)
-		if err != nil {
-			return postsId, err
-		}
-		postsId = append(postsId, postId)
-	}
-	defer rows.Close()
-
-	return postsId, err
-}
-
 // function to make a post
 func (db *Db) CreatePost(userID int, title, content string) (postID int64, err error) {
 
@@ -235,51 +224,6 @@ func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 	defer rows.Close()
 
 	return comments, err
-}
-
-func (db *Db) GetCategories() (map[int]string, error) {
-	var id int
-	var name string
-
-	categories := make(map[int]string)
-
-	query := "select id,category_name from category"
-	rows, err := db.connection.Query(query)
-	if err != nil {
-		return categories, err
-	}
-
-	for rows.Next() {
-		err := rows.Scan(&id, &name)
-		if err != nil {
-			return categories, err
-		}
-		categories[id] = name
-	}
-	defer rows.Close()
-
-	return categories, err
-}
-
-// Get category id from category name
-func (db *Db) GetCategoryID(category string) int {
-	var id int
-
-	row := db.connection.QueryRow("select id from category where id = ?", category)
-	err := row.Scan(&id)
-	if err != nil {
-		return 0
-	}
-
-	return id
-}
-
-// Set relation between post and category
-func (db *Db) SetCategoryRelation(postID int, categoryID int) (err error) {
-
-	//insert into post table
-	_, err = db.connection.Exec("insert into category_relation(post_id,category_id) values(?,?)", postID, categoryID)
-	return err
 }
 
 func (db *Db) GetUserID(username string) int {
@@ -342,6 +286,65 @@ func (db *Db) GetUserName(id int) (string, error) {
 		return "", err
 	}
 	return expected_user.NickName, err
+}
+
+func (db *Db) GetAllGroups() (groups []Group, err error) {
+
+	rows, err := db.connection.Query("select id,creator_id,group_name,descript,created_at from user_group")
+	if err != nil {
+		return groups, err
+	}
+
+	var group Group
+	for rows.Next() {
+		err := rows.Scan(&group.ID, &group.CreatorId, &group.GroupName, &group.Description, &group.CreatedAt)
+		if err != nil {
+			return groups, err
+		}
+		members := db.GetGroupMembers(group.ID)
+		group.Members = members
+		groups = append(groups, group)
+	}
+
+	return groups, err
+}
+
+func (db *Db) GetGroupMembers(groupId int) (members []User) {
+	userIds := []int{}
+	query := "select user_id from group_relation where group_id = ? and is_approved = 1"
+	rows, err := db.connection.Query(query, groupId)
+	if err != nil {
+		fmt.Println(err)
+		return members
+	}
+
+	for rows.Next() {
+		var userId int
+		err := rows.Scan(&userId)
+		if err != nil {
+			fmt.Println(err)
+
+		}
+		userIds = append(userIds, userId)
+	}
+	defer rows.Close()
+
+	for _, id := range userIds {
+		user := db.GetUser(id)
+		members = append(members, user)
+	}
+
+	return members
+}
+
+func (db *Db) GetUser(id int) User {
+	var user User
+	row := db.connection.QueryRow("select id,nickname,avatar_url,about_me from user where id = ?", id)
+	err := row.Scan(&user.ID, &user.NickName, &user.AvatarUrl, &user.AboutMe)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return user
 }
 
 func (db *Db) GetAllUsers(username string) (users []User, err error) {

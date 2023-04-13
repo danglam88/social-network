@@ -32,7 +32,7 @@ const LoginForm = () => {
     email: <input value={email} onChange={handleEmailChange}/>
     </div>
     <div>
-    password: <input value={password} onChange={handlePasswordChange}/>
+    password: <input type="password" value={password} onChange={handlePasswordChange}/>
     </div>   
     <div>
       <button type="submit">Login</button>

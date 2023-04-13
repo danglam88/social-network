@@ -9,7 +9,7 @@ const config = {
     }
   };
 
-const login = data => {
+const login = async data => {
     console.log(data)
 
     const request = axios.post(loginUrl, data, config)

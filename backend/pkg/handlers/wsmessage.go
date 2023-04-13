@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-//Rewrite the const declarations to be more readable
+// Rewrite the const declarations to be more readable
 const (
 	MESSAGE_TYPE             = "message"
 	LOGOUT_TYPE              = "logout"
@@ -149,7 +149,7 @@ func (c *Client) readMessages() {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 
-				groupUsers, err := DB.GetGroupUserIds(res.To) //assuming res.To is group id. Or group chat id?
+				groupUsers, err := DB.GetGroupUserIds(res.To)
 				if err != nil {
 					log.Println(err)
 				}
@@ -162,7 +162,10 @@ func (c *Client) readMessages() {
 					}
 				}
 
-				//DB.AddGroupMessage(res.From, res.To, res.Message, res.CreatedAt)
+				err = DB.AddGroupMessage(res.From, res.To, res.Message, res.CreatedAt)
+				if err != nil {
+					log.Println(err)
+				}
 
 			} else if res.Type == MESSAGE_TYPE && res.To > 0 {
 				res.CreatedAt = DB.GetTime()

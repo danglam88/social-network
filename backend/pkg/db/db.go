@@ -542,6 +542,24 @@ func (db *Db) CreateComment(user_id int, postID int, comment string, username st
 	return newComment
 }
 
+func (db *Db) AddGroupMessage(fromUserId, toGroupId int, message, createdAt string) error {
+
+	query := "select id from group_chat where group_id=?"
+	row := db.connection.QueryRow(query, toGroupId)
+	var groupChatId int
+	err := row.Scan(&groupChatId)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.connection.Exec("insert into group_message(group_chatid,content,sender_id,created_at) values(?,?,?,?)", groupChatId, message, fromUserId, createdAt)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return err
+}
+
 func (db *Db) GetGroupUserIds(groupId int) (users []int, err error) {
 
 	query := "select user_id from group_user where group_id=?"

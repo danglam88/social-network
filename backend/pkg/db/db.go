@@ -415,62 +415,38 @@ func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
 	return users, err
 }
 
-func (db *Db) GetChatOrderByMessage(chatType string, chatId int) (chatIds []int, err error) {
-	if chatType == "private" {
-		rows, err := db.connection.Query("select first_userid, second_userid from private_message left join private_chat on private_chat.id=private_message.private_chatid where first_userid=? or second_userid=? order by private_message.created_at desc;", chatId, chatId)
+func (db *Db) GetChatOrderByMessage(chatId int) (chatIds []int, err error) {
+	rows, err := db.connection.Query(`
+        SELECT chat_id, MAX(created_at) AS last_message_time
+        FROM (
+            SELECT private_chat.id AS chat_id, private_message.created_at
+            FROM private_chat
+            JOIN private_message ON private_chat.id = private_message.private_chatid
+            WHERE first_userid = ? OR second_userid = ?
+            UNION ALL
+            SELECT group_chat.id AS chat_id, group_message.created_at
+            FROM group_chat
+            JOIN group_message ON group_chat.id = group_message.group_chatid
+            WHERE group_chat.group_id = ?
+        ) AS subquery
+        GROUP BY chat_id
+        ORDER BY last_message_time DESC;
+    `, chatId, chatId, chatId)
+	if err != nil {
+		return chatIds, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var chatId int
+		err := rows.Scan(&chatId)
 		if err != nil {
 			return chatIds, err
 		}
-
-		var first_userid, second_userid int
-		isExists := make(map[int]bool)
-
-		for rows.Next() {
-
-			err := rows.Scan(&first_userid, &second_userid)
-			if err != nil {
-				return chatIds, err
-			}
-
-			if first_userid == chatId {
-				if !isExists[second_userid] {
-					chatIds = append(chatIds, second_userid)
-					isExists[second_userid] = true
-				}
-			} else {
-				if !isExists[first_userid] {
-					chatIds = append(chatIds, first_userid)
-					isExists[first_userid] = true
-				}
-			}
-		}
-		defer rows.Close()
-
-	} else if chatType == "group" {
-		rows, err := db.connection.Query("select sender_id from group_message left join group_chat on group_chat.id=group_message.group_chatid where group_chat.id=? order by group_message.created_at desc;", chatId)
-		if err != nil {
-			return chatIds, err
-		}
-
-		var sender_id int
-		isExists := make(map[int]bool)
-
-		for rows.Next() {
-
-			err := rows.Scan(&sender_id)
-			if err != nil {
-				return chatIds, err
-			}
-
-			if !isExists[sender_id] {
-				chatIds = append(chatIds, sender_id)
-				isExists[sender_id] = true
-			}
-		}
-		defer rows.Close()
+		chatIds = append(chatIds, chatId)
 	}
 
-	return chatIds, err
+	return chatIds, nil
 }
 
 func (db *Db) AddMessage(from, to int, message, time string) (err error) {

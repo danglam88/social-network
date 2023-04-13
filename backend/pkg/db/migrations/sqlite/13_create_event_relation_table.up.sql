@@ -1,4 +1,4 @@
-CREATE TABLE event_relation (
+CREATE TABLE IF NOT EXISTS event_relation (
     id INTEGER NOT NULL PRIMARY KEY,
     event_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,

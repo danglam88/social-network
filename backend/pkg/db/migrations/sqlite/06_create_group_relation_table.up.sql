@@ -1,4 +1,4 @@
-CREATE TABLE group_relation (
+CREATE TABLE IF NOT EXISTS group_relation (
     id INTEGER NOT NULL PRIMARY KEY,
     group_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,

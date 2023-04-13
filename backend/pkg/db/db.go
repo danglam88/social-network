@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	. "socialnetwork/backend/pkg/db/sqlite"
+	"syscall"
 	"time"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -86,26 +87,33 @@ func OpenDatabase() Db {
 	}
 
 	if !existed {
-		driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
+		err := RunMigrations(db, true)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			return Db{}
-		}
-
-		m, err := migrate.NewWithDatabaseInstance(
-			"file://./backend/pkg/db/migrations",
-			"sqlite3", driver)
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			return Db{}
-		}
-
-		err = m.Up()
-		if err != nil && err != migrate.ErrNoChange {
 			fmt.Fprintln(os.Stderr, err)
 			return Db{}
 		}
 	}
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-stop
+
+		err := RunMigrations(db, false)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			return
+		}
+
+		err = os.Remove("./backend/pkg/db/socialnetwork.db")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			return
+		}
+
+		os.Exit(1)
+	}()
 
 	return Db{connection: db}
 }

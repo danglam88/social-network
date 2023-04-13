@@ -1,4 +1,4 @@
-CREATE TABLE post_visibility (
+CREATE TABLE IF NOT EXISTS post_visibility (
     id INTEGER NOT NULL PRIMARY KEY,
     post_id INTEGER NOT NULL,
     viewer_id INTEGER NOT NULL,

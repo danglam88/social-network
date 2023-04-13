@@ -51,7 +51,6 @@ func Start(collection []Handler) {
 	mux.HandleFunc("/ws", manager.serveWS)
 
 	log.Fatal(http.ListenAndServe(":8080", mux))
-
 }
 
 func GetFunc(handler Handler) http.HandlerFunc {

@@ -1,4 +1,4 @@
-CREATE TABLE event (
+CREATE TABLE IF NOT EXISTS event (
     id INTEGER NOT NULL PRIMARY KEY,
     creator_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,

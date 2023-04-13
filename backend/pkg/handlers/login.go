@@ -16,7 +16,7 @@ func IsLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	test, _ := DB.GetChatOrderByMessage(1)
+	test, _ := DB.GetChatOrderByMessage(6)
 	fmt.Println(test)
 
 	err := r.ParseForm()

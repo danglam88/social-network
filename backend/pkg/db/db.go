@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 	. "socialnetwork/backend/pkg/db/sqlite"
-	"sort"
 	"syscall"
 	"time"
 
@@ -417,61 +416,36 @@ func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
 }
 
 func (db *Db) GetChatOrderByMessage(senderId int) (chatIds []int, err error) {
-	// Retrieve the chat ids for the private chats of the user
-	rows, err := db.connection.Query("SELECT private_chat.id FROM private_chat JOIN private_message ON private_chat.id = private_message.private_chatid WHERE first_userid = ? OR second_userid = ? ORDER BY private_message.created_at DESC", senderId, senderId)
+	rows, err := db.connection.Query(`
+		SELECT DISTINCT chat_id
+		FROM (
+			SELECT private_chat.id AS chat_id, private_message.created_at AS created_at
+			FROM private_chat
+			JOIN private_message ON private_message.private_chatid = private_chat.id
+			WHERE private_chat.first_userid = ? OR private_chat.second_userid = ?
+			UNION ALL
+			SELECT group_chat.id AS chat_id, group_message.created_at AS created_at
+			FROM group_chat
+			JOIN group_message ON group_message.group_chatid = group_chat.id
+			JOIN group_relation ON group_relation.group_id = group_chat.group_id
+			WHERE group_relation.user_id = ? AND group_relation.is_approved = 1
+		) ORDER BY created_at DESC;
+	`, senderId, senderId, senderId)
 	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var chatId int
-	for rows.Next() {
-		err = rows.Scan(&chatId)
-		if err != nil {
-			return nil, err
-		}
-		chatIds = append(chatIds, chatId)
-	}
-
-	// Retrieve the chat ids for the group chats of the user
-	rows, err = db.connection.Query("SELECT group_chat.id FROM group_chat JOIN group_message ON group_chat.id = group_message.group_chatid JOIN user_group ON group_chat.group_id = user_group.id WHERE user_group.creator_id = ? OR EXISTS (SELECT * FROM group_membership WHERE group_membership.group_id = user_group.id AND group_membership.user_id = ?) ORDER BY group_message.created_at DESC", senderId, senderId)
-	if err != nil {
-		return nil, err
+		return chatIds, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		err = rows.Scan(&chatId)
-		if err != nil {
-			return nil, err
+		var chatId int
+		if err := rows.Scan(&chatId); err != nil {
+			return chatIds, err
 		}
 		chatIds = append(chatIds, chatId)
 	}
-
-	// Sort the chat ids by the most recent message timestamp
-	sort.Slice(chatIds, func(i, j int) bool {
-		rows, err := db.connection.Query("SELECT MAX(created_at) FROM (SELECT created_at FROM private_message WHERE private_chatid = ? UNION ALL SELECT created_at FROM group_message WHERE group_chatid = ?) AS messages", chatIds[i], chatIds[j])
-		if err != nil {
-			return false
-		}
-		defer rows.Close()
-
-		var timestamp1, timestamp2 time.Time
-		if rows.Next() {
-			err = rows.Scan(&timestamp1)
-			if err != nil {
-				return false
-			}
-		}
-		if rows.Next() {
-			err = rows.Scan(&timestamp2)
-			if err != nil {
-				return false
-			}
-		}
-
-		return timestamp1.After(timestamp2)
-	})
+	if err := rows.Err(); err != nil {
+		return chatIds, err
+	}
 
 	return chatIds, nil
 }

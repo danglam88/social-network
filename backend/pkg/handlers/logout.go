@@ -17,7 +17,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	// Logging the currently logged-in user out
 	res := LogUserOut(w, r)
 	if strings.Compare(res, "200 OK") != 0 && strings.Compare(res[:4], "401 ") != 0 {
-		GetErrResponse(w, res, http.StatusNotFound) // WHICH STATUS?
+		GetErrResponse(w, res, http.StatusBadRequest) // WHICH STATUS?
 		return
 	}
 

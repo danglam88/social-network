@@ -47,6 +47,7 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 
 	comment := r.FormValue("comment")
 	postID, _ := strconv.Atoi(r.FormValue("postId"))
+	img_url := r.FormValue("img_url")
 	// HANDLE ERROR
 	commentErrorCheck, commentErrorMessage := ValidateField("comment", comment, 1, 1000)
 
@@ -55,7 +56,7 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentDB := DB.CreateComment(user_id, postID, comment, username)
+	commentDB := DB.CreateComment(user_id, postID, comment, username, img_url)
 	res, _ := json.Marshal(commentDB)
 	io.WriteString(w, string(res))
 

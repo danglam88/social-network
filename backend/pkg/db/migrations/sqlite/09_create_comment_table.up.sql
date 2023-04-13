@@ -1,4 +1,4 @@
-CREATE TABLE comment (
+CREATE TABLE IF NOT EXISTS comment (
     id INTEGER NOT NULL PRIMARY KEY,
     creator_id INTEGER NOT NULL,
     post_id INTEGER NOT NULL,

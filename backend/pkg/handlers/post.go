@@ -5,41 +5,42 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"socialnetwork/backend/pkg/db"
 	"strconv"
 	"strings"
 )
 
+// function to get all posts per profile- or group page
 func PostGet(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
 	params := r.URL.Query()
 
-	filter := db.PostFilter{}
+	filterUser := 0
+	filterGroup := 0
 
-	if id, isExist := params["id"]; isExist {
-		filter.ID, err = strconv.Atoi(id[0])
+	if userId, isExist := params["creator_id"]; isExist {
+		filterUser, err = strconv.Atoi(userId[0])
 	}
 
-	if categoryId, isExist := params["category_id"]; isExist {
-		filter.CategoryID, err = strconv.Atoi(categoryId[0])
+	if groupId, isExist := params["group_id"]; isExist {
+		filterGroup, err = strconv.Atoi(groupId[0])
 	}
 
 	if err != nil {
-		errorMess := "Invalid category Id"
+		errorMess := "Invalid Id"
 		GetErrResponse(w, errorMess, http.StatusBadRequest)
 		return
 	} else {
-		post, err := DB.GetPost(filter)
+		posts, err := DB.GetPost(filterUser, filterGroup)
 		if err != nil {
-			errorMess := "Error while getting post"
+			errorMess := "Error while getting posts"
 			GetErrResponse(w, errorMess, http.StatusBadRequest)
 			return
 		}
 
 		w.WriteHeader(http.StatusAccepted)
-		res, _ := json.Marshal(post)
+		res, _ := json.Marshal(posts)
 		io.WriteString(w, string(res))
 	}
 }

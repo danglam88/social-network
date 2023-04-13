@@ -1,4 +1,4 @@
-CREATE TABLE user_group (
+CREATE TABLE IF NOT EXISTS user_group (
     id INTEGER NOT NULL PRIMARY KEY,
     creator_id INTEGER NOT NULL,
     group_name VARCHAR(30) NOT NULL,

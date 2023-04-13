@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"os/signal"
+	. "socialnetwork/backend/pkg/db/sqlite"
+	"syscall"
 	"time"
 
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -18,12 +21,15 @@ type Db struct {
 }
 
 type Post struct {
-	ID        int
-	UserID    int
-	UserName  string
-	Title     string
-	Content   string
-	CreatedAt time.Time
+	ID          int
+	CreatorID   int
+	CreatorName string
+	GroupID     int
+	Visibility  int
+	Title       string
+	Content     string
+	CreatedAt   time.Time
+	ImgUrl      string
 }
 
 type PostFilter struct {
@@ -35,21 +41,24 @@ type Comment struct {
 	ID        int
 	UserID    int
 	UserName  string
+	PostID    int
 	Content   string
 	CreatedAt time.Time
+	ImgUrl    string
 }
 
 type User struct {
 	ID        int
-	Privilege int
-	Username  string
 	FirstName string
 	LastName  string
-	Age       string
-	Gender    string
+	BirthDate string
+	IsPrivate int
 	Password  string
 	Email     string
 	CreatedAt string
+	AvatarUrl string
+	NickName  string
+	AboutMe   string
 }
 
 type Message struct {
@@ -69,12 +78,45 @@ type MessageUser struct {
 
 // Opening the database
 func OpenDatabase() Db {
-	db, err := sql.Open("sqlite3", "./db/forum.db?parseTime=true")
+	db, err := sql.Open("sqlite3", "./backend/pkg/db/socialnetwork.db?parseTime=true")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		//todo
-		//return nil
+		return Db{}
 	}
+
+	existed := false
+	if _, err := os.Stat("./backend/pkg/db/socialnetwork.db"); err == nil {
+		existed = true
+	}
+
+	if !existed {
+		err := RunMigrations(db, true)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			return Db{}
+		}
+	}
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-stop
+
+		err := RunMigrations(db, false)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			return
+		}
+
+		err = os.Remove("./backend/pkg/db/socialnetwork.db")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			return
+		}
+
+		os.Exit(1)
+	}()
 
 	return Db{connection: db}
 }
@@ -91,22 +133,17 @@ func (db *Db) AddUser(username, password, email string, prev int) (bool, error) 
 	return err != nil, err
 }
 
-func (db *Db) GetPost(filter PostFilter) (posts []Post, err error) {
+// function in use
+func (db *Db) GetPost(userfilter, groupfilter int) (posts []Post, err error) {
 	var post Post
 	var query string
 
-	query = "select id,user_id,title,content,created_at from post"
+	query = "select id,creator_id,group_id,visibility,title,content,created_at,img_url from post"
 
-	if filter.ID > 0 {
-		query = query + fmt.Sprintf(" where id = %v limit 1", filter.ID)
-	} else if filter.CategoryID > 0 {
-
-		postsId, err := db.getPostsIdByCategory(filter.CategoryID)
-
-		if len(postsId) > 0 && err == nil {
-			//todo empty and err return
-			query = query + fmt.Sprintf(" where id in (%v)", strings.Join(postsId, ","))
-		}
+	if userfilter > 0 {
+		query = query + fmt.Sprintf(" where creator_id = %v", userfilter)
+	} else if groupfilter > 0 {
+		query = query + fmt.Sprintf(" where group_id = %v", groupfilter)
 	}
 
 	rows, err := db.connection.Query(query)
@@ -115,15 +152,15 @@ func (db *Db) GetPost(filter PostFilter) (posts []Post, err error) {
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&post.ID, &post.UserID, &post.Title, &post.Content, &post.CreatedAt)
+		err := rows.Scan(&post.ID, &post.CreatorID, &post.GroupID, &post.Visibility, &post.Title, &post.Content, &post.CreatedAt, &post.ImgUrl)
 		if err != nil {
 			return posts, err
 		}
-		username, err := db.GetUserName(post.UserID)
+		username, err := db.GetUserName(post.CreatorID)
 		if err != nil {
 			//handle
 		}
-		post.UserName = username
+		post.CreatorName = username
 		posts = append(posts, post)
 	}
 	defer rows.Close()
@@ -167,10 +204,15 @@ func (db *Db) CreatePost(userID int, title, content string) (postID int64, err e
 	return postID, err
 }
 
+// in use
 func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 	var comment Comment
 
-	query := fmt.Sprintf("select id,user_id,content,created_at from comment where post_id = %v", postId)
+	query := fmt.Sprintf("select id,creator_id,post_id,content,created_at,img_url from comment")
+
+	if postId != 0 {
+		query = query + fmt.Sprintf(" where post_id = %v", postId)
+	}
 
 	rows, err := db.connection.Query(query)
 
@@ -179,7 +221,7 @@ func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt)
+		err := rows.Scan(&comment.ID, &comment.UserID, &comment.PostID, &comment.Content, &comment.CreatedAt, &comment.ImgUrl)
 		if err != nil {
 			return comments, err
 		}
@@ -245,7 +287,7 @@ func (db *Db) GetUserID(username string) int {
 	var expected_user User
 	// Reading the only row and saving the returned user
 	row := db.connection.QueryRow("select id,username,passwrd,email,created_at from user where username = ?", username)
-	err := row.Scan(&expected_user.ID, &expected_user.Username, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
+	err := row.Scan(&expected_user.ID, &expected_user.NickName, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
 	if err != nil {
 		//fmt.Fprintln(os.Stderr, err)
 		return -1
@@ -256,8 +298,8 @@ func (db *Db) GetUserID(username string) int {
 func (db *Db) GetEmail(mail string) string {
 	var expected_user User
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,privilege,username,passwrd,email,created_at from user where email = ?", mail)
-	err := row.Scan(&expected_user.ID, &expected_user.Privilege, &expected_user.Username, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
+	row := db.connection.QueryRow("select id,username,passwrd,email,created_at from user where email = ?", mail)
+	err := row.Scan(&expected_user.ID, &expected_user.NickName, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
 	if err != nil {
 		return ""
 	}
@@ -294,12 +336,33 @@ func (db *Db) GetUserName(id int) (string, error) {
 	var expected_user User
 	var err error
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,username from user where id = ?", id)
-	err = row.Scan(&expected_user.ID, &expected_user.Username)
+	row := db.connection.QueryRow("select id,nickname from user where id = ?", id)
+	err = row.Scan(&expected_user.ID, &expected_user.NickName)
 	if err != nil {
 		return "", err
 	}
-	return expected_user.Username, err
+	return expected_user.NickName, err
+}
+
+func (db *Db) GetAllUsers(username string) (users []User, err error) {
+
+	query := "select id,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where nickname != ? order by nickname asc"
+	rows, err := db.connection.Query(query, username)
+	if err != nil {
+		return users, err
+	}
+
+	var user User
+	for rows.Next() {
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.BirthDate, &user.IsPrivate, &user.CreatedAt, &user.AvatarUrl, &user.NickName, &user.AboutMe)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	defer rows.Close()
+
+	return users, err
 }
 
 func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
@@ -458,59 +521,79 @@ func (db *Db) GetHistory(from, to, page int) (messages []Message, err error) {
 	return messages, err
 }
 
-func (db *Db) CreateComment(user_id int, postID int, comment string, username string) Comment {
+// in use
+func (db *Db) CreateComment(user_id int, postID int, comment string, username string, img_url string) Comment {
 
 	var newComment Comment
 
-	_, err := db.connection.Exec("insert into comment(user_id,post_id,content,created_at) values(?,?,?,?)", user_id, postID, comment, time.Now().Local().Format(time_format))
+	_, err := db.connection.Exec("insert into comment(creator_id,post_id,content,created_at,img_url) values(?,?,?,?)", user_id, postID, comment, time.Now().Local().Format(time_format), img_url)
 
 	if err != nil {
 		return newComment
 	}
 
-	newComment.ID = user_id
-	newComment.UserID = postID
+	newComment.UserID = user_id
 	newComment.UserName = username
+	newComment.PostID = postID
 	newComment.Content = comment
 	newComment.CreatedAt = time.Now().Local()
+	newComment.ImgUrl = img_url
 
 	return newComment
 }
 
-func (db *Db) GetGroupUserIds(groupId int) (users []int, err error) {
+func (db *Db) AddGroupMessage(fromUserId, toGroupId int, message, createdAt string) error {
 
-	query := "select user_id from group_user where group_id=?"
-	rows, err := db.connection.Query(query, groupId)
+	query := "select id from group_chat where group_id=?"
+	row := db.connection.QueryRow(query, toGroupId)
+	var groupChatId int
+	err := row.Scan(&groupChatId)
 	if err != nil {
-		return users, err
+		return err
 	}
 
-	var id int
+	_, err = db.connection.Exec("insert into group_message(group_chatid,content,sender_id,created_at) values(?,?,?,?)", groupChatId, message, fromUserId, createdAt)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return err
+}
+
+func (db *Db) GetGroupUserIds(groupId int) (userIds []int, err error) {
+
+	query := "select user_id from group_relation where group_id=?"
+	rows, err := db.connection.Query(query, groupId)
+	if err != nil {
+		return userIds, err
+	}
+
+	var user_id int
 	for rows.Next() {
 
-		err := rows.Scan(&id)
+		err := rows.Scan(&user_id)
 		if err != nil {
-			return users, err
+			return userIds, err
 		}
 
-		users = append(users, id)
+		userIds = append(userIds, user_id)
 	}
 
 	defer rows.Close()
 
-	return users, err
+	return userIds, err
 }
 
-func (db *Db) GetGroupOwnerId(groupId int) (ownerId int, err error) {
+func (db *Db) GetGroupCreatorId(groupId int) (creatorId int, err error) {
 
-	query := "select owner_id from groups where id=?"
+	query := "select creator_id from user_group where id=?"
 	row := db.connection.QueryRow(query, groupId)
-	err = row.Scan(&ownerId)
+	err = row.Scan(&creatorId)
 	if err != nil {
-		return ownerId, err
+		return creatorId, err
 	}
 
-	return ownerId, err
+	return creatorId, err
 }
 
 func (db *Db) GetTime() string {

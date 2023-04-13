@@ -1,4 +1,4 @@
-CREATE TABLE private_message (
+CREATE TABLE IF NOT EXISTS private_message (
     id INTEGER NOT NULL PRIMARY KEY,
     private_chatid INTEGER NOT NULL,
     content TEXT NOT NULL,

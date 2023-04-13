@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	. "socialnetwork/backend/pkg/db/sqlite"
+	"sort"
 	"syscall"
 	"time"
 
@@ -370,7 +371,7 @@ func (db *Db) GetAllUsers(username string) (users []User, err error) {
 
 func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
 
-	userSort, err := db.GetChatOrderByMessage("private", userId)
+	userSort, err := db.GetChatOrderByMessage(userId)
 	query := "select id, username from user order by username asc"
 	rows, err := db.connection.Query(query)
 	if err != nil {
@@ -415,36 +416,62 @@ func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
 	return users, err
 }
 
-func (db *Db) GetChatOrderByMessage(chatId int) (chatIds []int, err error) {
-	rows, err := db.connection.Query(`
-        SELECT chat_id, MAX(created_at) AS last_message_time
-        FROM (
-            SELECT private_chat.id AS chat_id, private_message.created_at
-            FROM private_chat
-            JOIN private_message ON private_chat.id = private_message.private_chatid
-            WHERE first_userid = ? OR second_userid = ?
-            UNION ALL
-            SELECT group_chat.id AS chat_id, group_message.created_at
-            FROM group_chat
-            JOIN group_message ON group_chat.id = group_message.group_chatid
-            WHERE group_chat.group_id = ?
-        ) AS subquery
-        GROUP BY chat_id
-        ORDER BY last_message_time DESC;
-    `, chatId, chatId, chatId)
+func (db *Db) GetChatOrderByMessage(senderId int) (chatIds []int, err error) {
+	// Retrieve the chat ids for the private chats of the user
+	rows, err := db.connection.Query("SELECT private_chat.id FROM private_chat JOIN private_message ON private_chat.id = private_message.private_chatid WHERE first_userid = ? OR second_userid = ? ORDER BY private_message.created_at DESC", senderId, senderId)
 	if err != nil {
-		return chatIds, err
+		return nil, err
+	}
+	defer rows.Close()
+
+	var chatId int
+	for rows.Next() {
+		err = rows.Scan(&chatId)
+		if err != nil {
+			return nil, err
+		}
+		chatIds = append(chatIds, chatId)
+	}
+
+	// Retrieve the chat ids for the group chats of the user
+	rows, err = db.connection.Query("SELECT group_chat.id FROM group_chat JOIN group_message ON group_chat.id = group_message.group_chatid JOIN user_group ON group_chat.group_id = user_group.id WHERE user_group.creator_id = ? OR EXISTS (SELECT * FROM group_membership WHERE group_membership.group_id = user_group.id AND group_membership.user_id = ?) ORDER BY group_message.created_at DESC", senderId, senderId)
+	if err != nil {
+		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var chatId int
-		err := rows.Scan(&chatId)
+		err = rows.Scan(&chatId)
 		if err != nil {
-			return chatIds, err
+			return nil, err
 		}
 		chatIds = append(chatIds, chatId)
 	}
+
+	// Sort the chat ids by the most recent message timestamp
+	sort.Slice(chatIds, func(i, j int) bool {
+		rows, err := db.connection.Query("SELECT MAX(created_at) FROM (SELECT created_at FROM private_message WHERE private_chatid = ? UNION ALL SELECT created_at FROM group_message WHERE group_chatid = ?) AS messages", chatIds[i], chatIds[j])
+		if err != nil {
+			return false
+		}
+		defer rows.Close()
+
+		var timestamp1, timestamp2 time.Time
+		if rows.Next() {
+			err = rows.Scan(&timestamp1)
+			if err != nil {
+				return false
+			}
+		}
+		if rows.Next() {
+			err = rows.Scan(&timestamp2)
+			if err != nil {
+				return false
+			}
+		}
+
+		return timestamp1.After(timestamp2)
+	})
 
 	return chatIds, nil
 }

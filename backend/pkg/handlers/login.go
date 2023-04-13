@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -15,6 +16,8 @@ func IsLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	test, _ := DB.GetChatOrderByMessage(1)
+	fmt.Println(test)
 
 	err := r.ParseForm()
 	if err != nil {

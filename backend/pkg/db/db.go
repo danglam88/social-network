@@ -41,21 +41,24 @@ type Comment struct {
 	ID        int
 	UserID    int
 	UserName  string
+	PostID    int
 	Content   string
 	CreatedAt time.Time
+	ImgUrl    string
 }
 
 type User struct {
 	ID        int
-	Privilege int
-	Username  string
 	FirstName string
 	LastName  string
-	Age       string
-	Gender    string
+	BirthDate string
+	IsPrivate int
 	Password  string
 	Email     string
 	CreatedAt string
+	AvatarUrl string
+	NickName  string
+	AboutMe   string
 }
 
 type Message struct {
@@ -201,10 +204,15 @@ func (db *Db) CreatePost(userID int, title, content string) (postID int64, err e
 	return postID, err
 }
 
+// in use
 func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 	var comment Comment
 
-	query := fmt.Sprintf("select id,user_id,content,created_at from comment where post_id = %v", postId)
+	query := fmt.Sprintf("select id,creator_id,post_id,content,created_at,img_url from comment")
+
+	if postId != 0 {
+		query = query + fmt.Sprintf(" where post_id = %v", postId)
+	}
 
 	rows, err := db.connection.Query(query)
 
@@ -213,7 +221,7 @@ func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt)
+		err := rows.Scan(&comment.ID, &comment.UserID, &comment.PostID, &comment.Content, &comment.CreatedAt, &comment.ImgUrl)
 		if err != nil {
 			return comments, err
 		}
@@ -279,7 +287,7 @@ func (db *Db) GetUserID(username string) int {
 	var expected_user User
 	// Reading the only row and saving the returned user
 	row := db.connection.QueryRow("select id,username,passwrd,email,created_at from user where username = ?", username)
-	err := row.Scan(&expected_user.ID, &expected_user.Username, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
+	err := row.Scan(&expected_user.ID, &expected_user.NickName, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
 	if err != nil {
 		//fmt.Fprintln(os.Stderr, err)
 		return -1
@@ -290,8 +298,8 @@ func (db *Db) GetUserID(username string) int {
 func (db *Db) GetEmail(mail string) string {
 	var expected_user User
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,privilege,username,passwrd,email,created_at from user where email = ?", mail)
-	err := row.Scan(&expected_user.ID, &expected_user.Privilege, &expected_user.Username, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
+	row := db.connection.QueryRow("select id,username,passwrd,email,created_at from user where email = ?", mail)
+	err := row.Scan(&expected_user.ID, &expected_user.NickName, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
 	if err != nil {
 		return ""
 	}
@@ -329,11 +337,32 @@ func (db *Db) GetUserName(id int) (string, error) {
 	var err error
 	// Reading the only row and saving the returned user
 	row := db.connection.QueryRow("select id,nickname from user where id = ?", id)
-	err = row.Scan(&expected_user.ID, &expected_user.Username)
+	err = row.Scan(&expected_user.ID, &expected_user.NickName)
 	if err != nil {
 		return "", err
 	}
-	return expected_user.Username, err
+	return expected_user.NickName, err
+}
+
+func (db *Db) GetAllUsers(username string) (users []User, err error) {
+
+	query := "select id,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where nickname != ? order by nickname asc"
+	rows, err := db.connection.Query(query, username)
+	if err != nil {
+		return users, err
+	}
+
+	var user User
+	for rows.Next() {
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.BirthDate, &user.IsPrivate, &user.CreatedAt, &user.AvatarUrl, &user.NickName, &user.AboutMe)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	defer rows.Close()
+
+	return users, err
 }
 
 func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
@@ -492,21 +521,23 @@ func (db *Db) GetHistory(from, to, page int) (messages []Message, err error) {
 	return messages, err
 }
 
-func (db *Db) CreateComment(user_id int, postID int, comment string, username string) Comment {
+// in use
+func (db *Db) CreateComment(user_id int, postID int, comment string, username string, img_url string) Comment {
 
 	var newComment Comment
 
-	_, err := db.connection.Exec("insert into comment(user_id,post_id,content,created_at) values(?,?,?,?)", user_id, postID, comment, time.Now().Local().Format(time_format))
+	_, err := db.connection.Exec("insert into comment(creator_id,post_id,content,created_at,img_url) values(?,?,?,?)", user_id, postID, comment, time.Now().Local().Format(time_format), img_url)
 
 	if err != nil {
 		return newComment
 	}
 
-	newComment.ID = user_id
-	newComment.UserID = postID
+	newComment.UserID = user_id
 	newComment.UserName = username
+	newComment.PostID = postID
 	newComment.Content = comment
 	newComment.CreatedAt = time.Now().Local()
+	newComment.ImgUrl = img_url
 
 	return newComment
 }

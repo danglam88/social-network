@@ -12,13 +12,13 @@ import (
 
 // Rewrite the const declarations to be more readable
 const (
-	MESSAGE_TYPE             = "message"
+	PRIVATEMESSAGE_TYPE      = "privatemessage"
 	LOGOUT_TYPE              = "logout"
 	LOGIN_TYPE               = "login"
-	GRPMESSAGE_TYPE          = "groupmessage"
+	GROUPMESSAGE_TYPE        = "groupmessage"
 	FOLLOWNOTIFICATION_TYPE  = "follownotification"
 	INVITENOTIFICATION_TYPE  = "invitenotification"
-	JOINREQNOTIFICATION_TYPE = "joinrequestnotification"
+	JOINREQNOTIFICATION_TYPE = "joinreqnotification"
 	EVENTNOTIFICATION_TYPE   = "eventnotification"
 )
 
@@ -145,7 +145,7 @@ func (c *Client) readMessages() {
 		res.UserName, _ = DB.GetUserName(res.From)
 
 		if res.From > 0 {
-			if res.Type == GRPMESSAGE_TYPE {
+			if res.Type == GROUPMESSAGE_TYPE {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 
@@ -167,7 +167,7 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-			} else if res.Type == MESSAGE_TYPE && res.To > 0 {
+			} else if res.Type == PRIVATEMESSAGE_TYPE && res.To > 0 {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 

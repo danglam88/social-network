@@ -76,36 +76,12 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//Check if user has selected a category
-	list := r.Form["category"]
-
-	for _, v := range list {
-		category_id := DB.GetCategoryID(v)
-		//check if category exists
-		if category_id < 1 {
-			GetErrResponse(w, "Category does not exist", http.StatusBadRequest)
-			return
-		}
-	}
-	if len(list) < 1 {
-		GetErrResponse(w, "No category selected", http.StatusBadRequest)
-		return
-	}
-
 	postID, postErr := DB.CreatePost(user_id, title, content)
 	if postErr != nil {
 		GetErrResponse(w, postErr.Error(), http.StatusBadRequest)
 		return
-	} else {
-		for _, v := range list {
-			//get category id
-			category_id := DB.GetCategoryID(v)
-			//set category relation
-			if category_id > 0 {
-				DB.SetCategoryRelation(int(postID), category_id)
-			}
-		}
 	}
+	fmt.Println("PostID: ", postID)
 
 	w.WriteHeader(http.StatusOK)
 	response := ResponseError{Status: RESPONSE_OK}

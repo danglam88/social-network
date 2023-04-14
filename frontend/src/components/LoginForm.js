@@ -23,7 +23,7 @@ const LoginForm = () => {
         password : password
     }
  
-    loginService.login(data).then(response => console.log(response))
+    loginService.login(data).then(response => console.log(response)).catch(error => console.log(error))
   } 
 
   return (

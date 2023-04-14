@@ -2,10 +2,10 @@ import axios from 'axios'
 
 const loginUrl = 'http://localhost:8080/login'
 
-const config = {
+export const config = {
     mode: 'no-cors',
     headers : {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
   };
 
@@ -16,13 +16,8 @@ const login = async data => {
     return request
 }
 
-const logout = data => {
-    console.log(data)
-}
-
 const loginService = { 
-    login: login,
-    logout: logout
+    login: login
 }
 
 export default loginService

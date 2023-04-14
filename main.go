@@ -5,7 +5,6 @@ import (
 )
 
 func main() {
-
 	collection := []handlers.Handler{
 		{
 			Endpoint:     "/register",
@@ -45,6 +44,10 @@ func main() {
 		{
 			Endpoint:    "/history",
 			GetFunction: handlers.GetHistory,
+		},
+		{
+			Endpoint:     "/perprofile",
+			PostFunction: handlers.PersonalProfile,
 		},
 	}
 

@@ -21,9 +21,10 @@ type Handler struct {
 }
 
 type Response struct {
-	Status string
-	Token  string
-	UserId int
+	Status   string
+	Token    string
+	UserId   int
+	Username string
 }
 
 type ResponseError struct {

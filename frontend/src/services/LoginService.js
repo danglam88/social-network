@@ -13,7 +13,7 @@ const login = async data => {
     console.log(data)
 
     const request = await axios.post(loginUrl, data, config)
-    return request.then(response => response.data).catch(error => console.log(error))
+    return request
 }
 
 const logout = data => {

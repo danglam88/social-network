@@ -11,6 +11,7 @@ import (
 
 type Session struct {
 	Username string
+	UserId   int
 	Cookie   string
 }
 
@@ -35,7 +36,7 @@ func SetClientCookieWithSessionToken(w http.ResponseWriter, username string) err
 	}
 
 	// Creating a new session for the given user with the above-generated session token
-	sessions[session_token] = Session{Username: username, Cookie: session_token}
+	sessions[session_token] = Session{Username: username, UserId: DB.GetUserID(username), Cookie: session_token}
 
 	// Setting the cookie of the current client with the above-generated session token
 	http.SetCookie(w, &http.Cookie{Name: "session_token", Value: session_token, Path: "/"})

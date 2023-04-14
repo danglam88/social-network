@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func IsLogin(w http.ResponseWriter, r *http.Request) {
@@ -16,14 +17,6 @@ func IsLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-
-	/*err := r.ParseForm()
-	if err != nil {
-		GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
-		return
-	}*/
-	fmt.Println("check")
-
 	//parse form
 	err := r.ParseForm()
 	if err != nil {
@@ -61,7 +54,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("login successful")
 	w.WriteHeader(http.StatusOK)
-	response := ResponseError{Status: RESPONSE_OK, Error: username}
+	response := Response{Status: RESPONSE_OK}
+	for _, session := range sessions {
+		if strings.Compare(session.Username, username) == 0 {
+			response.Token = session.Cookie
+			response.UserId = session.UserId
+		}
+	}
 	res, _ := json.Marshal(response)
 	io.WriteString(w, string(res))
 }

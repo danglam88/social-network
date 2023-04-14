@@ -23,7 +23,11 @@ const LoginForm = () => {
         password : password
     }
  
-    loginService.login(data).then(response => console.log(response)).catch(error => console.log(error))
+    loginService.login(data)
+      .then(response => {
+        document.cookie = `session_token=${response.data.Token}; path=/;`;
+      })
+      .catch(error => console.log(error))
   } 
 
   return (

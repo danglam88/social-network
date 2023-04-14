@@ -228,15 +228,15 @@ func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 
 func (db *Db) GetUserID(username string) int {
 	// Creating a variable to hold the expected user
-	var expected_user User
+	var userId int
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,username,passwrd,email,created_at from user where username = ?", username)
-	err := row.Scan(&expected_user.ID, &expected_user.NickName, &expected_user.Password, &expected_user.Email, &expected_user.CreatedAt)
+	row := db.connection.QueryRow("select id from user where email = ?", username)
+	err := row.Scan(&userId)
 	if err != nil {
 		//fmt.Fprintln(os.Stderr, err)
 		return -1
 	}
-	return expected_user.ID
+	return userId
 }
 
 func (db *Db) GetEmail(mail string) string {
@@ -266,7 +266,7 @@ func (db *Db) GetPassword4User(username string) (string, error) {
 	var expected_user User
 
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,passwrd from user where username = ?", username)
+	row := db.connection.QueryRow("select id,passwrd from user where email = ?", username)
 	err := row.Scan(&expected_user.ID, &expected_user.Password)
 	if err != nil {
 		return "", err

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func IsLogin(w http.ResponseWriter, r *http.Request) {
@@ -16,8 +17,6 @@ func IsLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	test, _ := DB.GetChatOrderByMessage(6)
-	fmt.Println(test)
 
 	err := r.ParseForm()
 	if err != nil {
@@ -25,9 +24,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println(r.FormValue("email"))
+	fmt.Println(r.FormValue("password"))
+
 	// Getting the credentials (given by the user) from the login form
-	username := r.FormValue("uname")
-	password := r.FormValue("pwd")
+	username := r.FormValue("email")
+	password := r.FormValue("password")
+	fmt.Println("username: ", username)
+	fmt.Println("password: ", password)
 
 	// Getting the password of the given user from the database
 	expected_pass, err := DB.GetPassword4User(username)
@@ -48,8 +52,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("login successful")
 	w.WriteHeader(http.StatusOK)
-	response := ResponseError{Status: RESPONSE_OK, Error: username}
+	response := Response{Status: RESPONSE_OK}
+	for _, session := range sessions {
+		if strings.Compare(session.Username, username) == 0 {
+			response.Token = session.Cookie
+			response.UserId = session.UserId
+		}
+	}
 	res, _ := json.Marshal(response)
 	io.WriteString(w, string(res))
 }

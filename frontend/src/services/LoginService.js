@@ -12,8 +12,8 @@ const config = {
 const login = async data => {
     console.log(data)
 
-    const request = axios.post(loginUrl, data, config)
-    return request.then(response => response.data)
+    const request = await axios.post(loginUrl, data, config)
+    return request
 }
 
 const logout = data => {

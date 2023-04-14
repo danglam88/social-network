@@ -26,7 +26,7 @@ const PersonalProfile = () => {
 
   return (
     <div>
-        User {data.username} has been logged in before. Profile page is under construction. Remove the cookie to see login form again.
+        User {data.username} has been logged-in successfully. Profile page is under-construction. Remove the cookie then refresh the page to see login form again.
     </div>
   )
 }

@@ -266,7 +266,7 @@ func (db *Db) GetPassword4User(username string) (string, error) {
 	var expected_user User
 
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,passwrd from user where username = ?", username)
+	row := db.connection.QueryRow("select id,passwrd from user where email = ?", username)
 	err := row.Scan(&expected_user.ID, &expected_user.Password)
 	if err != nil {
 		return "", err

@@ -178,12 +178,12 @@ func (db *Db) GetPost(userfilter, groupfilter int) (posts []Post, err error) {
 }
 
 // function to make a post
-func (db *Db) CreatePost(userID int, title, content string) (postID int64, err error) {
+func (db *Db) CreatePost(userID, groupID, visibility int, title, content, imgUrl string) (postID int64, err error) {
 
 	created_time := time.Now().Local().Format(time_format)
 
 	//insert into post table
-	res, err := db.connection.Exec("insert into post(user_id,title,content,created_at, dummy) values(?,?,?,?,?)", userID, title, content, created_time, 0)
+	res, err := db.connection.Exec("insert into post(creator_id,group_id,visibility,title,content,created_at,img_url) values(?,?,?,?,?,?,?)", userID, groupID, visibility, title, content, created_time, imgUrl)
 
 	if err != nil {
 		return postID, err
@@ -191,6 +191,12 @@ func (db *Db) CreatePost(userID int, title, content string) (postID int64, err e
 
 	postID, err = res.LastInsertId()
 	return postID, err
+}
+
+// add users allowed to view a post
+func (db *Db) CreatePostFollower(postID int64, followerID int) error {
+	_, err := db.connection.Exec("insert into post_visibility(post_id,viewer_id) values(?,?)", postID, followerID)
+	return err
 }
 
 // in use
@@ -339,8 +345,8 @@ func (db *Db) GetGroupMembers(groupId int) (members []User) {
 
 func (db *Db) GetUser(id int) User {
 	var user User
-	row := db.connection.QueryRow("select id,nickname,avatar_url,about_me from user where id = ?", id)
-	err := row.Scan(&user.ID, &user.NickName, &user.AvatarUrl, &user.AboutMe)
+	row := db.connection.QueryRow("select id,email,firstname,lastname,is_private,nickname,avatar_url,about_me from user where id = ?", id)
+	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.IsPrivate, &user.NickName, &user.AvatarUrl, &user.AboutMe)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -349,7 +355,7 @@ func (db *Db) GetUser(id int) User {
 
 func (db *Db) GetAllUsers(username string) (users []User, err error) {
 
-	query := "select id,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where nickname != ? order by nickname asc"
+	query := "select id,email,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where nickname != ? order by nickname asc"
 	rows, err := db.connection.Query(query, username)
 	if err != nil {
 		return users, err
@@ -357,7 +363,7 @@ func (db *Db) GetAllUsers(username string) (users []User, err error) {
 
 	var user User
 	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.BirthDate, &user.IsPrivate, &user.CreatedAt, &user.AvatarUrl, &user.NickName, &user.AboutMe)
+		err := rows.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.BirthDate, &user.IsPrivate, &user.CreatedAt, &user.AvatarUrl, &user.NickName, &user.AboutMe)
 		if err != nil {
 			return users, err
 		}

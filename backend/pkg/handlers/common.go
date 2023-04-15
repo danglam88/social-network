@@ -48,6 +48,9 @@ func Start(collection []Handler) {
 	jsFs := http.FileServer(http.Dir("./src"))
 	mux.Handle("/src/", http.StripPrefix("/src/", jsFs))
 
+	reactapp := http.FileServer(http.Dir("./frontend/build"))
+	mux.Handle("/", http.StripPrefix("/", reactapp))
+
 	manager := NewManager()
 	mux.HandleFunc("/ws", manager.serveWS)
 

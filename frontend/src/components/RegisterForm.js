@@ -57,7 +57,7 @@ const RegisterForm = () => {
                 aboutMe: aboutMe
             }
 
-            registerService.register(data).then(response => console.log(response))
+            registerService.register(data).then(response => console.log(response)).catch(error => console.log(error))
         }
 
         return (
@@ -94,11 +94,6 @@ const RegisterForm = () => {
                 </div>
             </form>
         )
-    }
+}
 
-    export default RegisterForm
-
-    
-
-
-
+export default RegisterForm

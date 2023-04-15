@@ -59,6 +59,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		if strings.Compare(session.Username, username) == 0 {
 			response.Token = session.Cookie
 			response.UserId = session.UserId
+			response.Username = session.Username
 		}
 	}
 	res, _ := json.Marshal(response)

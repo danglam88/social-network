@@ -2,12 +2,18 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
+	"time"
 )
+
+const MAX_SIZE = 20971520
 
 // function to get all posts per profile- or group page
 func PostGet(w http.ResponseWriter, r *http.Request) {
@@ -53,11 +59,42 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username := IsUser(w, r)
-	user_id := DB.GetUserID(username)
+	creatorID := DB.GetUserID(username)
 
 	err := r.ParseForm()
 	if err != nil {
 		GetErrResponse(w, "PARSING FORM FAILED", http.StatusInternalServerError)
+		return
+	}
+
+	groupID, groupErr := strconv.Atoi(r.FormValue("group_id"))
+	if groupErr != nil {
+		GetErrResponse(w, "Invalid group id", http.StatusBadRequest)
+		return
+	}
+	visibility, visErr := strconv.Atoi(r.FormValue("visibility"))
+	if visErr != nil {
+		GetErrResponse(w, "Invalid privacy", http.StatusBadRequest)
+		return
+	}
+	followersID := []int{}
+	if visibility == 2 {
+		followersID = append(followersID, creatorID)
+		//fetch chosen users from form, add their ids to followers
+		followers := strings.Split(r.FormValue("allowed_followers"), ",")
+		for _, follower := range followers {
+			followerID, err := strconv.Atoi(follower)
+			if err != nil {
+				GetErrResponse(w, "Invalid follower id", http.StatusBadRequest)
+				return
+			}
+			followersID = append(followersID, followerID)
+		}
+	}
+
+	imgUrl, imgErr := UploadFile(w, r)
+	if imgErr != nil {
+		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
 		return
 	}
 
@@ -75,13 +112,23 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, DescriptionErrorMessage, http.StatusBadRequest)
 		return
 	}
-
-	postID, postErr := DB.CreatePost(user_id, title, content)
+	//id,creator_id,group_id,visibility,title,content,created_at,img_url
+	postID, postErr := DB.CreatePost(creatorID, groupID, visibility, title, content, imgUrl)
 	if postErr != nil {
 		GetErrResponse(w, postErr.Error(), http.StatusBadRequest)
 		return
 	}
 	fmt.Println("PostID: ", postID)
+
+	if visibility == 2 {
+		for _, followerID := range followersID {
+			postVisiblyErr := DB.CreatePostFollower(postID, followerID)
+			if postVisiblyErr != nil {
+				GetErrResponse(w, postVisiblyErr.Error(), http.StatusBadRequest)
+				return
+			}
+		}
+	}
 
 	w.WriteHeader(http.StatusOK)
 	response := ResponseError{Status: RESPONSE_OK}
@@ -108,4 +155,53 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 	}
 
 	return errorCheck, errorMessage
+}
+
+// Function to upload a file
+func UploadFile(w http.ResponseWriter, r *http.Request) (imgUrl string, err error) {
+	file, handler, err := r.FormFile("uploaded_img")
+	if err == http.ErrMissingFile {
+		return imgUrl, nil
+	}
+	if err != nil {
+		return imgUrl, err
+	}
+	defer file.Close()
+	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
+	fmt.Printf("File Size: %+v\n", handler.Size)
+	fmt.Printf("MIME Header: %+v\n", handler.Header)
+	if handler.Size > MAX_SIZE {
+		return imgUrl, errors.New("max size is 20Mb")
+	}
+	// Detect content type of file
+	headerFiletype := handler.Header.Get("Content-Type")
+	// read all of the contents of our uploaded file into a
+	// byte array
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		return imgUrl, err
+	}
+	filetype := http.DetectContentType(fileBytes)
+	if filetype != "image/jpeg" && filetype != "image/png" && filetype != "image/gif" &&
+		!(headerFiletype == "image/svg+xml" && (strings.Contains(filetype, "text/xml") || strings.Contains(filetype, "text/plain;"))) {
+		return imgUrl, errors.New("invalid type, allowed types : jpeg, png, gif, svg")
+	}
+	fileNameSlice := strings.Split(handler.Filename, ".")
+	extension := fileNameSlice[len(fileNameSlice)-1]
+	os.Mkdir("upload", 0744)
+	// Create a temporary file within our upload directory that follows
+	// a particular naming pattern
+	time := time.Now().Local().Format("2006-01-02_15:04:05")
+	tempPattern := "*_" + time + "." + extension
+	tempFile, err := ioutil.TempFile("upload", tempPattern)
+	if err != nil {
+		return imgUrl, err
+	}
+	defer tempFile.Close()
+	// write this byte array to our temporary file
+	tempFile.Write(fileBytes)
+	imgUrl = "/" + tempFile.Name()
+	// return that we have successfully uploaded our file!
+	fmt.Println("Successfully Uploaded File")
+	return imgUrl, nil
 }

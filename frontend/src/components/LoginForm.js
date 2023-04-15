@@ -1,8 +1,7 @@
-import { useState} from 'react'
+import { useState } from 'react'
 import loginService from "../services/LoginService"
 
 const LoginForm = () => {
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -19,16 +18,19 @@ const LoginForm = () => {
     console.log("handle login")
 
     const data = {
-        email : email,
-        password : password
+        email: email,
+        password: password
     }
  
     loginService.login(data)
       .then(response => {
         document.cookie = `session_token=${response.data.Token}; path=/;`;
+        sessionStorage.setItem("userid", response.data.UserId);
+        sessionStorage.setItem("username", response.data.Username);
+        window.location.reload();
       })
       .catch(error => console.log(error))
-  } 
+  }
 
   return (
     <form onSubmit={handleLogin}>

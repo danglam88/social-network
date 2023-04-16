@@ -27,7 +27,7 @@ const LoginForm = () => {
         document.cookie = `session_token=${response.data.Token}; path=/;`;
         sessionStorage.setItem("userid", response.data.UserId);
         sessionStorage.setItem("username", response.data.Username);
-        window.location.reload();
+        window.location.href = "/perprofile";
       })
       .catch(error => console.log(error))
   }

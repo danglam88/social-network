@@ -94,7 +94,7 @@ func RunMigrations(db *sql.DB, state bool) error {
 	}
 
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://./backend/pkg/db/migrations/sqlite",
+		"file://./pkg/db/migrations/sqlite",
 		"sqlite3", driver)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -118,14 +118,14 @@ func RunMigrations(db *sql.DB, state bool) error {
 
 // Opening the database
 func OpenDatabase() Db {
-	db, err := sql.Open("sqlite3", "./backend/pkg/db/socialnetwork.db?parseTime=true")
+	db, err := sql.Open("sqlite3", "./pkg/db/socialnetwork.db?parseTime=true")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return Db{}
 	}
 
 	existed := false
-	if _, err := os.Stat("./backend/pkg/db/socialnetwork.db"); err == nil {
+	if _, err := os.Stat("./pkg/db/socialnetwork.db"); err == nil {
 		existed = true
 	}
 
@@ -149,7 +149,7 @@ func OpenDatabase() Db {
 			return
 		}
 
-		err = os.Remove("./backend/pkg/db/socialnetwork.db")
+		err = os.Remove("./pkg/db/socialnetwork.db")
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			return

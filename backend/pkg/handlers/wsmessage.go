@@ -145,7 +145,14 @@ func (c *Client) readMessages() {
 		}
 
 		res := Message{}
-		json.Unmarshal([]byte(payload), &res)
+		err = json.Unmarshal([]byte(payload), &res)
+		if err != nil {
+			log.Printf("error unmarshalling message: %v", err)
+			continue
+		}
+
+		res.From = c.userId
+
 		res.UserName, err = DB.GetUserName(res.From)
 		if err != nil {
 			log.Println(err)
@@ -161,13 +168,20 @@ func (c *Client) readMessages() {
 				fmt.Println("group message: ", res.Message)
 
 				groupUsers, err := DB.GetGroupUserIds(res.To)
+				fmt.Println("group users: ", groupUsers)
 				if err != nil {
 					log.Println(err)
+				}
+
+				//print all active userIds
+				for wsclient := range c.manager.clients {
+					fmt.Println("active user ID: ", wsclient.userId)
 				}
 
 				for groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {
 						if wsclient.userId == groupUser {
+							fmt.Println("sending to: ", wsclient.userId)
 							wsclient.eggress <- message
 						}
 					}

@@ -14,11 +14,10 @@ class ChatService {
     };
   }
 
-  sendMessage(userId, group, message) {
+  sendMessage(recieverId, message) {
     const payload = {
       type: GROUPMESSAGE_TYPE,
-      from: userId,
-      to: group,
+      to: parseInt(recieverId),
       message: message,
     };
     this.client.send(JSON.stringify(payload));

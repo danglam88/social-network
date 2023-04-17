@@ -1,28 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatService from "../services/ChatService";
 
-const GROUPMESSAGE_TYPE = "groupmessage";
 
-let data = {
-  token: "",
-  userid: "",
-  username: "",
-};
-
-if (document.cookie.includes("session_token")) {
-  const tokens = document.cookie.split(";");
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].includes("session_token")) {
-      data.token = tokens[i].split("=")[1];
-      data.userid = sessionStorage.getItem("userid");
-      data.username = sessionStorage.getItem("username");
-    }
-  }
-}
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
-  const userId = data.userid;
   const [group, setGroup] = useState("");
   const [inputMessage, setInputMessage] = useState("");
   const chatServiceRef = useRef(null);
@@ -44,7 +26,7 @@ const Chat = () => {
 
   const sendMessage = () => {
     if (inputMessage.trim() !== "") {
-      chatServiceRef.current.sendMessage(userId, group, inputMessage);
+      chatServiceRef.current.sendMessage(group, inputMessage);
       setInputMessage("");
     }
   };

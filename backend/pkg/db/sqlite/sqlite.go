@@ -376,8 +376,8 @@ func (db *Db) GetGroupMembers(groupId int) (members []User) {
 
 func (db *Db) GetUser(id int) User {
 	var user User
-	row := db.connection.QueryRow("select id,email,firstname,lastname,is_private,nickname,avatar_url,about_me from user where id = ?", id)
-	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.IsPrivate, &user.NickName, &user.AvatarUrl, &user.AboutMe)
+	row := db.connection.QueryRow("select id,email,firstname,lastname,is_private,birthdate,created_at,nickname,avatar_url,about_me from user where id = ?", id)
+	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.IsPrivate, &user.BirthDate, &user.CreatedAt, &user.NickName, &user.AvatarUrl, &user.AboutMe)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -386,7 +386,7 @@ func (db *Db) GetUser(id int) User {
 
 func (db *Db) GetAllUsers(username string) (users []User, err error) {
 
-	query := "select id,email,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where nickname != ? order by nickname asc"
+	query := "select id,email,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where email != ? order by email asc"
 	rows, err := db.connection.Query(query, username)
 	if err != nil {
 		return users, err

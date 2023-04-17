@@ -3,8 +3,10 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type Person struct {
@@ -35,6 +37,18 @@ func PersonalProfile(w http.ResponseWriter, r *http.Request) {
 	// Use the person data
 	fmt.Println("Token: ", person.Token)
 
+	var userId int
+	for _, session := range sessions {
+		if strings.Compare(session.Cookie, person.Token) == 0 {
+			userId = session.UserId
+			break
+		}
+	}
+
+	user := DB.GetUser(userId)
+
 	// Send a response
 	w.WriteHeader(http.StatusOK)
+	res, _ := json.Marshal(user)
+	io.WriteString(w, string(res))
 }

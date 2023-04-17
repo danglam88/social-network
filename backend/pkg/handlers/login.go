@@ -60,6 +60,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			response.Token = session.Cookie
 			response.UserId = session.UserId
 			response.Username = session.Username
+			break
 		}
 	}
 	res, _ := json.Marshal(response)

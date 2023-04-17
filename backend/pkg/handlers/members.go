@@ -14,7 +14,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	//replace with session when implemented
-	user_nick := "malin" //IsUser(w, r)
+	user_nick := "malin.oscarius@gritlab.ax" //IsUser(w, r)
 	//user_id := DB.GetUserID(username)
 
 	// if user_id != from {

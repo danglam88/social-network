@@ -4,6 +4,8 @@ import loginService from "../services/LoginService"
 const LoginForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [unauthorizedAccess, setUnauthorizedAccess] = useState(false)
+  const [token, setToken] = useState(null)
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value)
@@ -17,33 +19,37 @@ const LoginForm = () => {
     event.preventDefault()
     console.log("handle login")
 
-    const data = {
-        email: email,
-        password: password
-    }
+    const data = { email, password }
  
     loginService.login(data)
       .then(response => {
-        document.cookie = `session_token=${response.data.Token}; path=/;`;
-        sessionStorage.setItem("userid", response.data.UserId);
-        sessionStorage.setItem("username", response.data.Username);
+        setToken(response.data.token);
+        document.cookie = `session_token=${response.data.token}; path=/;`;
+        sessionStorage.setItem("userid", response.data.user_id);
+        sessionStorage.setItem("username", response.data.user_name);
         window.location.reload();
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        console.log(error)
+        setUnauthorizedAccess(true)
+      })
   }
 
   return (
-    <form onSubmit={handleLogin}>
     <div>
-    email: <input value={email} onChange={handleEmailChange}/>
+      {unauthorizedAccess ? <div>Invalid credentials. Please login again.</div> : null}
+      <form onSubmit={handleLogin}>
+        <div>
+          email: <input value={email} onChange={handleEmailChange}/>
+        </div>
+        <div>
+          password: <input type="password" value={password} onChange={handlePasswordChange}/>
+        </div>   
+        <div>
+          <button type="submit">Login</button>
+        </div>
+      </form>
     </div>
-    <div>
-    password: <input type="password" value={password} onChange={handlePasswordChange}/>
-    </div>   
-    <div>
-      <button type="submit">Login</button>
-    </div>
-  </form>
   )
 }
 

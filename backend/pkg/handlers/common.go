@@ -21,10 +21,10 @@ type Handler struct {
 }
 
 type Response struct {
-	Status   string
-	Token    string
-	UserId   int
-	Username string
+	Status   string `json:"status"`
+	Token    string `json:"token"`
+	UserId   int    `json:"user_id"`
+	Username string `json:"user_name"`
 }
 
 type ResponseError struct {

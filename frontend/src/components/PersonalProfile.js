@@ -18,12 +18,11 @@ const PersonalProfile = () => {
     useEffect(() => {
         perProfileService.perprofile(data)
             .then(response => {
-                console.log(response)
                 setData({
                     id: response.data.id,
                     firstName: response.data.first_name,
                     lastName: response.data.last_name,
-                    birthDate: response.data.birthdate,
+                    birthDate: response.data.birth_date,
                     isPrivate: response.data.is_private,
                     email: response.data.email,
                     createdAt: response.data.created_at,
@@ -37,6 +36,7 @@ const PersonalProfile = () => {
 
     return (
         <div>
+            {data.id && data.firstName && data.lastName && data.birthDate && data.isPrivate && data.email && data.createdAt ?
             <div>
                 User {data.email} has been logged-in successfully.
                 Information is as follows:
@@ -54,7 +54,7 @@ const PersonalProfile = () => {
                 </ul>
                 Profile page is still under-construction.
                 Remove the cookie then refresh the page to see login form again.
-            </div>
+            </div> : null}
         </div>
     )
 }

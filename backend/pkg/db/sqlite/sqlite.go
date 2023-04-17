@@ -316,13 +316,20 @@ func (db *Db) GetUserName(id int) (string, error) {
 	// Creating a variable to hold the expected user
 	var expected_user User
 	var err error
+
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id,nickname from user where id = ?", id)
-	err = row.Scan(&expected_user.ID, &expected_user.NickName)
+	row := db.connection.QueryRow("select id,nickname,firstname,lastname from user where id = ?", id)
+	err = row.Scan(&expected_user.ID, &expected_user.NickName, &expected_user.FirstName, &expected_user.LastName)
 	if err != nil {
 		return "", err
 	}
-	return expected_user.NickName, err
+
+	username := expected_user.NickName
+	if len(username) == 0 {
+		username = expected_user.FirstName + " " + expected_user.LastName
+	}
+
+	return username, err
 }
 
 func (db *Db) GetAllGroups() (groups []Group, err error) {

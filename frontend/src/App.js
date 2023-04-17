@@ -4,6 +4,7 @@ import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import PersonalProfile from "./components/PersonalProfile";
 import Chat from "./components/GroupChat";
+import GroupList from "./components/GroupList";
 
 function App() {
   let token = "";
@@ -24,11 +25,11 @@ function App() {
           <div>
             <PersonalProfile />
             <Chat />
+            <GroupList />
           </div>
         ) : (
           <div>
             <img src={logo} className="App-logo" alt="logo" />
-
             <RegisterForm />
             <LoginForm />
           </div>

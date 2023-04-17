@@ -31,20 +31,3 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	res, _ := json.Marshal(users)
 	io.WriteString(w, string(res))
 }
-
-func GetAllGroups(w http.ResponseWriter, r *http.Request) {
-
-	// if !IsOn(w, r) {
-	// 	GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-	// 	return
-	// }
-
-	groups, err := DB.GetAllGroups()
-	if err != nil {
-		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
-	}
-
-	w.WriteHeader(http.StatusAccepted)
-	res, _ := json.Marshal(groups)
-	io.WriteString(w, string(res))
-}

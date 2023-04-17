@@ -28,6 +28,33 @@
   color: #61dafb;
 }
 
+/*
+  GroupList component temporary styles
+*/
+.group-wrapper {
+  min-width: 600px;
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+
+.group-column {
+  float: left;
+  width: 74%;
+  text-align: left;
+}
+
+.group-activity-link {
+  width: 13%;
+  text-decoration-line: underline;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

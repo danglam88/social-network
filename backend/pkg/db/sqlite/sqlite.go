@@ -50,26 +50,26 @@ type Comment struct {
 }
 
 type User struct {
-	ID        int
-	FirstName string
-	LastName  string
-	BirthDate string
-	IsPrivate int
-	Password  string
-	Email     string
-	CreatedAt string
-	AvatarUrl string
-	NickName  string
-	AboutMe   string
+	ID        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	BirthDate string `json:"birth_date"`
+	IsPrivate int    `json:"is_private"`
+	Password  string `json:"password"` //why????
+	Email     string `json:"email"`
+	CreatedAt string `json:"created_at"`
+	AvatarUrl string `json:"avatar"`
+	NickName  string `json:"nickname"`
+	AboutMe   string `json:"about_me"`
 }
 
 type Group struct {
-	ID          int
-	CreatorId   int
-	GroupName   string
-	Description string
-	CreatedAt   time.Time
-	Members     []User
+	ID          int       `json:"id"`
+	CreatorId   int       `json:"creator_id"`
+	GroupName   string    `json:"name"`
+	Description string    `json:"description"`
+	CreatedAt   time.Time `json:"created_at"`
+	Members     []User    `json:"members"`
 }
 
 type Chat struct {
@@ -341,6 +341,21 @@ func (db *Db) GetUserName(id int) (string, error) {
 	return username, err
 }
 
+func (db *Db) GetGroup(id int) (group Group, err error) {
+
+	row := db.connection.QueryRow("select id,creator_id,group_name,descript,created_at from user_group where id = ?", id)
+	err = row.Scan(&group.ID, &group.CreatorId, &group.GroupName, &group.Description, &group.CreatedAt)
+	if err != nil {
+		fmt.Println(err)
+		return group, err
+	}
+
+	members := db.GetGroupMembers(group.ID)
+	group.Members = members
+
+	return group, err
+}
+
 func (db *Db) GetAllGroups() (groups []Group, err error) {
 
 	rows, err := db.connection.Query("select id,creator_id,group_name,descript,created_at from user_group")
@@ -427,6 +442,17 @@ func (db *Db) GetLastMessage(chatId int) time.Time {
 		fmt.Println(err)
 	}
 	return msgTime
+}
+
+func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int64, err error) {
+
+	res, err := db.connection.Exec("insert into user_group(creator_id,group_name,descript,created_at) values(?,?,?,?)", creatorId, title, description, time.Now().Local().Format(time_format))
+	if err != nil {
+		return groupId, err
+	}
+
+	groupId, err = res.LastInsertId()
+	return groupId, err
 }
 
 func (db *Db) GetUser(id int) User {

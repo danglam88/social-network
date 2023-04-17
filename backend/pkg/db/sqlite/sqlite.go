@@ -58,8 +58,8 @@ type User struct {
 	Password  string `json:"password"` //why????
 	Email     string `json:"email"`
 	CreatedAt string `json:"created_at"`
-	AvatarUrl string `json:"avatar"`
-	NickName  string `json:"nickname"`
+	AvatarUrl string `json:"avatar_url"`
+	NickName  string `json:"nick_name"`
 	AboutMe   string `json:"about_me"`
 }
 

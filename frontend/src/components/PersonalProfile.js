@@ -18,26 +18,25 @@ const PersonalProfile = () => {
     useEffect(() => {
         perProfileService.perprofile(data)
             .then(response => {
-                setData(prevData => ({
-                    ...prevData,
-                    id: response.data.ID,
-                    firstName: response.data.FirstName,
-                    lastName: response.data.LastName,
-                    birthDate: response.data.BirthDate,
-                    isPrivate: response.data.IsPrivate,
-                    email: response.data.Email,
-                    createdAt: response.data.CreatedAt,
-                    avatarUrl: response.data.AvatarUrl,
-                    nickname: response.data.NickName,
-                    aboutMe: response.data.AboutMe
-                }))
+                console.log(response)
+                setData({
+                    id: response.data.id,
+                    firstName: response.data.first_name,
+                    lastName: response.data.last_name,
+                    birthDate: response.data.birthdate,
+                    isPrivate: response.data.is_private,
+                    email: response.data.email,
+                    createdAt: response.data.created_at,
+                    avatarUrl: response.data.avatar_url,
+                    nickname: response.data.nick_name,
+                    aboutMe: response.data.about_me
+                })
             })
             .catch(error => console.log(error))
     }, [])
 
     return (
         <div>
-            {data.id && data.firstName && data.lastName && data.birthDate && data.isPrivate && data.email && data.createdAt ?
             <div>
                 User {data.email} has been logged-in successfully.
                 Information is as follows:
@@ -55,7 +54,7 @@ const PersonalProfile = () => {
                 </ul>
                 Profile page is still under-construction.
                 Remove the cookie then refresh the page to see login form again.
-            </div> : "Loading..."}
+            </div>
         </div>
     )
 }

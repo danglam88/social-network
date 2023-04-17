@@ -36,7 +36,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Getting the password of the given user from the database
 	expected_pass, err := DB.GetPassword4User(username)
 	if err != nil {
-		GetErrResponse(w, "Auth failed", http.StatusUnauthorized)
+		GetErrResponse(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
 

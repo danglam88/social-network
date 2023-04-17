@@ -12,13 +12,16 @@ function App() {
     <div className="App">
       <header className="App-header">
         {isCookieSet ? (
-          <PersonalProfile></PersonalProfile>
+          <div>
+            <PersonalProfile />
+            <Chat />
+          </div>
         ) : (
           <div>
             <img src={logo} className="App-logo" alt="logo" />
-            <Chat></Chat>
-            <RegisterForm></RegisterForm>
-            <LoginForm></LoginForm>
+
+            <RegisterForm />
+            <LoginForm />
           </div>
         )}
       </header>

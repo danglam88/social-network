@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -10,7 +11,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Rewrite the const declarations to be more readable
 const (
 	PRIVATEMESSAGE_TYPE      = "privatemessage"
 	LOGOUT_TYPE              = "logout"
@@ -52,9 +52,13 @@ func NewManager() *Manager {
 func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 	log.Println("new connection")
 
-	userName := AuthenticateUser(w, r)
+	userEmail := AuthenticateUser(w, r)
 
-	id := DB.GetUserID(userName)
+	fmt.Println("user", userEmail)
+
+	id := DB.GetUserID(userEmail)
+
+	fmt.Println("id", id)
 
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -142,12 +146,19 @@ func (c *Client) readMessages() {
 
 		res := Message{}
 		json.Unmarshal([]byte(payload), &res)
-		res.UserName, _ = DB.GetUserName(res.From)
+		res.UserName, err = DB.GetUserName(res.From)
+		if err != nil {
+			log.Println(err)
+		}
+
+		fmt.Println(res)
 
 		if res.From > 0 {
 			if res.Type == GROUPMESSAGE_TYPE {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
+
+				fmt.Println("group message: ", res.Message)
 
 				groupUsers, err := DB.GetGroupUserIds(res.To)
 				if err != nil {

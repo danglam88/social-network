@@ -232,14 +232,14 @@ func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 	return comments, err
 }
 
-func (db *Db) GetUserID(username string) int {
+func (db *Db) GetUserID(email string) int {
 	// Creating a variable to hold the expected user
 	var userId int
 	// Reading the only row and saving the returned user
-	row := db.connection.QueryRow("select id from user where email = ?", username)
+	row := db.connection.QueryRow("select id from user where email = ?", email)
 	err := row.Scan(&userId)
 	if err != nil {
-		//fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintln(os.Stderr, err)
 		return -1
 	}
 	return userId
@@ -292,6 +292,7 @@ func (db *Db) GetUserName(id int) (string, error) {
 		return "", err
 	}
 	return expected_user.NickName, err
+	// set email as nickname if no nickname is set?
 }
 
 func (db *Db) GetAllGroups() (groups []Group, err error) {

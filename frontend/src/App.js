@@ -6,12 +6,21 @@ import PersonalProfile from "./components/PersonalProfile";
 import Chat from "./components/GroupChat";
 
 function App() {
-  const isCookieSet = document.cookie.includes("session_token");
+  let token = "";
+
+  if (document.cookie.includes("session_token")) {
+    const tokens = document.cookie.split(";");
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i].includes("session_token")) {
+        token = tokens[i].split("=")[1]
+      }
+    }
+  }
 
   return (
     <div className="App">
       <header className="App-header">
-        {isCookieSet ? (
+        {token !== "" ? (
           <div>
             <PersonalProfile />
             <Chat />

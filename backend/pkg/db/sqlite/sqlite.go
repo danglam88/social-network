@@ -174,7 +174,7 @@ func (db *Db) AddUser(username, password, email string, prev int) (bool, error) 
 }
 
 // function in use
-func (db *Db) GetPost(userfilter, groupfilter int) (posts []Post, err error) {
+func (db *Db) GetPosts(userfilter, groupfilter int) (posts []Post, err error) {
 	var post Post
 	var query string
 

@@ -38,7 +38,7 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, errorMess, http.StatusBadRequest)
 		return
 	} else {
-		posts, err := DB.GetPost(filterUser, filterGroup)
+		posts, err := DB.GetPosts(filterUser, filterGroup)
 		if err != nil {
 			errorMess := "Error while getting posts"
 			GetErrResponse(w, errorMess, http.StatusBadRequest)

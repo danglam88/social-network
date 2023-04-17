@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ChatService from "../services/ChatService";
 
 const GROUPMESSAGE_TYPE = "groupmessage";
 
@@ -43,13 +44,7 @@ const Chat = () => {
 
   const sendMessage = () => {
     if (inputMessage.trim() !== "") {
-      const message = {
-        type: GROUPMESSAGE_TYPE,
-        from: userId,
-        to: group,
-        message: inputMessage,
-      };
-      clientRef.current.send(JSON.stringify(message));
+      chatServiceRef.current.sendMessage(userId, group, inputMessage);
       setInputMessage("");
     }
   };

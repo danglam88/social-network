@@ -2,7 +2,7 @@ const GROUPMESSAGE_TYPE = "groupmessage";
 
 class ChatService {
   constructor() {
-    this.client = new WebSocket("ws://localhost:8000/ws");
+    this.client = new WebSocket("ws://localhost:8080/ws");
   }
 
   onMessage(callback) {

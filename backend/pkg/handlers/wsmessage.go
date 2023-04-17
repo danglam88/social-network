@@ -37,7 +37,7 @@ type Manager struct {
 type Message struct {
 	Type      string `json:"type"`
 	From      int    `json:"from"`
-	To        int    `json:"to"`
+	To        int    `json:"to"` //chat id
 	Message   string `json:"message"`
 	UserName  string `json:"username"`
 	CreatedAt string `json:"created_at"`
@@ -173,7 +173,7 @@ func (c *Client) readMessages() {
 					}
 				}
 
-				err = DB.AddGroupMessage(res.From, res.To, res.Message, res.CreatedAt)
+				err = DB.AddMessage(res.To, res.From, 0, res.Message, res.CreatedAt)
 				if err != nil {
 					log.Println(err)
 				}
@@ -188,7 +188,7 @@ func (c *Client) readMessages() {
 					}
 				}
 
-				DB.AddMessage(res.From, res.To, res.Message, res.CreatedAt)
+				DB.AddMessage(0, res.From, res.To, res.Message, res.CreatedAt)
 
 			} else if res.Type == LOGOUT_TYPE {
 				for wsclient := range c.manager.clients {

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sort"
 	"syscall"
 	"time"
 
@@ -69,6 +70,14 @@ type Group struct {
 	Description string
 	CreatedAt   time.Time
 	Members     []User
+}
+
+type Chat struct {
+	ID      int
+	GroupID int
+	UserOne int
+	UserTwo int
+	LastMsg time.Time
 }
 
 type Message struct {
@@ -381,6 +390,45 @@ func (db *Db) GetGroupMembers(groupId int) (members []User) {
 	return members
 }
 
+// fetches all chats this user is included in, sorted by last message date
+func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
+	var chat Chat
+	query := "select id,group_id,first_userid,second_userid from private_chat where group_id in (select group_id from group_relation where user_id = ? and is_approved = 1) or first_userid = ? or second_userid = ?"
+	rows, err := db.connection.Query(query, userId, userId, userId)
+	if err != nil {
+		return chats, err
+	}
+	for rows.Next() {
+		err := rows.Scan(&chat.ID, &chat.GroupID, &chat.UserOne, &chat.UserTwo)
+		if err != nil {
+			return chats, err
+		}
+		//fetch date for last message from private message table
+		chat.LastMsg = db.GetLastMessage(chat.ID)
+		fmt.Println(chat)
+		chats = append(chats, chat)
+	}
+	defer rows.Close()
+
+	//sort chats by last message date
+	sort.Slice(chats, func(i, j int) bool {
+		return chats[i].LastMsg.After(chats[j].LastMsg)
+	})
+
+	return chats, err
+}
+
+func (db *Db) GetLastMessage(chatId int) time.Time {
+	var msgTime time.Time
+	query := "select created_at from private_message where chat_id = ? order by created_at desc limit 1"
+	row := db.connection.QueryRow(query, chatId)
+	err := row.Scan(&msgTime)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return msgTime
+}
+
 func (db *Db) GetUser(id int) User {
 	var user User
 	row := db.connection.QueryRow("select id,email,firstname,lastname,is_private,birthdate,created_at,nickname,avatar_url,about_me from user where id = ?", id)
@@ -412,10 +460,17 @@ func (db *Db) GetAllUsers(username string) (users []User, err error) {
 	return users, err
 }
 
-func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
+/*func (db *Db) GetUsers(userId int) (chats []Chat, err error) {
 
-	userSort, err := db.GetChatOrderByMessage(userId)
-	query := "select id, username from user order by username asc"
+	userChats, err := db.GetAllChats(userId)
+	if err != nil {
+		return chats, err
+	}
+	//sort userChats by last message date
+	sort.Slice(userChats, func(i, j int) bool {
+		return userChats[i].LastMsg.After(userChats[j].LastMsg)
+	})
+
 	rows, err := db.connection.Query(query)
 	if err != nil {
 		return users, err
@@ -457,9 +512,10 @@ func (db *Db) GetUsers(userId int) (users []MessageUser, err error) {
 	defer rows.Close()
 
 	return users, err
-}
+	return userChats, err
+}*/
 
-func (db *Db) GetChatOrderByMessage(senderId int) (chatIds []int, err error) {
+/*func (db *Db) GetChatOrderByMessage(senderId int) (chatIds []int, err error) {
 	rows, err := db.connection.Query(`
 		SELECT DISTINCT chat_id
 		FROM (
@@ -492,27 +548,30 @@ func (db *Db) GetChatOrderByMessage(senderId int) (chatIds []int, err error) {
 	}
 
 	return chatIds, nil
-}
+}*/
 
-func (db *Db) AddMessage(from, to int, message, time string) (err error) {
+// can be used for both private and group chats
+func (db *Db) AddMessage(groupId, from, to int, message, time string) (err error) {
 
 	var id int64
 
-	id, err = db.getChat(from, to)
+	id, err = db.getChat(groupId, from, to)
 
 	//todo err check
 	if id <= 0 {
-		id, err = db.addChat(from, to)
+		id, err = db.addChat(groupId, from, to)
 	}
+	//id,chat_id,content,sender_id,created_at
 
-	_, err = db.connection.Exec("insert into private_message(private_chatid, sender_id, content, created_at) values(?,?,?,?)", id, from, message, time)
+	_, err = db.connection.Exec("insert into private_message(chat_id, sender_id, content, created_at) values(?,?,?,?)", id, from, message, time)
 
 	return err
 }
 
-func (db *Db) addChat(from, to int) (chatId int64, err error) {
+// used for all chat creation
+func (db *Db) addChat(groupId, from, to int) (chatId int64, err error) {
 
-	res, err := db.connection.Exec("insert into private_chat(first_userid, second_userid) values(?,?)", from, to)
+	res, err := db.connection.Exec("insert into private_chat(group_id, first_userid, second_userid) values(?,?)", groupId, from, to)
 
 	if err != nil {
 		return chatId, err
@@ -522,9 +581,18 @@ func (db *Db) addChat(from, to int) (chatId int64, err error) {
 	return chatId, err
 }
 
-func (db *Db) getChat(from, to int) (chatId int64, err error) {
+func (db *Db) getChat(groupId, from, to int) (chatId int64, err error) {
+	query := "select id from private_chat where "
+	options := []int{from, to, to, from}
 
-	row := db.connection.QueryRow("select id from private_chat where first_userid = ? and second_userid = ? or first_userid = ? and second_userid = ?  ", from, to, to, from)
+	if groupId == 0 {
+		query += "first_userid = ? and second_userid = ? or first_userid = ? and second_userid = ? "
+	} else {
+		query += "group_id = ?"
+		options = []int{groupId}
+	}
+
+	row := db.connection.QueryRow(query, options)
 	err = row.Scan(&chatId)
 	if err != nil {
 		return chatId, err
@@ -532,7 +600,7 @@ func (db *Db) getChat(from, to int) (chatId int64, err error) {
 	return chatId, err
 }
 
-func (db *Db) addGroupChat(from, to int) (chatId int64, err error) {
+/*func (db *Db) addGroupChat(from, to int) (chatId int64, err error) {
 
 	res, err := db.connection.Exec("insert into group_chat(group_id) values(?)", to)
 
@@ -542,9 +610,9 @@ func (db *Db) addGroupChat(from, to int) (chatId int64, err error) {
 
 	chatId, err = res.LastInsertId()
 	return chatId, err
-}
+}*/
 
-func (db *Db) getGroupChat(from, to int) (chatId int64, err error) {
+/*func (db *Db) getGroupChat(from, to int) (chatId int64, err error) {
 
 	row := db.connection.QueryRow("select id from group_chat where group_id = ?", to)
 	err = row.Scan(&chatId)
@@ -552,16 +620,16 @@ func (db *Db) getGroupChat(from, to int) (chatId int64, err error) {
 		return chatId, err
 	}
 	return chatId, err
-}
+}*/
 
-func (db *Db) GetGroupHistory(from, to, page int) (messages []Message, err error) {
+/*func (db *Db) GetGroupHistory(from, to, page int) (messages []Message, err error) {
 	var id int64
 
-	id, err = db.getGroupChat(from, to)
+	id, err = db.getChat(to, 0, 0)
 
 	//todo err check
 	if id <= 0 {
-		id, err = db.addGroupChat(from, to)
+		id, err = db.addChat(to, 0, 0)
 	}
 
 	rows, err := db.connection.Query("select sender_id, content, created_at from group_message where group_chatid = ? order by id desc limit ? offset ?", id, 10, page*10)
@@ -594,16 +662,16 @@ func (db *Db) GetGroupHistory(from, to, page int) (messages []Message, err error
 	defer rows.Close()
 
 	return messages, err
-}
+}*/
 
-func (db *Db) GetHistory(from, to, page int) (messages []Message, err error) {
+func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err error) {
 	var id int64
 
-	id, err = db.getChat(from, to)
+	id, err = db.getChat(groupId, from, to)
 
 	//todo err check
 	if id <= 0 {
-		id, err = db.addChat(from, to)
+		id, err = db.addChat(groupId, from, to)
 	}
 
 	rows, err := db.connection.Query("select sender_id, content, created_at from private_message where private_chatid = ? order by id desc limit ? offset ?", id, 10, page*10)
@@ -654,15 +722,15 @@ func (db *Db) CreateComment(user_id int, postID int, comment string, username st
 	return newComment
 }
 
-func (db *Db) AddGroupMessage(from, to int, message, time string) error {
+/*func (db *Db) AddGroupMessage(groupId, from, to int, message, time string) error {
 
 	var id int64
 
-	id, err := db.getGroupChat(from, to)
+	id, err := db.getChat(groupId, from, to)
 
 	//todo err check
 	if id <= 0 {
-		id, err = db.addGroupChat(from, to)
+		id, err = db.addChat(groupId, from, to)
 	}
 
 	_, err = db.connection.Exec("insert into group_message(group_chatid, sender_id, content, created_at) values(?,?,?,?)", id, from, message, time)
@@ -671,7 +739,7 @@ func (db *Db) AddGroupMessage(from, to int, message, time string) error {
 	}
 
 	return err
-}
+}*/
 
 func (db *Db) GetGroupUserIds(groupId int) (userIds []int, err error) {
 

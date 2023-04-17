@@ -29,10 +29,10 @@ func main() {
 			PostFunction: handlers.CommentAdd,
 			GetFunction:  handlers.CommentGet,
 		},
-		{
+		/*{
 			Endpoint:    "/users",
 			GetFunction: handlers.GetUsers,
-		},
+		},*/
 		{
 			Endpoint:    "/allusers",
 			GetFunction: handlers.GetAllUsers,
@@ -48,6 +48,10 @@ func main() {
 		{
 			Endpoint:     "/perprofile",
 			PostFunction: handlers.PersonalProfile,
+		},
+		{
+			Endpoint:    "/allchats",
+			GetFunction: handlers.GetAllChat,
 		},
 	}
 

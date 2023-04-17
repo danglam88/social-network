@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -9,7 +10,7 @@ import (
 )
 
 type Session struct {
-	Username string
+	Username string //email
 	UserId   int
 	Cookie   string
 }
@@ -124,6 +125,7 @@ func IsOn(w http.ResponseWriter, r *http.Request) bool {
 	//Getting username and check id from session
 	x := sessions[cookie.Value]
 	user_name := x.Username
+	fmt.Println(user_name)
 
 	//Checking if user is logged in
 	if user_name == "" {

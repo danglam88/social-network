@@ -42,6 +42,13 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if groupStr, isGroupExist := params["group_id"]; isGroupExist {
+		groupId, err = strconv.Atoi(groupStr[0])
+	} else {
+		GetErrResponse(w, "group_id is mandatory", http.StatusBadRequest)
+		return
+	}
+
 	if pageStr, isPageExist := params["page"]; isPageExist {
 		page, err = strconv.Atoi(pageStr[0])
 	} else {

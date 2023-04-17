@@ -12,7 +12,7 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 
 	params := r.URL.Query()
 
-	var groupId, from, to, page int
+	var groupId, to, page int
 	var err error
 
 	if !IsOn(w, r) {
@@ -20,20 +20,8 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fromStr, isFromExist := params["from"]; isFromExist {
-		from, err = strconv.Atoi(fromStr[0])
-	} else {
-		GetErrResponse(w, "from is mandatory", http.StatusBadRequest)
-		return
-	}
-
 	username := IsUser(w, r)
 	user_id := DB.GetUserID(username)
-
-	if user_id != from {
-		GetErrResponse(w, "Invalid credentials", http.StatusUnauthorized)
-		return
-	}
 
 	if toStr, isToExist := params["to"]; isToExist {
 		to, err = strconv.Atoi(toStr[0])
@@ -56,7 +44,7 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	history, err := DB.GetHistory(groupId, from, to, page)
+	history, err := DB.GetHistory(groupId, user_id, to, page)
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}

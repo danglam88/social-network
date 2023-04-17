@@ -178,7 +178,8 @@ func (c *Client) readMessages() {
 					fmt.Println("active user ID: ", wsclient.userId)
 				}
 
-				for groupUser := range groupUsers {
+
+				for _, groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {
 						if wsclient.userId == groupUser {
 							fmt.Println("sending to: ", wsclient.userId)
@@ -191,7 +192,6 @@ func (c *Client) readMessages() {
 				if err != nil {
 					log.Println(err)
 				}
-
 			} else if res.Type == PRIVATEMESSAGE_TYPE && res.To > 0 {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)

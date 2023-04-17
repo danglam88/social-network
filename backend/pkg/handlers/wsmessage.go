@@ -145,7 +145,14 @@ func (c *Client) readMessages() {
 		}
 
 		res := Message{}
-		json.Unmarshal([]byte(payload), &res)
+		err = json.Unmarshal([]byte(payload), &res)
+		if err != nil {
+			log.Printf("error unmarshalling message: %v", err)
+			continue
+		}
+
+		res.From = c.userId
+
 		res.UserName, err = DB.GetUserName(res.From)
 		if err != nil {
 			log.Println(err)

@@ -17,7 +17,6 @@ class ChatService {
   sendMessage(recieverId, message) {
     const payload = {
       type: GROUPMESSAGE_TYPE,
-      // to is a int
       to: parseInt(recieverId),
       message: message,
     };

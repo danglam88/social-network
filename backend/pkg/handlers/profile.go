@@ -4,42 +4,35 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 )
 
-type Person struct {
-	Token string `json:"token"`
-}
-
 func PersonalProfile(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		GetErrResponse(w, "Method not allowed", http.StatusMethodNotAllowed)
+	if !IsOn(w, r) {
+		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
 		return
 	}
 
-	// Read the request body
-	body, err := ioutil.ReadAll(r.Body)
+	// Get the cookie
+	cookie, err := r.Cookie("session_token")
 	if err != nil {
-		GetErrResponse(w, "Cannot read request body", http.StatusBadRequest)
-		return
-	}
-
-	// Parse the JSON data into a Go struct
-	var person Person
-	err = json.Unmarshal(body, &person)
-	if err != nil {
-		GetErrResponse(w, "Not a valid json object", http.StatusBadRequest)
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Use the person data
-	fmt.Println("Token: ", person.Token)
+	fmt.Println("Token: ", cookie.Value)
 
 	var userId int
 	for _, session := range sessions {
-		if strings.Compare(session.Cookie, person.Token) == 0 {
+		if strings.Compare(session.Cookie, cookie.Value) == 0 {
 			userId = session.UserId
 			break
 		}

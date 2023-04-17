@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"net/http"
 	"strings"
 	"time"
@@ -70,7 +69,7 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) string {
 }
 
 // Getting the user-id of the currently logged-in user
-func GetLoggedInUserID(w http.ResponseWriter, r *http.Request, db *sql.DB) int {
+func GetLoggedInUserID(w http.ResponseWriter, r *http.Request) int {
 
 	// Authenticating the user with the client cookie
 	mess := AuthenticateUser(w, r)

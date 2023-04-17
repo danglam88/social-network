@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"socialnetwork/backend/pkg/db"
+	db "socialnetwork/backend/pkg/db/sqlite"
 )
 
 const RESPONSE_OK = "ok"
@@ -46,10 +46,10 @@ func Start(collection []Handler) {
 		mux.Handle(handler.Endpoint, GetFunc(handler))
 	}
 
-	jsFs := http.FileServer(http.Dir("./src"))
-	mux.Handle("/src/", http.StripPrefix("/src/", jsFs))
+	// jsFs := http.FileServer(http.Dir("./src"))
+	// mux.Handle("/src/", http.StripPrefix("/src/", jsFs))
 
-	reactapp := http.FileServer(http.Dir("./frontend/build"))
+	reactapp := http.FileServer(http.Dir("../frontend/build"))
 	mux.Handle("/", http.StripPrefix("/", reactapp))
 
 	manager := NewManager()

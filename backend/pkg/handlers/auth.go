@@ -123,8 +123,13 @@ func IsOn(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 	//Getting username and check id from session
-	x := sessions[cookie.Value]
-	user_name := x.Username
+	session, status := sessions[cookie.Value]
+	if !status {
+		//http.Redirect(w, r, "/", http.StatusUnauthorized)
+		return false
+	}
+
+	user_name := session.Username
 	fmt.Println(user_name)
 
 	//Checking if user is logged in
@@ -138,8 +143,17 @@ func IsOn(w http.ResponseWriter, r *http.Request) bool {
 
 func IsUser(w http.ResponseWriter, r *http.Request) string {
 	//Get username from session not checking for error as we know it exists
-	cookie, _ := r.Cookie("session_token")
-	x := sessions[cookie.Value]
-	username := x.Username
+	cookie, err := r.Cookie("session_token")
+	if err != nil {
+		return ""
+	}
+
+	session, status := sessions[cookie.Value]
+	if !status {
+		return ""
+	}
+
+	username := session.Username
+
 	return username
 }

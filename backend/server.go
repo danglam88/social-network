@@ -58,6 +58,10 @@ func main() {
 			Endpoint:    "/allchats",
 			GetFunction: handlers.GetAllChat,
 		},
+		{
+			Endpoint:     "/loggedin",
+			PostFunction: handlers.LoggedIn,
+		},
 	}
 
 	handlers.Start(collection)

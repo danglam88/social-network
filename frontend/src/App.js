@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import axios from 'axios';
 import logo from "./logo.svg";
 import "./App.css";
 import RegisterForm from "./components/RegisterForm";
@@ -9,18 +11,21 @@ import WebSocketService from "./services/WebSocketService";
 import NotificationIcon from "./components/NotificationIcon";
 
 function App() {
-  let token = "";
+  const [token, setToken] = useState('');
+  const loggedInUrl = 'http://localhost:8080/loggedin';
+  const config = {
+    headers : {
+      'Content-Type': 'application/json'
+    }
+  };
+
   let wsurl = "ws://localhost:8080/ws";
 
-  if (document.cookie.includes("session_token")) {
-    const tokens = document.cookie.split(";");
-    for (let i = 0; i < tokens.length; i++) {
-      if (tokens[i].includes("session_token")) {
-        token = tokens[i].split("=")[1];
-        break; 
-      }
-    }
-  }
+  axios.post(loggedInUrl, JSON.stringify({}), config)
+    .then(response => {
+      setToken(response.data.token)
+    })
+    .catch(error => console.log(error));
 
   if (token !== "") {
     // changed condition to check if token is not empty

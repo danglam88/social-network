@@ -1,32 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatService from "../services/ChatService";
 
-
-
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [group, setGroup] = useState("");
   const [inputMessage, setInputMessage] = useState("");
-  const chatServiceRef = useRef(null);
 
   useEffect(() => {
-    if (!chatServiceRef.current) {
-      chatServiceRef.current = new ChatService();
-      chatServiceRef.current.onMessage((data) => {
-        setMessages((prevMessages) => [...prevMessages, data]);
-      });
-    }
+    ChatService.onMessage((data) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
+
     return () => {
-      if (chatServiceRef.current) {
-        chatServiceRef.current.close();
-        chatServiceRef.current = null;
-      }
+      ChatService.close();
     };
   }, []);
 
   const sendMessage = () => {
     if (inputMessage.trim() !== "") {
-      chatServiceRef.current.sendMessage(group, inputMessage);
+      ChatService.sendMessage(group, inputMessage);
       setInputMessage("");
     }
   };

@@ -27,9 +27,12 @@ const NotificationIcon = () => {
   return (
     <div className="notification-icon">
       <div className="icon" onClick={toggleShowList}>
-        <i className="fas fa-bell"></i>
-        {notifications.length > 0 && (
+        <i className="fas fa-bell">🔔</i>
+        {notifications.length !== 0 && (
           <span className="notification-count">{notifications.length}</span>
+        )}
+        {notifications.length === 0 && (
+          <span className="notification-count">0</span>
         )}
       </div>
       {showList && (

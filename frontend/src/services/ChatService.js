@@ -1,33 +1,28 @@
+import WebSocketService from "./WebSocketService";
+
 const GROUPMESSAGE_TYPE = "groupmessage";
 
-class ChatService {
-  constructor() {
-    this.client = new WebSocket("ws://localhost:8080/ws");
-  }
-
-  onMessage(callback) {
-    this.client.onmessage = (message) => {
-      const data = JSON.parse(message.data);
+const ChatService = {
+  onMessage: (callback) => {
+    WebSocketService.onMessage((data) => {
       if (data.type === GROUPMESSAGE_TYPE) {
         callback(data);
       }
-    };
-  }
+    });
+  },
 
-  sendMessage(recieverId, message) {
+  sendMessage: (receiverId, message) => {
     const payload = {
       type: GROUPMESSAGE_TYPE,
-      to: parseInt(recieverId),
+      to: parseInt(receiverId),
       message: message,
     };
-    this.client.send(JSON.stringify(payload));
-  }
+    WebSocketService.sendMessage(payload);
+  },
 
-  close() {
-    if (this.client) {
-      this.client.close();
-    }
-  }
-}
+  close: () => {
+    WebSocketService.disconnect();
+  },
+};
 
 export default ChatService;

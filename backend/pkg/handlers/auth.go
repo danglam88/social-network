@@ -102,7 +102,7 @@ func LogUserOut(w http.ResponseWriter, r *http.Request) string {
 		return "200 OK"
 	}
 	if err != nil {
-		return "401 "
+		return "400 BAD REQUEST: REQUEST NOT ALLOWED"
 	}
 
 	//todo cookie is nil

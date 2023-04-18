@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import perProfileService from "../services/PerProfileService"
+import loginService from '../services/LoginService'
 
 const PersonalProfile = () => {
     const [data, setData] = useState({
@@ -34,11 +35,30 @@ const PersonalProfile = () => {
             .catch(error => console.log(error))
     }, [])
 
+    const handleLogout = (event) => {
+        event.preventDefault()
+        console.log("handle logout")
+
+        loginService.logout({})
+            .then(response => {
+                console.log(response)
+
+                document.cookie = "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                sessionStorage.removeItem("userid");
+                sessionStorage.removeItem("username");
+                window.location.reload();
+            })
+            .catch(error => console.log(error))
+    }
+
     return (
         <div>
             {data.id && data.firstName && data.lastName && data.birthDate && data.isPrivate && data.email && data.createdAt ?
             <div>
                 User {data.email} has been logged-in successfully.
+                <form onSubmit={handleLogout}>
+                    <button type="submit">Logout</button>
+                </form>
                 Information is as follows:
                 <ul>
                     <li>ID: {data.id}</li>

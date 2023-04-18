@@ -25,5 +25,4 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	response := ResponseError{Status: RESPONSE_OK}
 	responseJson, _ := json.Marshal(response)
 	io.WriteString(w, string(responseJson))
-
 }

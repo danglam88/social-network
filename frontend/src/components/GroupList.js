@@ -1,14 +1,21 @@
 import { useState, useEffect } from 'react'
 import groupService from "../services/GroupsService"
 
-const ListItem = ({group}) => {
+const ListItem = ({group, handleSuccessJoinRequest}) => {
 
     const handleShowGroup = (event) => {
         console.log(1111111)
     } 
 
-    const handleRequestJoin = (event) => {
-        console.log(2222)
+    const handleRequestJoin = (groupId) => {
+        const data = {
+            group_id : groupId
+        }
+        groupService.join(data)
+        .then(response => {
+          handleSuccessJoinRequest(groupId)
+        })
+        .catch(error => console.log(error))
     }
 
     return (  
@@ -16,29 +23,31 @@ const ListItem = ({group}) => {
             <h3>{group.name}</h3>
             <div>
                 <div className="group-column">{group.description}</div>
-                <div className="group-column group-activity-link" onClick={handleRequestJoin}>Join</div>
+                {!group.is_member ? 
+                    (<div className="group-column group-activity-link" onClick={() => handleRequestJoin(group.id)}>Join</div>) : (
+                        <div className="group-column group-activity-link">Member</div>
+                    )}
                 <div className="group-column group-activity-link"onClick={handleShowGroup}>Go to</div>
             </div>
         </div>
     )
 }
 
-const NewGroup = () => {
-    const [title, setTitle] = useState('')
+const NewGroup = ({handleNewGroup}) => {
+    const [title, setTitle] = useState('')           
     const [description, setDescription] = useState('')
   
     const handleTitleChange = (event) => {
-      setTitle(event.target.value)
+      setTitle(event.target.value)          
     } 
     
     const handleDescriptionChange = (event) => {
         setDescription(event.target.value)
     }
   
-    const handleCreateGroup = (event) => {
+    const handleCreateGroup = (event) => {                                                                                         
       event.preventDefault()
-      console.log("handle create group")
-  
+   
       const data = {
           title: title,
           description: description
@@ -46,7 +55,7 @@ const NewGroup = () => {
    
       groupService.create(data)
         .then(response => {
-          console.log(response)
+          handleNewGroup(response.data)
         })
         .catch(error => console.log(error))
     }
@@ -69,7 +78,6 @@ const NewGroup = () => {
     )
 }
 
-//todo set token as a params
 const GroupList = () => {
 
     const [items, setItems] = useState([])
@@ -80,35 +88,63 @@ const GroupList = () => {
         setIsCreateGroup(true)
     }
 
-    useEffect(() => {
+    const handleNewGroup = (data) => {
+        setIsCreateGroup(false)
+        const newItems = items.concat(data)
 
+        setItems(newItems)
+    }
+
+    const handleSuccessJoinRequest = (groupId) => {
+        const newItems = items.map(a => {return {...a}})
+
+        newItems.forEach((data, key) => {
+            if (data.id == groupId) {
+                newItems[key].is_member = true
+            }
+        })
+
+        setItems(newItems)
+    }
+
+    useEffect(() => {
         groupService.groups().then(response => {
             const list = []
             response.data.forEach((data) => {
-                list.push(<ListItem group={data} key={data.id} handleIs/>)
+                list.push(data)
             })
             setItems(list)
         })
         .catch(error => console.log(error))
     }, [])
 
-    return (  
-        <>
-        <h1>Groups</h1>
-        <div>
-            {items}
-            <div className="group-wrapper">
-            {isCreateGroup ? (<NewGroup/>) : 
-            (
-                <>
-                <div className="group-column">If you haven't find a group you can create our own!</div>
-                <div className="group-column group-activity-link" onClick={handleCreateGroup}>Create a group</div>
-                </>
-           )}
+
+    const groupsList = []
+    {items.forEach((data) => {
+        groupsList.push(<ListItem group={data} key={data.id} handleSuccessJoinRequest={handleSuccessJoinRequest}/>)
+    })}
+
+    if (items.length > 0) {
+        return (
+            <>
+            <h1>Groups</h1>
+            <div>
+                {groupsList}
+                <div className="group-wrapper">
+                {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
+                (
+                    <>
+                    <div className="group-column">If you haven't find a group you can create our own!</div>
+                    <div className="group-column group-activity-link" onClick={handleCreateGroup}>Create a group</div>
+                    </>
+               )}
+                </div>
             </div>
-        </div>
-        </>
-    )
+            </>
+        )
+    } else {
+        return (<></>)
+    }
 }
     
 export default GroupList

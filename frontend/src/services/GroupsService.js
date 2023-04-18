@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const groupUrl = 'http://localhost:8080/group'
+const groupJoinUrl = 'http://localhost:8080/group_join'
 
 const config = {
     headers : {
@@ -16,34 +17,32 @@ const postConfig = {
   };
 
 const getGroups = async data => {
-    console.log(data)
-
     const request = await axios.get(groupUrl, config)
     return request
 }
 
 const getGroup = async data => {
     console.log(data)
-
     const request = await axios.get(groupUrl, config)
-
-    console.log(request)
     return request
 }
 
 const createGroup = async data => {
-    console.log(data)
-
     const request = await axios.post(groupUrl, data, postConfig)
-
-    console.log(request)
     return request
+}
+
+const joinGroup = async data => {
+  console.log(data)
+  const request = await axios.post(groupJoinUrl, data, postConfig)
+  return request
 }
 
 const GroupService = { 
     groups: getGroups,
     group : getGroup,
-    create : createGroup 
+    create : createGroup,
+    join : joinGroup
 }
 
 export default GroupService

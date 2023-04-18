@@ -70,6 +70,8 @@ type Group struct {
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
 	Members     []User    `json:"members"`
+	IsMember    bool      `json:"is_member"`
+	IsRequested bool      `json:"is_requested"`
 }
 
 type Chat struct {
@@ -356,9 +358,15 @@ func (db *Db) GetGroup(id int) (group Group, err error) {
 	return group, err
 }
 
-func (db *Db) GetAllGroups() (groups []Group, err error) {
+func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
 
 	rows, err := db.connection.Query("select id,creator_id,group_name,descript,created_at from user_group")
+	if err != nil {
+		return groups, err
+	}
+
+	userGroups, err := db.GetUserGroups(userId)
+
 	if err != nil {
 		return groups, err
 	}
@@ -369,8 +377,12 @@ func (db *Db) GetAllGroups() (groups []Group, err error) {
 		if err != nil {
 			return groups, err
 		}
+
 		members := db.GetGroupMembers(group.ID)
+
 		group.Members = members
+		group.IsMember = userGroups[group.ID]
+
 		groups = append(groups, group)
 	}
 
@@ -452,6 +464,35 @@ func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int
 
 	groupId, err = res.LastInsertId()
 	return groupId, err
+}
+
+func (db *Db) JoinToGroup(userId, groupId int) (err error) {
+	_, err = db.connection.Exec("insert into group_relation(user_id,group_id,is_requested,is_approved) values(?,?,?,?)", userId, groupId, 1, 0)
+	return err
+}
+
+func (db *Db) GetUserGroups(userId int) (groups map[int]bool, err error) {
+
+	groups = make(map[int]bool)
+
+	query := "select group_id from group_relation where user_id=?"
+	rows, err := db.connection.Query(query, userId)
+	if err != nil {
+		return groups, err
+	}
+
+	var groupId int
+
+	for rows.Next() {
+		err := rows.Scan(&groupId)
+		if err != nil {
+			return groups, err
+		}
+		groups[groupId] = true
+	}
+	defer rows.Close()
+
+	return groups, err
 }
 
 func (db *Db) GetUser(id int) User {

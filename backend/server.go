@@ -43,6 +43,10 @@ func main() {
 			PostFunction: handlers.GroupAdd,
 		},
 		{
+			Endpoint:     "/group_join",
+			PostFunction: handlers.GroupJoin,
+		},
+		{
 			Endpoint:    "/history",
 			GetFunction: handlers.GetHistory,
 		},

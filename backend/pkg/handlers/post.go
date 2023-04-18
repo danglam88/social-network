@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -19,6 +20,8 @@ const MAX_SIZE = 20971520
 func PostGet(w http.ResponseWriter, r *http.Request) {
 
 	var err error
+
+	fmt.Println(ValidateField("content", " hello!<br> ", 1, 100))
 
 	params := r.URL.Query()
 
@@ -152,6 +155,18 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 			errorMessage = fieldName + " name can not contain only space(s)"
 			errorCheck = true
 		}
+	}
+
+	regex := regexp.MustCompile(`^[\x20-\x7E]+$`)
+	if !errorCheck && !regex.MatchString(field) {
+		errorMessage = fieldName + " can only contain letters, numbers and special characters"
+		errorCheck = true
+	}
+
+	regexTag := regexp.MustCompile("<[^>]*>")
+	if !errorCheck && regexTag.MatchString(field) {
+		errorMessage = fieldName + " can not contain html tags"
+		errorCheck = true
 	}
 
 	return errorCheck, errorMessage

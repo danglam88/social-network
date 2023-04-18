@@ -78,11 +78,11 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 func GetAllChat(w http.ResponseWriter, r *http.Request) {
 
 	if !IsOn(w, r) {
-		fmt.Println("failed here")
+		fmt.Println("failed here: chat.go:81")
 		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
 		return
 	}
-	fmt.Println("passed here")
+	fmt.Println("passed here: chat.go:85")
 
 	username := IsUser(w, r)
 	userId := DB.GetUserID(username)

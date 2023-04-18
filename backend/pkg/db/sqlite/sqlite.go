@@ -420,7 +420,6 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 		}
 		//fetch date for last message from private message table
 		chat.LastMsg = db.GetLastMessage(chat.ID)
-		fmt.Println(chat)
 		chats = append(chats, chat)
 	}
 	defer rows.Close()

@@ -3,7 +3,7 @@ import "./App.css";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import PersonalProfile from "./components/PersonalProfile";
-import Chat from "./components/GroupChat";
+import Chat from "./components/Chat";
 import GroupList from "./components/GroupList";
 import WebSocketService from "./services/WebSocketService";
 import NotificationIcon from "./components/NotificationIcon";

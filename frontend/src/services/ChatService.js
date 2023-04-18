@@ -11,9 +11,9 @@ const ChatService = {
     });
   },
 
-  sendMessage: (receiverId, message) => {
+  sendMessage: (receiverId, msgtype, message) => {
     const payload = {
-      type: GROUPMESSAGE_TYPE,
+      type: msgtype,
       to: parseInt(receiverId),
       message: message,
     };

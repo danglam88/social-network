@@ -2,16 +2,15 @@ import { useState } from 'react'
 import registerService from "../services/RegisterService"
 
 const RegisterForm = () => {
-    
-      const [email, setEmail] = useState('')
-      const [password, setPassword] = useState('')
-      const [password2, setPassword2] = useState('')
-        const [firstName, setFirstName] = useState('')
-        const [lastName, setLastName] = useState('')
-        const [dateOfBirth, setDateOfBirth] = useState('')
-        const [avatar, setAvatar] = useState('') //optional
-        const [nickname, setNickname] = useState('') //optional
-        const [aboutMe, setAboutMe] = useState('') //optional
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [password2, setPassword2] = useState('')
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [dateOfBirth, setDateOfBirth] = useState('')
+    const [avatar, setAvatar] = useState('') //optional
+    const [nickname, setNickname] = useState('') //optional
+    const [aboutMe, setAboutMe] = useState('') //optional
 
         const handleEmailChange = (event) => {
             setEmail(event.target.value)
@@ -43,51 +42,40 @@ const RegisterForm = () => {
 
         const handleRegister = (event) => {
             event.preventDefault()
-            console.log("handle register")
+            const formData = new FormData(event.target);
 
-            const data = {
-                email: email,
-                password: password,
-                password2: password2,
-                firstName: firstName,
-                lastName: lastName,
-                dateOfBirth: dateOfBirth,
-                avatar: avatar,
-                nickname: nickname,
-                aboutMe: aboutMe
-            }
+            registerService.register(formData)
 
-            registerService.register(data).then(response => console.log(response)).catch(error => console.log(error))
         }
 
         return (
             <form onSubmit={handleRegister}>
                 <div>
-                    email: <input value={email} onChange={handleEmailChange} />
+                    email: <input type="email" name="email" value={email} onChange={handleEmailChange} />
                 </div>
                 <div>
-                    password: <input type="password" value={password} onChange={handlePasswordChange} />
+                    password: <input type="password" name="password" value={password} onChange={handlePasswordChange} />
                 </div>
                 <div>
-                    password2: <input type="password" value={password2} onChange={handlePassword2Change} />
+                    password2: <input type="password" name="password2" value={password2} onChange={handlePassword2Change} />
                 </div>
                 <div>
-                    firstName: <input value={firstName} onChange={handleFirstNameChange} />
+                    firstName: <input type="text" name="firstName" value={firstName} onChange={handleFirstNameChange} />
                 </div>
                 <div>
-                    lastName: <input value={lastName} onChange={handleLastNameChange} />
+                    lastName: <input type="text" name="lastName" value={lastName} onChange={handleLastNameChange} />
                 </div>
                 <div>
-                    dateOfBirth: <input value={dateOfBirth} onChange={handleDateOfBirthChange} />
+                    dateOfBirth: <input type="date" name="dateOfBirth" value={dateOfBirth} onChange={handleDateOfBirthChange} />
                 </div>
                 <div>
-                    avatar: <input value={avatar} onChange={handleAvatarChange} />
+                    avatar: <input type="text" name="avatar" value={avatar} onChange={handleAvatarChange} />
                 </div>
                 <div>
-                    nickname: <input value={nickname} onChange={handleNicknameChange} />
+                    nickname: <input type="text" name="nickname" value={nickname} onChange={handleNicknameChange} />
                 </div>
                 <div>
-                    aboutMe: <input value={aboutMe} onChange={handleAboutMeChange} />
+                    aboutMe: <input type="text" name="aboutMe" value={aboutMe} onChange={handleAboutMeChange} />
                 </div>
                 <div>
                     <button type="submit">Register</button>

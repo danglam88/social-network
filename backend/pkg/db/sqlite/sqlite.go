@@ -298,12 +298,12 @@ func (db *Db) GetEmail(mail string) string {
 	return expected_user.Email
 }
 
-func (db *Db) CreateUser(username, password, email, firstName, lastName, gender, age string, prev int) string {
+func (db *Db) CreateUser(username, password, email, firstName, lastName, birth, about, avatar string, prev int) string {
 	//insert into user table
-	_, err := db.connection.Exec("insert into user(privilege,username,first_name,last_name,gender,age,passwrd,email,created_at) values(?,?,?,?,?,?,?,?,?)", prev, username, firstName, lastName, gender, age, password, email, time.Now().Local().Format(time_format))
-	if err != nil {
-		log.Fatal(err)
-	}
+	// _, err := db.connection.Exec("insert into user(privilege,username,first_name,last_name,gender,age,passwrd,email,created_at) values(?,?,?,?,?,?,?,?,?)", prev, username, firstName, lastName, gender, age, password, email, time.Now().Local().Format(time_format))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 	return "200 OK"
 }
 

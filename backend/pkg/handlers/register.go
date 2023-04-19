@@ -6,7 +6,9 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -23,24 +25,25 @@ type ValidationJson struct {
 
 func RegisterPost(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseForm()
-	if err != nil {
-		errorMess := "Error parsing the form"
-		GetErrResponse(w, errorMess, http.StatusBadRequest)
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	username := r.FormValue("username")
 	email := r.FormValue("email")
 	password := r.FormValue("password")
-	repassword := r.FormValue("repassword")
+	repassword := r.FormValue("password2")
 	firstName := r.FormValue("firstName")
 	lastName := r.FormValue("lastName")
-	age := r.FormValue("age")
-	gender := r.FormValue("gender")
+	birth := r.FormValue("dateOfBirth")
+	avatar := r.FormValue("avatar")
+	username := r.FormValue("nickname")
+	about := r.FormValue("aboutMe")
 
-	json, status := validateForm(username, email, password, repassword, firstName, lastName, age, gender)
-	// fmt.Println(string(json))
+	fmt.Println(email, password, repassword, firstName, lastName, birth, avatar, username, about)
+
+	json, status := validateForm(email, password, repassword, firstName, lastName, birth, avatar, username, about)
+	fmt.Println(string(json))
 	w.WriteHeader(status)
 	io.WriteString(w, string(json))
 }
@@ -66,14 +69,13 @@ func addUsertoJson(user []DataValidation, status int) []byte {
 }
 
 // Calling HandleRegistration function whenever there is a request to the URL
-func validateForm(username, email, password, repassword, firstName, lastName, age, gender string) ([]byte, int) {
+func validateForm(email, password, repassword, firstName, lastName, birth, avatar, username, about string) ([]byte, int) {
 	var user []DataValidation
 	user_error := ""
 	email_error := ""
 	password_error := ""
 	firstName_error := ""
 	lastName_error := ""
-	age_error := ""
 
 	if DB.GetUserID(username) == -1 && ValidatePasswordUsername(username, false) &&
 
@@ -83,10 +85,11 @@ func validateForm(username, email, password, repassword, firstName, lastName, ag
 		password == repassword && len(password) > 7 && len(password) < 21 &&
 		ValidateMail(email) && len(firstName) > 2 && len(firstName) < 14 &&
 		ValidatePasswordUsername(firstName, false) &&
-		len(lastName) > 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) && validateAge(age) {
+		len(lastName) > 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) &&
+		isValidDateOfBirth(birth) && validateAboutMe(about) == "" {
 		passwordH, _ := HashPassword(password)
 		//ADD USER TO DB
-		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, gender, age, 1) == "200 OK" {
+		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, avatar, 1) == "200 OK" {
 			// APPENDING NEW USER TO JSON FILE
 			user = append(user, DataValidation{})
 			return addUsertoJson(user, 200), http.StatusOK
@@ -123,9 +126,6 @@ func validateForm(username, email, password, repassword, firstName, lastName, ag
 	if len(user_error) > 0 {
 		username = ""
 	}
-	if len(age) > 3 {
-		age_error = "You need to have less than 999 years"
-	}
 	if len(email_error) > 0 {
 		email = ""
 	}
@@ -144,9 +144,15 @@ func validateForm(username, email, password, repassword, firstName, lastName, ag
 	if lastName_error != "" {
 		user = append(user, DataValidation{Field: "last name", Message: lastName_error})
 	}
-	if age_error != "" {
-		user = append(user, DataValidation{Field: "age", Message: age_error})
+	if !isValidDateOfBirth(birth) {
+		birth_error := "You should have at least 5 years old"
+		user = append(user, DataValidation{Field: "birth", Message: birth_error})
 	}
+	about_err := validateAboutMe(about)
+	if about_err != "" {
+		user = append(user, DataValidation{Field: "aboutMe", Message: about_err})
+	}
+
 	// CHECK THIS
 	return addUsertoJson(user, 400), http.StatusBadRequest
 }
@@ -210,7 +216,33 @@ func CheckPasswordHash(hash, password string) bool {
 	return err == nil
 }
 
-func validateAge(age string) bool {
-	match, _ := regexp.MatchString("^\\d{0,3}\\b", age)
-	return match
+func isValidDateOfBirth(dateOfBirth string) bool {
+	parsedDate, err := time.Parse("2006-01-02", dateOfBirth)
+	if err != nil {
+		return false
+	}
+
+	minAge := 5
+	minBirthDate := time.Now().AddDate(-minAge, 0, 0)
+
+	return !parsedDate.After(minBirthDate)
+}
+
+func validateAboutMe(aboutMe string) string {
+	maxLength := 500
+
+	// Validate that the input does not exceed the maximum length
+	if len(aboutMe) > maxLength {
+		return "About me field should not exceed " + strconv.Itoa(maxLength) + " characters"
+	}
+
+	// Determine what characters are allowed in the field
+	reg := regexp.MustCompile(`^[a-zA-Z0-9,.!? ]*$`)
+
+	// Validate that the input only contains these characters
+	if !reg.MatchString(aboutMe) {
+		return "About me field should only contain alphanumeric characters, commas, periods, exclamation marks, question marks, and spaces"
+	}
+
+	return ""
 }

@@ -52,7 +52,9 @@ function App() {
         ) : (
           <div>
             <img src={logo} className="App-logo" alt="logo" />
-            <RegisterForm />
+            <div id="div-form">
+              <RegisterForm />
+            </div>
             <LoginForm />
           </div>
         )}

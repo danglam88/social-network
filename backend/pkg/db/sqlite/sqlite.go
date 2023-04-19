@@ -75,7 +75,7 @@ type Group struct {
 }
 
 type Chat struct {
-	chatID  int
+	ChatID  int
 	GroupID int
 	UserOne int
 	UserTwo int
@@ -426,12 +426,12 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 		return chats, err
 	}
 	for rows.Next() {
-		err := rows.Scan(&chat.chatID, &chat.GroupID, &chat.UserOne, &chat.UserTwo)
+		err := rows.Scan(&chat.ChatID, &chat.GroupID, &chat.UserOne, &chat.UserTwo)
 		if err != nil {
 			return chats, err
 		}
 		//fetch date for last message from private message table
-		chat.LastMsg = db.GetLastMessage(chat.chatID)
+		chat.LastMsg = db.GetLastMessage(chat.ChatID)
 		chats = append(chats, chat)
 	}
 	defer rows.Close()
@@ -828,6 +828,24 @@ func (db *Db) GetGroupUserIds(groupId int) (userIds []int, err error) {
 	defer rows.Close()
 
 	return userIds, err
+}
+
+func (db *Db) GetUserIdsfromChatId(chatId int) (userIds []int, err error) {
+	var groupID, firstUserID, secondUserID int
+	err = db.connection.QueryRow("SELECT group_id, first_userid, second_userid FROM private_chat WHERE id=?", chatId).Scan(&groupID, &firstUserID, &secondUserID)
+	if err != nil {
+		return nil, err
+	}
+
+	if groupID == 0 {
+		userIds = append(userIds, firstUserID, secondUserID)
+	} else {
+		userIds, err = db.GetGroupUserIds(groupID)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return userIds, nil
 }
 
 func (db *Db) GetGroupCreatorId(groupId int) (creatorId int, err error) {

@@ -12,10 +12,9 @@ import (
 )
 
 const (
-	PRIVATEMESSAGE_TYPE      = "privatemessage"
+	MESSAGE_TYPE             = "message"
 	LOGOUT_TYPE              = "logout"
 	LOGIN_TYPE               = "login"
-	GROUPMESSAGE_TYPE        = "groupmessage"
 	FOLLOWNOTIFICATION_TYPE  = "follownotification"
 	INVITENOTIFICATION_TYPE  = "invitenotification"
 	JOINREQNOTIFICATION_TYPE = "joinreqnotification"
@@ -161,26 +160,21 @@ func (c *Client) readMessages() {
 		fmt.Println(res)
 
 		if res.From > 0 {
-			if res.Type == GROUPMESSAGE_TYPE {
+			if res.Type == MESSAGE_TYPE {
 				res.CreatedAt = DB.GetTime()
 				message, _ := json.Marshal(res)
 
-				fmt.Println("group message: ", res.Message)
+				fmt.Println("Message: ", res.Message)
 
-				groupUsers, err := DB.GetGroupUserIds(res.To)
-				fmt.Println("group users: ", groupUsers)
+				chatUsers, err := DB.GetUserIdsfromChatId(res.To)
+				fmt.Println("chat user Ids: ", chatUsers)
 				if err != nil {
 					log.Println(err)
 				}
 
-				//print all active userIds
-				for wsclient := range c.manager.clients {
-					fmt.Println("active user ID: ", wsclient.userId)
-				}
-
-				for _, groupUser := range groupUsers {
+				for _, chatUser := range chatUsers {
 					for wsclient := range c.manager.clients {
-						if wsclient.userId == groupUser {
+						if wsclient.userId == chatUser {
 							fmt.Println("sending to: ", wsclient.userId)
 							wsclient.eggress <- message
 						}
@@ -191,17 +185,6 @@ func (c *Client) readMessages() {
 				if err != nil {
 					log.Println(err)
 				}
-			} else if res.Type == PRIVATEMESSAGE_TYPE && res.To > 0 {
-				res.CreatedAt = DB.GetTime()
-				message, _ := json.Marshal(res)
-
-				for wsclient := range c.manager.clients {
-					if wsclient.userId == res.To || wsclient.userId == res.From {
-						wsclient.eggress <- message
-					}
-				}
-
-				DB.AddMessage(res.To, res.From, res.Message, res.CreatedAt)
 
 			} else if res.Type == LOGOUT_TYPE {
 				for wsclient := range c.manager.clients {

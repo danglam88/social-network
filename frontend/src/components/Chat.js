@@ -7,6 +7,7 @@ const Chat = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [availableChats, setAvailableChats] = useState([]);
 
+
   useEffect(() => {
     ChatService.onMessage((data) => {
       setMessages((prevMessages) => [...prevMessages, data]);
@@ -26,22 +27,8 @@ const Chat = () => {
 
   const sendMessage = () => {
     if (inputMessage.trim() !== "") {
-      const selectedChat = receiverID;
-  
-      // Check if the selectedChat object exists before accessing its properties
-      if (selectedChat) {
-        const msgtype =
-          selectedChat.GroupID === 0 ? "privatemessage" : "groupmessage";
-  
         // Set the receiver ID based on the GroupID
-        const updatedReceiverID =
-          selectedChat.GroupID === 0 ? selectedChat.ID : selectedChat.GroupID;
-  
-        ChatService.sendMessage(updatedReceiverID, msgtype, inputMessage);
-      } else {
-        console.error("Error: No chat with the provided receiver ID found.");
-      }
-  
+        ChatService.sendMessage(receiverID.ID, inputMessage);
       setInputMessage("");
     }
   };
@@ -67,7 +54,7 @@ const Chat = () => {
   value={receiverID ? JSON.stringify(receiverID) : ""}
   onChange={handleReceiverIDChange}
 >
-  <option value="" disabled>
+  <option value="" disabled selected>
     Select a chat
   </option>
   {availableChats
@@ -76,12 +63,13 @@ const Chat = () => {
       <option
         key={chat.ID}
         value={JSON.stringify(
-          chat.GroupID === 0 ? { ID: chat.ID, GroupID: 0 } : { ID: chat.ID, GroupID: chat.GroupID }
+          chat.GroupID === 0 ? { ID: chat.ChatID, GroupID: 0 } : { ID: chat.ChatID, GroupID: chat.GroupID }
         )}
+        selected={JSON.stringify(receiverID) === JSON.stringify(chat.GroupID === 0 ? { ID: chat.ChatID, GroupID: 0 } : { ID: chat.ChatID, GroupID: chat.GroupID })}
       >
         {chat.GroupID === 0
-          ? `ID: ${chat.ID} - Direct Message`
-          : `GroupID: ${chat.GroupID}`}
+          ? `ChatID: ${chat.ChatID} - Direct Message between ${chat.UserOne} and ${chat.UserTwo}`
+          : `ChatID: ${chat.ChatID} - Group Chat with Group ID ${chat.GroupID}`}
       </option>
     ))}
 </select>

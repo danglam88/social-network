@@ -1,19 +1,15 @@
 import WebSocketService from "./WebSocketService";
 
-const GROUPMESSAGE_TYPE = "groupmessage";
-
 const ChatService = {
   onMessage: (callback) => {
     WebSocketService.onMessage((data) => {
-      if (data.type === GROUPMESSAGE_TYPE) {
         callback(data);
-      }
     });
   },
 
-  sendMessage: (receiverId, msgtype, message) => {
+  sendMessage: (receiverId, message) => {
     const payload = {
-      type: msgtype,
+      type: "message",
       to: parseInt(receiverId),
       message: message,
     };

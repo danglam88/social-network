@@ -768,22 +768,21 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 }
 
 // in use
-func (db *Db) CreateComment(user_id int, postID int, comment string, username string, img_url string) Comment {
+func (db *Db) CreateComment(userId int, postID int, comment string, imgUrl string) Comment {
 
 	var newComment Comment
 
-	_, err := db.connection.Exec("insert into comment(creator_id,post_id,content,created_at,img_url) values(?,?,?,?)", user_id, postID, comment, time.Now().Local().Format(time_format), img_url)
+	_, err := db.connection.Exec("insert into comment(creator_id,post_id,content,created_at,img_url) values(?,?,?,?)", userId, postID, comment, time.Now().Local().Format(time_format), imgUrl)
 
 	if err != nil {
 		return newComment
 	}
 
-	newComment.UserID = user_id
-	newComment.UserName = username
+	newComment.UserID = userId
 	newComment.PostID = postID
 	newComment.Content = comment
 	newComment.CreatedAt = time.Now().Local()
-	newComment.ImgUrl = img_url
+	newComment.ImgUrl = imgUrl
 
 	return newComment
 }

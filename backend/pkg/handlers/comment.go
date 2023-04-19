@@ -36,8 +36,8 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := IsUser(w, r)
-	user_id := DB.GetUserID(username)
+	userMail := IsUser(w, r)
+	userId := DB.GetUserID(userMail)
 
 	err := r.ParseForm()
 	if err != nil {
@@ -47,7 +47,11 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 
 	comment := r.FormValue("comment")
 	postID, _ := strconv.Atoi(r.FormValue("postId"))
-	img_url := r.FormValue("img_url")
+	imgUrl, imgErr := UploadFile(w, r)
+	if imgErr != nil {
+		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
+		return
+	}
 	// HANDLE ERROR
 	commentErrorCheck, commentErrorMessage := ValidateField("comment", comment, 1, 1000)
 
@@ -56,8 +60,10 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentDB := DB.CreateComment(user_id, postID, comment, username, img_url)
+	commentDB := DB.CreateComment(userId, postID, comment, imgUrl)
 	res, _ := json.Marshal(commentDB)
 	io.WriteString(w, string(res))
 
 }
+
+//creator_id,post_id,content,created_at,img_url

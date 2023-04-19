@@ -20,4 +20,5 @@ VALUES
     (4,"malin.oscarius@gritlab.ax","$2a$14$2DzMB74I10pRtzy3/5BHd.OXsj3S5iXYiq7ufALEMgm.NcCPzaZwK","malin","oscarius","1983",1,DateTime('now','localtime'),"","malin",""),
     (5,"karl.johannes@gritlab.ax","$2a$14$H6N.vY2uwdlhOwoORIMRaeldECn7BAbDcU/fiWZv5.0m0EuSLqoi2","karl","johannes","1989",1,DateTime('now','localtime'),"","joman",""),
     (6,"super@power.rich","$2a$14$L4tSoMJVVvc90z0hy4SeQ.fa19scUeDAcy/kYosgOd5PFrXUehDsi","bruce","wayne","1919",0,DateTime('now','localtime'),"","batman",""),
-    (7,"wanna@kill.batman","$2a$14$2b./lLQiX4La37U2RghRcucvy/Bme0nQvp5my9bYN0ME41mJhXt5G","jack","white","1920",0,DateTime('now','localtime'),"","joker","");
+    (7,"wanna@kill.batman","$2a$14$2b./lLQiX4La37U2RghRcucvy/Bme0nQvp5my9bYN0ME41mJhXt5G","jack","white","1920",0,DateTime('now','localtime'),"","joker",""),
+    (8,"nonickname@private.com","$2a$14$2b./lLQiX4La37U2RghRcucvy/Bme0nQvp5my9bYN0ME41mJhXt5G","nonickname","private","1920",1,DateTime('now','localtime'),"","","");

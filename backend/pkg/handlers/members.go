@@ -14,15 +14,10 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	//replace with session when implemented
-	user_nick := "malin.oscarius@gritlab.ax" //IsUser(w, r)
-	//user_id := DB.GetUserID(username)
+	userMail := "malin.oscarius@gritlab.ax" //IsUser(w, r)
+	//user_id := DB.GetUserID(userMail)
 
-	// if user_id != from {
-	// 	GetErrResponse(w, "Invalid credentials", http.StatusUnauthorized)
-	// 	return
-	// }
-
-	users, err := DB.GetAllUsers(user_nick)
+	users, err := DB.GetAllUsers(userMail)
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}

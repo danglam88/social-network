@@ -21,7 +21,7 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 
-	fmt.Println(ValidateField("content", " hello!<br> ", 1, 100))
+	//fmt.Println(ValidateField("content", " hello!<br> ", 1, 100))
 
 	params := r.URL.Query()
 

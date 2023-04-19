@@ -75,7 +75,7 @@ type Group struct {
 }
 
 type Chat struct {
-	ID      int
+	chatID  int
 	GroupID int
 	UserOne int
 	UserTwo int
@@ -426,12 +426,12 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 		return chats, err
 	}
 	for rows.Next() {
-		err := rows.Scan(&chat.ID, &chat.GroupID, &chat.UserOne, &chat.UserTwo)
+		err := rows.Scan(&chat.chatID, &chat.GroupID, &chat.UserOne, &chat.UserTwo)
 		if err != nil {
 			return chats, err
 		}
 		//fetch date for last message from private message table
-		chat.LastMsg = db.GetLastMessage(chat.ID)
+		chat.LastMsg = db.GetLastMessage(chat.chatID)
 		chats = append(chats, chat)
 	}
 	defer rows.Close()
@@ -617,19 +617,19 @@ func (db *Db) GetAllUsers(username string) (users []User, err error) {
 }*/
 
 // can be used for both private and group chats
-func (db *Db) AddMessage(groupId, from, to int, message, time string) (err error) {
+func (db *Db) AddMessage(chatId, creator int, message, time string) (err error) {
 
-	var id int64
+	/*var id int64
 
 	id, err = db.getChat(groupId, from, to)
 
 	//todo err check
 	if id <= 0 {
 		id, err = db.addChat(groupId, from, to)
-	}
+	}*/
 	//id,chat_id,content,sender_id,created_at
 
-	_, err = db.connection.Exec("insert into private_message(chat_id, sender_id, content, created_at) values(?,?,?,?)", id, from, message, time)
+	_, err = db.connection.Exec("insert into private_message(chat_id, sender_id, content, created_at) values(?,?,?,?)", chatId, creator, message, time)
 
 	return err
 }

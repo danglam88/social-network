@@ -75,13 +75,16 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, "Invalid group id", http.StatusBadRequest)
 		return
 	}
-	visibility, visErr := strconv.Atoi(r.FormValue("visibility"))
-	if visErr != nil {
-		GetErrResponse(w, "Invalid privacy", http.StatusBadRequest)
-		return
+	visibility := r.FormValue("visibility")
+	visibilityNbr := 0
+	if visibility == "allmembers" {
+		visibilityNbr = 1
+	} else if visibility == "private" {
+		visibilityNbr = 2
 	}
+
 	followersID := []int{}
-	if visibility == 2 {
+	if visibility == "private" {
 		followersID = append(followersID, creatorID)
 		//fetch chosen users from form, add their ids to followers
 		followers := strings.Split(r.FormValue("allowed_followers"), ",")
@@ -116,14 +119,14 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//id,creator_id,group_id,visibility,title,content,created_at,img_url
-	postID, postErr := DB.CreatePost(creatorID, groupID, visibility, title, content, imgUrl)
+	postID, postErr := DB.CreatePost(creatorID, groupID, visibilityNbr, title, content, imgUrl)
 	if postErr != nil {
 		GetErrResponse(w, postErr.Error(), http.StatusBadRequest)
 		return
 	}
 	fmt.Println("PostID: ", postID)
 
-	if visibility == 2 {
+	if visibility == "private" {
 		for _, followerID := range followersID {
 			postVisiblyErr := DB.CreatePostFollower(postID, followerID)
 			if postVisiblyErr != nil {

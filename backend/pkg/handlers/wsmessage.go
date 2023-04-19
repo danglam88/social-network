@@ -178,7 +178,6 @@ func (c *Client) readMessages() {
 					fmt.Println("active user ID: ", wsclient.userId)
 				}
 
-
 				for _, groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {
 						if wsclient.userId == groupUser {
@@ -187,8 +186,8 @@ func (c *Client) readMessages() {
 						}
 					}
 				}
-
-				err = DB.AddMessage(res.To, res.From, 0, res.Message, res.CreatedAt)
+				//insert chatid, creatorid, message, createdat
+				err = DB.AddMessage(res.To, res.From, res.Message, res.CreatedAt)
 				if err != nil {
 					log.Println(err)
 				}
@@ -202,7 +201,7 @@ func (c *Client) readMessages() {
 					}
 				}
 
-				DB.AddMessage(0, res.From, res.To, res.Message, res.CreatedAt)
+				DB.AddMessage(res.To, res.From, res.Message, res.CreatedAt)
 
 			} else if res.Type == LOGOUT_TYPE {
 				for wsclient := range c.manager.clients {

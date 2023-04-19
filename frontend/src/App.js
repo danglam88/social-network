@@ -12,6 +12,7 @@ import NotificationIcon from "./components/NotificationIcon";
 
 function App() {
   const [token, setToken] = useState('');
+  const [userId, setUserId] = useState(0);
   const loggedInUrl = 'http://localhost:8080/loggedin';
   const config = {
     headers : {
@@ -24,6 +25,7 @@ function App() {
   axios.post(loggedInUrl, JSON.stringify({}), config)
     .then(response => {
       setToken(response.data.token)
+      setUserId(response.data.user_id)
     })
     .catch(error => console.log(error));
 
@@ -46,7 +48,7 @@ function App() {
         {token !== "" ? (
           <div>
             <PersonalProfile />
-            <Chat />
+            <Chat userId={userId} />
             <GroupList />
           </div>
         ) : (

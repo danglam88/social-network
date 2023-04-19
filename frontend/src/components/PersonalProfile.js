@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import perProfileService from "../services/PerProfileService"
-import loginService from '../services/LoginService'
+import loginService from "../services/LoginService"
 
 const PersonalProfile = () => {
     const [data, setData] = useState({
@@ -59,7 +59,6 @@ const PersonalProfile = () => {
                 <form onSubmit={handleLogout}>
                     <button type="submit">Logout</button>
                 </form>
-                Information is as follows:
                 <ul>
                     <li>ID: {data.id}</li>
                     <li>First Name: {data.firstName}</li>
@@ -73,7 +72,6 @@ const PersonalProfile = () => {
                     <li>About Me: {data.aboutMe}</li>
                 </ul>
                 Profile page is still under-construction.
-                Remove the cookie then refresh the page to see login form again.
             </div> : null}
         </div>
     )

@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ChatService from "../services/ChatService";
 
-const Chat = () => {
+const Chat = (props) => {
+  console.log("User ID: " + props.userId);
+
   const [messages, setMessages] = useState([]);
   const [receiverID, setReceiverID] = useState(null);
   const [inputMessage, setInputMessage] = useState("");
   const [availableChats, setAvailableChats] = useState([]);
-
 
   useEffect(() => {
     ChatService.onMessage((data) => {

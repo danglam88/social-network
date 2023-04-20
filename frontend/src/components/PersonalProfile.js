@@ -6,6 +6,7 @@ import WebSocketService from '../services/WebSocketService'
 import GroupList from './GroupList'
 import NotificationIcon from './NotificationIcon'
 import Posts from './Posts'
+import Follows from './Follows'
 
 const PersonalProfile = () => {
     const [data, setData] = useState({
@@ -84,6 +85,7 @@ const PersonalProfile = () => {
                     <li>About Me: {data.aboutMe}</li>
                 </ul>
                 <Posts creatorId={data.id} />
+                <Follows userId={data.id}/>
                 <Chat />
                 <GroupList />
             </div> : null}

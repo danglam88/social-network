@@ -62,6 +62,10 @@ func main() {
 			Endpoint:     "/loggedin",
 			PostFunction: handlers.LoggedIn,
 		},
+		{
+			Endpoint:    "/follow",
+			GetFunction: handlers.GetFollows,
+		},
 	}
 
 	handlers.Start(collection)

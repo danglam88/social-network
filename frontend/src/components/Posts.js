@@ -29,7 +29,7 @@ const Posts = (props) => {
                 </thead>
                 <tbody>
                     {posts.map(post =>
-                        <tr key={post.id}>
+                        <tr id={post.id}>
                             <td>{post.creator_id}</td>
                             <td>{post.creator_name}</td>
                             <td>{post.visibility}</td>

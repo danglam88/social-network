@@ -58,6 +58,13 @@ type User struct {
 	AboutMe   string `json:"about_me"`
 }
 
+type Follows struct {
+	UserID     int    `json:"user_id"`
+	Username   string `json:"user_name"`
+	Followers  []User `json:"followers"`
+	Followings []User `json:"followings"`
+}
+
 type Group struct {
 	ID          int       `json:"id"`
 	CreatorId   int       `json:"creator_id"`
@@ -169,6 +176,44 @@ func OpenDatabase() Db {
 
 func (db *Db) Close() {
 	db.connection.Close()
+}
+
+func (db *Db) GetFollows(id int) (follows Follows, err error) {
+	var follow_id int
+
+	follows.UserID = id
+
+	rows, err := db.connection.Query("select followed_id from follow_relation where follower_id = ?", id)
+	if err != nil {
+		return follows, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&follow_id)
+		if err != nil {
+			return follows, err
+		}
+		following := db.GetUser(follow_id)
+		follows.Followings = append(follows.Followings, following)
+	}
+
+	rows, err = db.connection.Query("select follower_id from follow_relation where followed_id = ?", id)
+	if err != nil {
+		return follows, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&follow_id)
+		if err != nil {
+			return follows, err
+		}
+		follower := db.GetUser(follow_id)
+		follows.Followers = append(follows.Followers, follower)
+	}
+
+	return follows, nil
 }
 
 // function to create user

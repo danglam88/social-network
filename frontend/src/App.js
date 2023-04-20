@@ -5,10 +5,7 @@ import "./App.css";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import PersonalProfile from "./components/PersonalProfile";
-import Chat from "./components/Chat";
-import GroupList from "./components/GroupList";
-import WebSocketService from "./services/WebSocketService";
-import NotificationIcon from "./components/NotificationIcon";
+
 
 function App() {
   const [token, setToken] = useState('');
@@ -20,7 +17,7 @@ function App() {
     }
   };
 
-  let wsurl = "ws://localhost:8080/ws";
+  
 
   axios.post(loggedInUrl, JSON.stringify({}), config)
     .then(response => {
@@ -29,27 +26,16 @@ function App() {
     })
     .catch(error => console.log(error));
 
-  if (token !== "") {
-    // changed condition to check if token is not empty
-    WebSocketService.connect(wsurl);
-  }
+
 
   return (
     <div className="App">
-      {token !== "" && ( 
-        <header className="App-header">
-          <div>
-            <NotificationIcon />
-          </div>
-        </header>
-      )}
 
       <div className="App-body"> {}
         {token !== "" ? (
-          <div>
-            <PersonalProfile />
-            <Chat userId={userId} />
-            <GroupList />
+          <div>        
+            <PersonalProfile /> 
+            
           </div>
         ) : (
           <div>

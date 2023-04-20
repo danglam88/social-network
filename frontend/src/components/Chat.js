@@ -43,13 +43,6 @@ const Chat = (props) => {
   return (
     <div>
       <div>
-        <label htmlFor="receiverid">Receiver ID: </label>
-        <input
-          id="receiverid"
-          type="text"
-          value={receiverID}
-          onChange={handleReceiverIDChange}
-        />
 
 <select
   value={receiverID ? JSON.stringify(receiverID) : ""}

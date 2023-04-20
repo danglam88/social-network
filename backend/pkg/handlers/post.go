@@ -55,26 +55,25 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostAdd(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("PostAdd")
 
 	if !IsOn(w, r) {
 		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
 		return
 	}
-
+	fmt.Println("PostAdd 64")
 	username := IsUser(w, r)
 	creatorID := DB.GetUserID(username)
+	groupID := 0
 
-	err := r.ParseForm()
+	err := r.ParseMultipartForm(MAX_SIZE)
 	if err != nil {
 		GetErrResponse(w, "PARSING FORM FAILED", http.StatusInternalServerError)
 		return
 	}
 
-	groupID, groupErr := strconv.Atoi(r.FormValue("group_id"))
-	if groupErr != nil {
-		GetErrResponse(w, "Invalid group id", http.StatusBadRequest)
-		return
-	}
+	fmt.Println("PostAdd 75", creatorID)
+
 	visibility := r.FormValue("visibility")
 	visibilityNbr := 0
 	if visibility == "allmembers" {
@@ -82,6 +81,7 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 	} else if visibility == "private" {
 		visibilityNbr = 2
 	}
+	fmt.Println("PostAdd 89", visibility)
 
 	followersID := []int{}
 	if visibility == "private" {
@@ -97,14 +97,20 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 			followersID = append(followersID, followerID)
 		}
 	}
+	groupIDvalue := r.FormValue("group_id")
+	fmt.Println("PostAdd 76", groupIDvalue)
+
+	fmt.Println("PostAdd 85", groupID)
 
 	imgUrl, imgErr := UploadFile(w, r)
 	if imgErr != nil {
 		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
 		return
 	}
+	fmt.Println("PostAdd 111", imgUrl)
 
 	title := r.FormValue("title")
+	fmt.Println("PostAdd 113", title)
 	ErrorCheck, TitleErrorMessage := ValidateField("Title", title, 1, 30)
 	if ErrorCheck {
 		GetErrResponse(w, TitleErrorMessage, http.StatusBadRequest)
@@ -112,6 +118,7 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	content := r.FormValue("content")
+	fmt.Println("PostAdd 120", content)
 	descriptionErrorCheck, DescriptionErrorMessage := ValidateField("Content", content, 1, 3000)
 
 	if descriptionErrorCheck {
@@ -177,7 +184,7 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 
 // Function to upload a file
 func UploadFile(w http.ResponseWriter, r *http.Request) (imgUrl string, err error) {
-	file, handler, err := r.FormFile("uploaded_img")
+	file, handler, err := r.FormFile("picture")
 	if err == http.ErrMissingFile {
 		return imgUrl, nil
 	}

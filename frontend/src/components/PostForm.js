@@ -1,39 +1,54 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import React, { useState } from "react";
 import axios from "axios";
 
-const PostForm = () => {
-  const initialValues = {
-    title: "",
-    content: "",
-    picture: null,
-    privacy: "public",
-    users: [],
+//send in "group_id" as profiletype.
+const PostForm = (groupId = 0) => {
+  const group_id = groupId;
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [privacy, setPrivacy] = useState("public");
+  const [users, setUsers] = useState([]);
+  const [picture, setPicture] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
   };
 
-  const validationSchema = Yup.object({
-    title: Yup.string().required("Required"),
-    content: Yup.string().required("Required"),
-    picture: Yup.mixed().required("Required"),
-    privacy: Yup.string()
-      .oneOf(["public", "allmembers", "private"])
-      .required("Required"),
-    users: Yup.array().when("privacy", {
-      is: "private",
-      then: Yup.array().min(1, "Please select at least one user"),
-    }),
-  });
+  const handleContentChange = (event) => {
+    setContent(event.target.value);
+  };
 
-  const onSubmit = async (values, { setSubmitting }) => {
+  const handlePrivacyChange = (event) => {
+    setPrivacy(event.target.value);
+  };
+
+  const handleUsersChange = (event) => {
+    setUsers(
+      Array.from(event.target.selectedOptions, (option) => option.value)
+    );
+  };
+
+  const handlePictureChange = (event) => {
+    setPicture(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Add validation
+
     // Send post data and picture file to backend API using Axios or other HTTP client
     try {
       const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("content", values.content);
-      formData.append("picture", values.picture);
-      formData.append("visibility", values.privacy);
-      formData.append("allowed_followers", JSON.stringify(values.users));
+      formData.append("group_id", group_id);
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("visibility", privacy);
+      formData.append("allowed_followers", users.join(","));
+      if (picture) {
+        formData.append("picture", picture);
+      }
 
       const response = await axios.post(
         "http://localhost:8080/post",
@@ -49,70 +64,65 @@ const PostForm = () => {
     } catch (error) {
       console.error("Error creating post:", error);
     }
-
-    setSubmitting(false);
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={onSubmit}>
-      {({ isSubmitting, setFieldValue }) => (
-        <Form>
-          <div>
-            <label htmlFor="title">Title:</label>
-            <Field type="text" id="title" name="title" />
-            <ErrorMessage name="title" />
-          </div>
-
-          <div>
-            <label htmlFor="content">Content:</label>
-            <Field as="textarea" id="content" name="content" />
-            <ErrorMessage name="content" />
-          </div>
-
-          <div>
-            <label htmlFor="picture">Upload picture:</label>
-            <input
-              type="file"
-              id="picture"
-              name="picture"
-              onChange={(event) => {
-                setFieldValue("picture", event.currentTarget.files[0]);
-              }}
-            />
-            <ErrorMessage name="picture" />
-          </div>
-
-          <div>
-            <label htmlFor="privacy">Privacy:</label>
-            <Field as="select" id="privacy" name="privacy">
-              <option value="public">Public</option>
-              <option value="allmembers">Members only</option>
-              <option value="private">Private</option>
-            </Field>
-            <ErrorMessage name="privacy" />
-          </div>
-
-          {values.privacy === "private" && (
-            <div>
-              <label htmlFor="users">Users:</label>
-              <Field as="select" id="users" name="users" multiple>
-                <option value="user1">User 1</option>
-                <option value="user2">User 2</option>
-                <option value="user3">User 3</option>
-              </Field>
-              <ErrorMessage name="users" />
-            </div>
-          )}
-
-          <button type="submit" disabled={isSubmitting}>
-            Submit
-          </button>
-        </Form>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="title">Title:</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={title}
+          onChange={handleTitleChange}
+        />
+      </div>
+      <div>
+        <label htmlFor="content">Content:</label>
+        <textarea
+          id="content"
+          name="content"
+          value={content}
+          onChange={handleContentChange}
+        />
+      </div>
+      <div>
+        <label htmlFor="privacy">Privacy:</label>
+        <select
+          id="privacy"
+          name="privacy"
+          value={privacy}
+          onChange={handlePrivacyChange}>
+          <option value="public">Public</option>
+          <option value="allfollowers">Followers Only</option>
+          <option value="superprivate">Choose Followers</option>
+        </select>
+      </div>
+      {privacy === "superprivate" && (
+        <div>
+          <label htmlFor="users">Users:</label>
+          <select id="users" name="users" multiple onChange={handleUsersChange}>
+            <option value="user1">User 1</option>
+            <option value="user2">User 2</option>
+            <option value="user3">User 3</option>
+          </select>
+        </div>
       )}
-    </Formik>
+      <div>
+        <label htmlFor="picture">Picture:</label>
+        <input
+          type="file"
+          id="picture"
+          name="picture"
+          onChange={handlePictureChange}
+        />
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+      {errorMessage && <div>{errorMessage}</div>}
+    </form>
   );
 };
 

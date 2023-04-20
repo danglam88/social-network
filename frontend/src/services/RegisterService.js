@@ -15,11 +15,7 @@ const createOrUpdateResultWrapper = () => {
 }
 
 const register = async formData => {
-<<<<<<< Updated upstream
   const form = document.getElementById('div-form')
-=======
-  const form = document.getElementById('div-form') // temporary solution
->>>>>>> Stashed changes
   const data = {}
 
   for (const [key, value] of formData.entries()) {

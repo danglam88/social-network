@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const perProfileUrl = 'http://localhost:8080/perprofile'
 
-const config = {
+export const config = {
     headers : {
       'Content-Type': 'application/json'
     }

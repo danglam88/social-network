@@ -23,20 +23,15 @@ type Db struct {
 }
 
 type Post struct {
-	ID          int
-	CreatorID   int
-	CreatorName string
-	GroupID     int
-	Visibility  int
-	Title       string
-	Content     string
-	CreatedAt   time.Time
-	ImgUrl      string
-}
-
-type PostFilter struct {
-	ID         int
-	CategoryID int
+	ID          int       `json:"id"`
+	CreatorID   int       `json:"creator_id"`
+	CreatorName string    `json:"creator_name"`
+	GroupID     int       `json:"group_id"`
+	Visibility  int       `json:"visibility"`
+	Title       string    `json:"title"`
+	Content     string    `json:"content"`
+	CreatedAt   time.Time `json:"created_at"`
+	ImgUrl      string    `json:"img_url"`
 }
 
 type Comment struct {
@@ -55,7 +50,7 @@ type User struct {
 	LastName  string `json:"last_name"`
 	BirthDate string `json:"birth_date"`
 	IsPrivate int    `json:"is_private"`
-	Password  string `json:"password"` //why????
+	Password  string `json:"password"`
 	Email     string `json:"email"`
 	CreatedAt string `json:"created_at"`
 	AvatarUrl string `json:"avatar_url"`
@@ -209,7 +204,7 @@ func (db *Db) GetPosts(userfilter, groupfilter int) (posts []Post, err error) {
 		}
 		username, err := db.GetUserName(post.CreatorID)
 		if err != nil {
-			//handle
+			return posts, err
 		}
 		post.CreatorName = username
 		posts = append(posts, post)

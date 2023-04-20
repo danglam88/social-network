@@ -5,6 +5,7 @@ import Chat from './Chat'
 import WebSocketService from '../services/WebSocketService'
 import GroupList from './GroupList'
 import NotificationIcon from './NotificationIcon'
+import Posts from './Posts'
 
 const PersonalProfile = () => {
     const [data, setData] = useState({
@@ -19,8 +20,6 @@ const PersonalProfile = () => {
         nickname: "",
         aboutMe: ""
     })
-
-
 
     WebSocketService.connect("ws://localhost:8080/ws")
 
@@ -61,11 +60,11 @@ const PersonalProfile = () => {
 
     return (
         <div>
-                      <div className="App-header">
-          <div>
-            <NotificationIcon />
-          </div>
-          </div>
+            <div className="App-header">
+                <div>
+                    <NotificationIcon />
+                </div>
+            </div>
             {data.id && data.firstName && data.lastName && data.birthDate && data.isPrivate && data.email && data.createdAt ?
             <div>
                 User {data.email} has been logged-in successfully.
@@ -84,9 +83,9 @@ const PersonalProfile = () => {
                     <li>Nick Name: {data.nickname}</li>
                     <li>About Me: {data.aboutMe}</li>
                 </ul>
-                <Chat/>
+                <Posts creatorId={data.id} />
+                <Chat />
                 <GroupList />
-                Profile page is still under-construction.
             </div> : null}
         </div>
     )

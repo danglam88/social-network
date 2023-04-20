@@ -17,8 +17,7 @@ import (
 const MAX_SIZE = 20971520
 
 // function to get all posts per profile- or group page
-func PostGet(w http.ResponseWriter, r *http.Request) {
-
+func PostsGet(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	//fmt.Println(ValidateField("content", " hello!<br> ", 1, 100))
@@ -40,18 +39,18 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 		errorMess := "Invalid Id"
 		GetErrResponse(w, errorMess, http.StatusBadRequest)
 		return
-	} else {
-		posts, err := DB.GetPosts(filterUser, filterGroup)
-		if err != nil {
-			errorMess := "Error while getting posts"
-			GetErrResponse(w, errorMess, http.StatusBadRequest)
-			return
-		}
-
-		w.WriteHeader(http.StatusAccepted)
-		res, _ := json.Marshal(posts)
-		io.WriteString(w, string(res))
 	}
+
+	posts, err := DB.GetPosts(filterUser, filterGroup)
+	if err != nil {
+		errorMess := "Error while getting posts"
+		GetErrResponse(w, errorMess, http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+	res, _ := json.Marshal(posts)
+	io.WriteString(w, string(res))
 }
 
 func PostAdd(w http.ResponseWriter, r *http.Request) {

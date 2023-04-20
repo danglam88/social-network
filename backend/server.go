@@ -21,7 +21,7 @@ func main() {
 		},
 		{
 			Endpoint:     "/post",
-			GetFunction:  handlers.PostGet,
+			GetFunction:  handlers.PostsGet,
 			PostFunction: handlers.PostAdd,
 		},
 		{

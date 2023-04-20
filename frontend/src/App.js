@@ -28,8 +28,6 @@ function App() {
   return (
     <div className="App">
       <div className="App-body">
-        {" "}
-        {}
         {token !== "" ? (
           <div>
             <PersonalProfile />

@@ -61,34 +61,36 @@ const PersonalProfile = () => {
 
     return (
         <div>
-            <div className="App-header">
-                <div>
-                    <NotificationIcon />
-                </div>
-            </div>
-            {data.id && data.firstName && data.lastName && data.birthDate && data.isPrivate && data.email && data.createdAt ?
+            {data.id && data.firstName && data.lastName && data.birthDate && data.email && data.createdAt &&
             <div>
-                User {data.email} has been logged-in successfully.
-                <form onSubmit={handleLogout}>
-                    <button type="submit">Logout</button>
-                </form>
-                <ul>
-                    <li>ID: {data.id}</li>
-                    <li>First Name: {data.firstName}</li>
-                    <li>Last Name: {data.lastName}</li>
-                    <li>Birth Date: {data.birthDate}</li>
-                    <li>Is Private: {data.isPrivate}</li>
-                    <li>Email: {data.email}</li>
-                    <li>Created At: {data.createdAt}</li>
-                    <li>Avatar Url: {data.avatarUrl}</li>
-                    <li>Nick Name: {data.nickname}</li>
-                    <li>About Me: {data.aboutMe}</li>
-                </ul>
-                <Posts creatorId={data.id} />
-                <Follows userId={data.id}/>
-                <Chat />
-                <GroupList />
-            </div> : null}
+                <div className="App-header">
+                    <div>
+                        <NotificationIcon />
+                    </div>
+                </div>
+                <div>
+                    User {data.email} has been logged-in successfully.
+                    <form onSubmit={handleLogout}>
+                        <button type="submit">Logout</button>
+                    </form>
+                    <ul>
+                        <li>ID: {data.id}</li>
+                        <li>First Name: {data.firstName}</li>
+                        <li>Last Name: {data.lastName}</li>
+                        <li>Birth Date: {data.birthDate}</li>
+                        <li>Is Private: {data.isPrivate}</li>
+                        <li>Email: {data.email}</li>
+                        <li>Created At: {data.createdAt}</li>
+                        <li>Avatar Url: {data.avatarUrl}</li>
+                        <li>Nick Name: {data.nickname}</li>
+                        <li>About Me: {data.aboutMe}</li>
+                    </ul>
+                    <Posts creatorId={data.id} />
+                    <Follows userId={data.id}/>
+                    <Chat />
+                    <GroupList />
+                </div>
+            </div>}
         </div>
     )
 }

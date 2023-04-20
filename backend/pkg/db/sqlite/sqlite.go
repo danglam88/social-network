@@ -284,6 +284,7 @@ func (db *Db) GetUserID(username string) int {
 		//fmt.Fprintln(os.Stderr, err)
 		return -1
 	}
+	fmt.Println("ended")
 	return userId
 }
 
@@ -298,12 +299,23 @@ func (db *Db) GetEmail(mail string) string {
 	return expected_user.Email
 }
 
+func (db *Db) EmailExists(mail string) bool {
+	var count int
+
+	row := db.connection.QueryRow("select count(*) from user where email = ?", mail)
+	err := row.Scan(&count)
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
 func (db *Db) CreateUser(username, password, email, firstName, lastName, birth, about, avatar string, prev int) string {
-	//insert into user table
-	// _, err := db.connection.Exec("insert into user(privilege,username,first_name,last_name,gender,age,passwrd,email,created_at) values(?,?,?,?,?,?,?,?,?)", prev, username, firstName, lastName, gender, age, password, email, time.Now().Local().Format(time_format))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	// insert into user table
+	_, err := db.connection.Exec("insert into user(email,passwrd,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me) values(?,?,?,?,?,?,?,?,?,?)", email, password, firstName, lastName, birth, 0, time.Now().Local().Format(time_format), avatar, username, about)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return "200 OK"
 }
 

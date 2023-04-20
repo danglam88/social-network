@@ -40,10 +40,10 @@ func RegisterPost(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("nickname")
 	about := r.FormValue("aboutMe")
 
-	fmt.Println(email, password, repassword, firstName, lastName, birth, avatar, username, about)
+	// fmt.Println(email, password, repassword, firstName, lastName, birth, avatar, username, about)
 
 	json, status := validateForm(email, password, repassword, firstName, lastName, birth, avatar, username, about)
-	fmt.Println(string(json))
+	// fmt.Println(string(json))
 	w.WriteHeader(status)
 	io.WriteString(w, string(json))
 }
@@ -76,10 +76,11 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 	password_error := ""
 	firstName_error := ""
 	lastName_error := ""
+	registered_error := ""
 
 	if DB.GetUserID(username) == -1 && ValidatePasswordUsername(username, false) &&
 
-		ValidatePasswordUsername(password, true) &&
+		ValidatePasswordUsername(password, true) && !DB.EmailExists(email) &&
 		len(username) > 3 && len(username) < 15 &&
 		DB.GetEmail(email) != email &&
 		password == repassword && len(password) > 7 && len(password) < 21 &&
@@ -151,6 +152,10 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 	about_err := validateAboutMe(about)
 	if about_err != "" {
 		user = append(user, DataValidation{Field: "aboutMe", Message: about_err})
+	}
+	if DB.EmailExists(email) {
+		registered_error = "User already registered"
+		user = append(user, DataValidation{Field: "email", Message: registered_error})
 	}
 
 	// CHECK THIS

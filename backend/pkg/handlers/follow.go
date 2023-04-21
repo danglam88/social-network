@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -17,13 +18,26 @@ func GetFollows(w http.ResponseWriter, r *http.Request) {
 		filterUser, err = strconv.Atoi(userId[0])
 	}
 
+	if filterUser == 0 {
+		if !IsOn(w, r) {
+			GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
+			return
+		}
+
+		username := IsUser(w, r)
+		filterUser = DB.GetUserID(username)
+	}
+
 	if err != nil {
 		errorMess := "Invalid Id"
 		GetErrResponse(w, errorMess, http.StatusBadRequest)
 		return
 	}
 
+	fmt.Println("filterUser: ", filterUser)
+
 	follows, err := DB.GetFollows(filterUser)
+	fmt.Println("follows: ", follows)
 	if err != nil {
 		errorMess := "Error while getting follows"
 		GetErrResponse(w, errorMess, http.StatusBadRequest)

@@ -509,7 +509,6 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 	for i := range chats {
 		if chats[i].GroupID != 0 {
 			wholeGroup, _ := db.GetGroup(chats[i].GroupID)
-			fmt.Println(wholeGroup, wholeGroup.GroupName)
 			chats[i].DisplayName = wholeGroup.GroupName
 		} else if chats[i].UserOne == userId {
 			chats[i].DisplayName, _ = db.GetUserName(chats[i].UserTwo)

@@ -1,19 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import followsService from "../services/FollowsService";
 
-//send in "group_id" as profiletype.
-const PostForm = (groupId = 0) => {
-  const group_id = groupId;
+//send in "groupId={nbr}" as groupId.
+const PostForm = (groupId) => {
+  const group_id = groupId.groupId;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [privacy, setPrivacy] = useState("public");
   const [users, setUsers] = useState([]);
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [follows, setFollows] = useState(null);
 
-  const followers = [];
-  if (groupId === 0) {
-  }
+  const followUrl = "http://localhost:8080/follow?user_id=0";
+
+  useEffect(() => {
+    if (!groupId.hasOwnProperty("groupId")) {
+      followsService.follows(followUrl).then((response) => {
+        setFollows(response.data);
+      });
+    }
+  }, []);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -49,7 +57,7 @@ const PostForm = (groupId = 0) => {
       return;
     }
     if (!textRegex.test(title) || !textRegex.test(content)) {
-      setErrorMessage("Title and content must be ASCII characters");
+      setErrorMessage("Title and content must be regular characters");
       return;
     }
     if (tagRegex.test(title) || tagRegex.test(content)) {

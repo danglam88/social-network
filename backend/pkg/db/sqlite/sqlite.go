@@ -77,11 +77,13 @@ type Group struct {
 }
 
 type Chat struct {
-	ChatID  int
-	GroupID int
-	UserOne int
-	UserTwo int
-	LastMsg time.Time
+	ChatID      int
+	GroupID     int
+	UserOne     int
+	UserTwo     int
+	DisplayName string
+	AvatarUrl   string
+	LastMsg     time.Time
 }
 
 type Message struct {
@@ -492,7 +494,20 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 	sort.Slice(chats, func(i, j int) bool {
 		return chats[i].LastMsg.After(chats[j].LastMsg)
 	})
-
+	//add displayname to the chats visual use
+	for i := range chats {
+		if chats[i].GroupID != 0 {
+			wholeGroup, _ := db.GetGroup(chats[i].GroupID)
+			fmt.Println(wholeGroup, wholeGroup.GroupName)
+			chats[i].DisplayName = wholeGroup.GroupName
+		} else if chats[i].UserOne == userId {
+			chats[i].DisplayName, _ = db.GetUserName(chats[i].UserTwo)
+			chats[i].AvatarUrl = db.GetUser(chats[i].UserTwo).AvatarUrl
+		} else {
+			chats[i].DisplayName, _ = db.GetUserName(chats[i].UserOne)
+			chats[i].AvatarUrl = db.GetUser(chats[i].UserOne).AvatarUrl
+		}
+	}
 	return chats, err
 }
 

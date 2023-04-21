@@ -836,7 +836,6 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 
 	// Log the SQL query and parameters
 	query := "select sender_id, content, created_at from private_message where chat_id = ? order by id desc limit ? offset ?"
-	fmt.Printf("Executing query: %s\nParameters: %d, %d, %d\n", query, id, 10, page*10)
 
 	rows, err := db.connection.Query(query, id, 10, (page-1)*10)
 	if err != nil {

@@ -35,9 +35,7 @@ const ChatList = ({ selectedChat, onSelectChat }) => {
               fontWeight: selectedChat && selectedChat.ID === chat.ID ? "bold" : "normal",
             }}
           >
-            {chat.GroupID === 0
-              ? `ChatID: ${chat.ChatID} - Direct Message between ${chat.UserOne} and ${chat.UserTwo}`
-              : `ChatID: ${chat.ChatID} - Group Chat with Group ID ${chat.GroupID}`}
+            {chat.DisplayName}
           </li>
         ))}
       </ul>

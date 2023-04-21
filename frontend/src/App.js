@@ -5,7 +5,6 @@ import "./App.css";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import PersonalProfile from "./components/PersonalProfile";
-import PostForm from "./components/PostForm";
 
 function App() {
   const [token, setToken] = useState("");
@@ -31,7 +30,6 @@ function App() {
         {token !== "" ? (
           <div>
             <PersonalProfile />
-            <PostForm />
           </div>
         ) : (
           <div>

@@ -11,6 +11,10 @@ const PostForm = (groupId = 0) => {
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const followers = [];
+  if (groupId === 0) {
+  }
+
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
@@ -36,8 +40,28 @@ const PostForm = (groupId = 0) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Add validation
-
+    // Validation
+    const textRegex = /^[\x20-\x7E]+$/;
+    const tagRegex = /<[^>]*>/g;
+    const imageRegex = /(jpe?g|png|gif|svg)/;
+    if (!title || !content) {
+      setErrorMessage("Title and content are required");
+      return;
+    }
+    if (!textRegex.test(title) || !textRegex.test(content)) {
+      setErrorMessage("Title and content must be ASCII characters");
+      return;
+    }
+    if (tagRegex.test(title) || tagRegex.test(content)) {
+      setErrorMessage("Title and content must not contain HTML tags");
+      return;
+    }
+    if (picture && !imageRegex.test(picture.type)) {
+      setErrorMessage(
+        "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"
+      );
+      return;
+    }
     // Send post data and picture file to backend API using Axios or other HTTP client
     try {
       const formData = new FormData();

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import groupService from "../services/GroupsService"
 import Group from './Group'
+import WebSocketService from '../services/WebSocketService'
 
 const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
 
@@ -119,6 +120,13 @@ const GroupList = () => {
         })
 
         setItems(newItems)
+
+        //send notification
+        const payload = {
+            type: "joinreqnotification",
+            to: parseInt(groupId),
+          };
+          WebSocketService.sendMessage(payload);
     }
 
     useEffect(() => {
@@ -141,21 +149,24 @@ const GroupList = () => {
     if (items.length > 0) {
         return (
             <>
+            {isDetailPage ? (<Group group={groupInfo}/>) : (
+            <>
             <h1>Groups</h1>
-            <div>
-                {groupsList}
-                <div className="group-wrapper">
-                {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
-                (
-                    <>
-                    <div className="group-column">If you haven't find a group you can create our own!</div>
-                    <div className="group-column group-activity-link" onClick={handleCreateGroup}>Create a group</div>
-                    </>
-               )}
+                <div>
+                    {groupsList}
+                    <div className="group-wrapper">
+                    {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
+                    (
+                        <>
+                        <div className="group-column">If you haven't find a group you can create our own!</div>
+                        <div className="group-column group-activity-link" onClick={handleCreateGroup}>Create a group</div>
+                        </>
+                )}
+                    </div>
                 </div>
-            </div>
-            {isDetailPage ?  (<Group group={groupInfo}/>) : (<></>)}
-            </>
+            </>   
+             )}
+            </>    
         )
     } else {
         return (<></>)

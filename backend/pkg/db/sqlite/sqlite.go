@@ -716,16 +716,17 @@ func (db *Db) addChat(groupId, from, to int) (chatId int64, err error) {
 
 func (db *Db) getChat(groupId, from, to int) (chatId int64, err error) {
 	query := "select id from private_chat where "
-	options := []int{from, to, to, from}
+	var options []interface{}
 
 	if groupId == 0 {
 		query += "first_userid = ? and second_userid = ? or first_userid = ? and second_userid = ? "
+		options = []interface{}{from, to, to, from}
 	} else {
 		query += "group_id = ?"
-		options = []int{groupId}
+		options = []interface{}{groupId}
 	}
 
-	row := db.connection.QueryRow(query, options)
+	row := db.connection.QueryRow(query, options...)
 	err = row.Scan(&chatId)
 	if err != nil {
 		return chatId, err
@@ -807,7 +808,11 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 		id, err = db.addChat(groupId, from, to)
 	}
 
-	rows, err := db.connection.Query("select sender_id, content, created_at from private_message where private_chatid = ? order by id desc limit ? offset ?", id, 10, page*10)
+	// Log the SQL query and parameters
+	query := "select sender_id, content, created_at from private_message where chat_id = ? order by id desc limit ? offset ?"
+	fmt.Printf("Executing query: %s\nParameters: %d, %d, %d\n", query, id, 10, page*10)
+
+	rows, err := db.connection.Query(query, id, 10, (page-1)*10)
 	if err != nil {
 		return messages, err
 	}
@@ -819,6 +824,7 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 
 		err := rows.Scan(&message.From, &message.Message, &message.CreatedAt)
 		if err != nil {
+			fmt.Printf("Error in row scan: %v\n", err) // Debug log statement
 			return messages, err
 		}
 
@@ -830,6 +836,8 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 		messages = append(messages, message)
 	}
 	defer rows.Close()
+
+	fmt.Printf("Messages: %+v\n", messages) // Debug log statement
 
 	return messages, err
 }

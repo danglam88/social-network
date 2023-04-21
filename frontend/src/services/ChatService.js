@@ -19,6 +19,14 @@ const ChatService = {
   close: () => {
     WebSocketService.disconnect();
   },
+
+  fetchChatHistory: async (groupId, to, page = 1) => {
+    const response = await fetch(
+      `http://localhost:8080/history?group_id=${groupId}&to=${to}&page=${page}`
+    );
+    const history = await response.json();
+    return history;
+  },
 };
 
 export default ChatService;

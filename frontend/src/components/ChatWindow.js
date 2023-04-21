@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ChatService from "../services/ChatService";
 
 const ChatWindow = ({ userId, chat }) => {
-  const [chatMessages, setChatMessages] = useState([]);
+  const [chatMessages, setChatMessages] = useState(chat.history);
   const [typedMessage, setTypedMessage] = useState("");
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const topRef = useRef(null);
 
   useEffect(() => {
     ChatService.onMessage((messageData) => {
@@ -22,6 +25,39 @@ const ChatWindow = ({ userId, chat }) => {
     }
   };
 
+
+  const loadMoreMessages = useCallback(async () => {
+    if (loading) return;
+    setLoading(true);
+    setPage((prevPage) => prevPage + 1);
+    const newHistory = await ChatService.fetchChatHistory(chat.GroupID, chat.ChatID, page + 1);
+    if (newHistory.length > 0) {
+      setChatMessages((prevMessages) => [...newHistory, ...prevMessages]);
+    }
+    setLoading(false);
+  }, [chat.GroupID, chat.ChatID, loading, page]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreMessages();
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (topRef.current) {
+      observer.observe(topRef.current);
+    }
+
+    return () => {
+      if (topRef.current) {
+        observer.unobserve(topRef.current);
+      }
+    };
+  }, [loadMoreMessages]);
+
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
       <h2>Chat Window</h2>
@@ -33,17 +69,8 @@ const ChatWindow = ({ userId, chat }) => {
           .map((msg) => `${msg.created_at} - ${msg.username}: ${msg.message}`)
           .join("\n")}
       ></textarea>
-      <div>
-        <input
-          type="text"
-          value={typedMessage}
-          onChange={(e) => setTypedMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") sendMessage();
-          }}
-        />
-        <button onClick={sendMessage}>Send</button>
-      </div>
+      <div ref={topRef}></div>
+      {/* ... other code ... */}
     </div>
   );
 };

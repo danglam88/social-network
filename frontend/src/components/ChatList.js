@@ -11,8 +11,9 @@ const ChatList = ({ selectedChat, onSelectChat }) => {
       .catch((error) => console.error("Error fetching chats:", error));
   }, []);
 
-  const handleClick = (chat) => {
-    onSelectChat(chat);
+  const handleClick = async (chat) => {
+    const history = await ChatService.fetchChatHistory(chat.GroupID, chat.ChatID);
+    onSelectChat({ ...chat, history });
   };
 
   return (

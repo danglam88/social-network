@@ -9,7 +9,6 @@ import (
 )
 
 func GetHistory(w http.ResponseWriter, r *http.Request) {
-
 	params := r.URL.Query()
 
 	var groupId, to, page int
@@ -23,18 +22,20 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 	username := IsUser(w, r)
 	user_id := DB.GetUserID(username)
 
-	if toStr, isToExist := params["to"]; isToExist {
-		to, err = strconv.Atoi(toStr[0])
-	} else {
-		GetErrResponse(w, "to is mandatory", http.StatusBadRequest)
-		return
-	}
-
 	if groupStr, isGroupExist := params["group_id"]; isGroupExist {
 		groupId, err = strconv.Atoi(groupStr[0])
 	} else {
 		GetErrResponse(w, "group_id is mandatory", http.StatusBadRequest)
 		return
+	}
+
+	if groupId == 0 {
+		if toStr, isToExist := params["to"]; isToExist {
+			to, err = strconv.Atoi(toStr[0])
+		} else {
+			GetErrResponse(w, "to is mandatory", http.StatusBadRequest)
+			return
+		}
 	}
 
 	if pageStr, isPageExist := params["page"]; isPageExist {

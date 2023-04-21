@@ -21,10 +21,10 @@ const getGroups = async data => {
     return request
 }
 
-const getGroup = async data => {
-    console.log(data)
-    const request = await axios.get(groupUrl, config)
-    return request
+const getGroup = async groupId => {
+  console.log(groupId)
+  const request = await axios.get(groupUrl + "?id=" + groupId, config)
+  return request
 }
 
 const createGroup = async data => {
@@ -33,7 +33,6 @@ const createGroup = async data => {
 }
 
 const joinGroup = async data => {
-  console.log(data)
   const request = await axios.post(groupJoinUrl, data, postConfig)
   return request
 }

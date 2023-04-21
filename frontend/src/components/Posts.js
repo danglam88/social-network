@@ -1,17 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import postsService from "../services/PostsService"
 
-const Posts = (props) => {
-    const postUrl = 'http://localhost:8080/post?creator_id=' + props.creatorId
-    const [posts, setPosts] = useState([])
-
-    useEffect(() => {
-        postsService.posts(postUrl)
-            .then(response => {
-                setPosts(response.data)
-            })
-    }, [])
-
+const Posts = ({posts}) => {
     return (
         <div>
             <table>

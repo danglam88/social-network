@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import groupService from "../services/GroupsService"
+import Group from './Group'
 
-const ListItem = ({group, handleSuccessJoinRequest}) => {
+const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
 
-    const handleShowGroup = (event) => {
-        console.log(1111111)
-    } 
+    const handleShowGroup = (groupId) => {
+        handleGoToDetail(groupId)
+    }
 
     const handleRequestJoin = (groupId) => {
         const data = {
@@ -23,11 +24,13 @@ const ListItem = ({group, handleSuccessJoinRequest}) => {
             <h3>{group.name}</h3>
             <div>
                 <div className="group-column">{group.description}</div>
-                {!group.is_member ? 
-                    (<div className="group-column group-activity-link" onClick={() => handleRequestJoin(group.id)}>Join</div>) : (
-                        <div className="group-column group-activity-link">Member</div>
-                    )}
-                <div className="group-column group-activity-link"onClick={handleShowGroup}>Go to</div>
+                {group.is_member ?
+                    (<div className="group-column group-activity-link" onClick={() => handleShowGroup(group.id)}>Go to</div>)
+                    : group.is_requested ? 
+                    (<div className="group-column group-activity-link">Requested</div>) 
+                    : 
+                    (<div className="group-column group-activity-link" onClick={() => handleRequestJoin(group.id)}>Join</div>)
+                    }
             </div>
         </div>
     )
@@ -82,7 +85,8 @@ const GroupList = () => {
 
     const [items, setItems] = useState([])
     const [isCreateGroup, setIsCreateGroup] = useState(false)
-    //const [isDetailPage, setIsDetailPage] = useState(false)
+    const [isDetailPage, setIsDetailPage] = useState(false)
+    const [groupInfo, setGroupInfo] = useState({})
 
     const handleCreateGroup = (event) => {
         setIsCreateGroup(true)
@@ -95,12 +99,22 @@ const GroupList = () => {
         setItems(newItems)
     }
 
+    const handleGoToDetail = (groupId) => {
+
+        groupService.group(groupId).then(response => {
+            setGroupInfo(response.data)
+            setIsDetailPage(true)
+        })
+        .catch(error => console.log(error))
+    }
+
     const handleSuccessJoinRequest = (groupId) => {
         const newItems = items.map(a => {return {...a}})
 
         newItems.forEach((data, key) => {
             if (data.id == groupId) {
-                newItems[key].is_member = true
+                newItems[key].is_member = false
+                newItems[key].is_requested = true
             }
         })
 
@@ -121,7 +135,7 @@ const GroupList = () => {
 
     const groupsList = []
     {items.forEach((data) => {
-        groupsList.push(<ListItem group={data} key={data.id} handleSuccessJoinRequest={handleSuccessJoinRequest}/>)
+        groupsList.push(<ListItem group={data} key={data.id} handleSuccessJoinRequest={handleSuccessJoinRequest} handleGoToDetail={handleGoToDetail}/>)
     })}
 
     if (items.length > 0) {
@@ -140,6 +154,7 @@ const GroupList = () => {
                )}
                 </div>
             </div>
+            {isDetailPage ?  (<Group group={groupInfo}/>) : (<></>)}
             </>
         )
     } else {

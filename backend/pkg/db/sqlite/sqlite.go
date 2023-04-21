@@ -74,6 +74,7 @@ type Group struct {
 	Members     []User    `json:"members"`
 	IsMember    bool      `json:"is_member"`
 	IsRequested bool      `json:"is_requested"`
+	Posts       []Post    `json:"posts"`
 }
 
 type Chat struct {
@@ -407,7 +408,16 @@ func (db *Db) GetGroup(id int) (group Group, err error) {
 	}
 
 	members := db.GetGroupMembers(group.ID)
+
+	posts, err := db.GetPosts(0, id)
+
+	if err != nil {
+		fmt.Println(err)
+		return group, err
+	}
+
 	group.Members = members
+	group.Posts = posts
 
 	return group, err
 }
@@ -419,7 +429,7 @@ func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
 		return groups, err
 	}
 
-	userGroups, err := db.GetUserGroups(userId)
+	userGroups, userRequests, err := db.GetUserGroups(userId)
 
 	if err != nil {
 		return groups, err
@@ -436,6 +446,7 @@ func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
 
 		group.Members = members
 		group.IsMember = userGroups[group.ID]
+		group.IsRequested = userRequests[group.ID]
 
 		groups = append(groups, group)
 	}
@@ -538,28 +549,43 @@ func (db *Db) JoinToGroup(userId, groupId int) (err error) {
 	return err
 }
 
-func (db *Db) GetUserGroups(userId int) (groups map[int]bool, err error) {
+func (db *Db) GetUserGroups(userId int) (groups map[int]bool, requests map[int]bool, err error) {
 
 	groups = make(map[int]bool)
+	requests = make(map[int]bool)
 
-	query := "select group_id from group_relation where user_id=?"
+	query := "select group_id,is_requested,is_approved from group_relation where user_id=?"
 	rows, err := db.connection.Query(query, userId)
+
+	fmt.Println(err)
 	if err != nil {
-		return groups, err
+		return groups, requests, err
 	}
 
 	var groupId int
+	var isRequested int
+	var isApproved int
 
 	for rows.Next() {
-		err := rows.Scan(&groupId)
+		err := rows.Scan(&groupId, &isRequested, &isApproved)
 		if err != nil {
-			return groups, err
+			return groups, requests, err
 		}
-		groups[groupId] = true
+
+		fmt.Println(groupId, isRequested, isApproved)
+
+		if (isRequested == 1) && (isApproved == 0) {
+			requests[groupId] = true
+		}
+
+		if isApproved == 1 {
+			groups[groupId] = true
+		}
 	}
+
 	defer rows.Close()
 
-	return groups, err
+	return groups, requests, err
 }
 
 func (db *Db) GetUser(id int) User {

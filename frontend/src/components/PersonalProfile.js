@@ -6,6 +6,7 @@ import WebSocketService from "../services/WebSocketService";
 import GroupList from "./GroupList";
 import NotificationIcon from "./NotificationIcon";
 import Posts from "./Posts";
+import postsService from "../services/PostsService";
 import Follows from "./Follows";
 import PostForm from "./PostForm";
 
@@ -25,6 +26,8 @@ const PersonalProfile = () => {
 
   WebSocketService.connect("ws://localhost:8080/ws");
 
+  const [posts, setPosts] = useState([])
+
   useEffect(() => {
     perProfileService
       .perprofile(data)
@@ -41,6 +44,11 @@ const PersonalProfile = () => {
           nickname: response.data.nick_name,
           aboutMe: response.data.about_me,
         });
+
+        postsService.posts('http://localhost:8080/post?creator_id=' + response.data.id).then(response => {
+                setPosts(response.data) 
+        })
+
       })
       .catch((error) => console.log(error));
   }, []);
@@ -95,7 +103,7 @@ const PersonalProfile = () => {
                 <li>About Me: {data.aboutMe}</li>
               </ul>
               <PostForm />
-              <Posts creatorId={data.id} />
+              <Posts posts={posts} />
               <Follows userId={data.id} />
               <Chat />
               <GroupList />

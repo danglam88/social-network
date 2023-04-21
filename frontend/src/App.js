@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import logo from "./logo.svg";
+import logo from "./logo.png";
 import "./App.css";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
@@ -35,7 +35,9 @@ function App() {
             <div id="div-form">
               <RegisterForm />
             </div>
+            <div id="div-form">
             <LoginForm />
+            </div>
           </div>
         )}
       </div>

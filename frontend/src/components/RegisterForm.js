@@ -50,37 +50,48 @@ const RegisterForm = () => {
 
         return (
             <form onSubmit={handleRegister}>
-                <div>
-                    email: <input type="email" name="email" value={email} onChange={handleEmailChange} />
+                <div className="input-container">
+                    <input type="email" name="email" value={email} onChange={handleEmailChange} placeholder=" " required />
+                    <label>Email</label>
                 </div>
-                <div>
-                    password: <input type="password" name="password" value={password} onChange={handlePasswordChange} />
+                <div className="input-container">
+                    <input type="password" name="password" value={password} onChange={handlePasswordChange} placeholder=" " required />
+                    <label>Password</label>
                 </div>
-                <div>
-                    password2: <input type="password" name="password2" value={password2} onChange={handlePassword2Change} />
+                <div className="input-container">
+                    <input type="password" name="password2" value={password2} onChange={handlePassword2Change} placeholder=" " required />
+                    <label>Confirm Password</label>
                 </div>
-                <div>
-                    firstName: <input type="text" name="firstName" value={firstName} onChange={handleFirstNameChange} />
+                <div className="input-container">
+                    <input type="text" name="firstName" value={firstName} onChange={handleFirstNameChange} placeholder=" " required />
+                    <label>First Name</label>
                 </div>
-                <div>
-                    lastName: <input type="text" name="lastName" value={lastName} onChange={handleLastNameChange} />
+                <div className="input-container">
+                    <input type="text" name="lastName" value={lastName} onChange={handleLastNameChange} placeholder=" " required />
+                    <label>Last Name</label>
                 </div>
-                <div>
-                    dateOfBirth: <input type="date" name="dateOfBirth" value={dateOfBirth} onChange={handleDateOfBirthChange} />
+                <div className="input-container">
+                    <input type="date" name="dateOfBirth" value={dateOfBirth} onChange={handleDateOfBirthChange} placeholder=" " required />
+                    <label>Date of Birth</label>
                 </div>
-                <div>
-                    avatar: <input type="text" name="avatar" value={avatar} onChange={handleAvatarChange} />
+                <div className="input-container">
+                    <input type="text" name="avatar" value={avatar} onChange={handleAvatarChange} placeholder=" " />
+                    <label>Avatar URL</label>
                 </div>
-                <div>
-                    nickname: <input type="text" name="nickname" value={nickname} onChange={handleNicknameChange} />
+                <div className="input-container">
+                    <input type="text" name="nickname" value={nickname} onChange={handleNicknameChange} placeholder=" " />
+                    <label>Nickname</label>
                 </div>
-                <div>
-                    aboutMe: <input type="text" name="aboutMe" value={aboutMe} onChange={handleAboutMeChange} />
+                <div className="input-container">
+                    <input type="text" name="aboutMe" value={aboutMe} onChange={handleAboutMeChange} placeholder=" " />
+                    <label>About Me</label>
                 </div>
                 <div>
                     <button type="submit">Register</button>
                 </div>
             </form>
+
+
         )
 }
 

@@ -3,9 +3,118 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 25vmin;
   pointer-events: none;
 }
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  border: 1px solid #998650;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 16px;
+  color: black;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  border-color: #333;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+input[type="date"] {
+  border: 1px solid #998650;
+  color: black;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="date"]:focus {
+  border-color: #2c3e50;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 10px; /* adjust as needed */
+  vertical-align: top; /* adjust as needed */
+}
+
+.input-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.input-container input {
+  font-size: 1.1rem;
+  padding: 15px 5px 5px;
+  display: block;
+  width: 100%;
+  border: 1px solid #998650;
+  border-bottom: 2px solid #998650;
+  background-color: transparent;
+  transition: all 0.3s;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-bottom-color: #92AFD7;
+}
+
+.input-container label {
+  font-size: 1rem;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 15px;
+  top: 20px;
+  transition: all 0.3s;
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label {
+  top: 2px;
+  font-size: 0.8rem;
+  color: #92AFD7;
+}
+
+.input-container input:focus + label {
+  color: #92AFD7;
+}
+
+button {
+  background-color: #FF2E63;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  }
+  
+button:hover {
+  background-color: #CC245D;
+  }
+  
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 46, 99, 0.4);
+  }
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -14,25 +123,25 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #fbf9e5;
   min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-body {
-  background-color: #282c34;
+  background-color: #fbf9e5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-size: calc(8px + 2vmin);
+  color: black;
 }
 
 .App-link {

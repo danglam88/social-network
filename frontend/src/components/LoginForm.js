@@ -37,18 +37,20 @@ const LoginForm = () => {
     <div>
       {unauthorizedAccess ? <div>Invalid credentials. Please login again.</div> : null}
       <form onSubmit={handleLogin}>
-        <div>
-          email: <input value={email} onChange={handleEmailChange}/>
+        <div className="input-container">
+          <input type="email" id="email" value={email} onChange={handleEmailChange}/>
+          <label>Email:</label>
         </div>
-        <div>
-          password: <input type="password" value={password} onChange={handlePasswordChange}/>
+        <div className="input-container">
+          <input type="password" id="password" value={password} onChange={handlePasswordChange}/>
+          <label>Password:</label>
         </div>   
         <div>
           <button type="submit">Login</button>
         </div>
       </form>
     </div>
-  )
+  );  
 }
 
 export default LoginForm

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import followsService from "../services/FollowsService"
+import Followers from './Followers'
+import Followings from './Followings'
 
 const Follows = (props) => {
     const followUrl = 'http://localhost:8080/follow?user_id=' + props.userId
     const [follows, setFollows] = useState(null)
+    const [followersVisible, setFollowersVisible] = useState(false)
+    const [followingsVisible, setFollowingsVisible] = useState(false)
 
     useEffect(() => {
         followsService.follows(followUrl)
@@ -12,54 +16,28 @@ const Follows = (props) => {
             })
     }, [])
 
+    const toggleFollowers = () => {
+        setFollowersVisible(!followersVisible)
+    }
+
+    const toggleFollowings = () => {
+        setFollowingsVisible(!followingsVisible)
+    }
+
     return (
         <div>
             {follows &&
             <div>
                 {follows.followers.length > 0 &&
-                <table>
-                    <thead>
-                        <h2>Followers:</h2>
-                        <tr>
-                            <th>FirstName</th>
-                            <th>LastName</th>
-                            <th>Email</th>
-                            <th>NickName</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {follows.followers.map(follower =>
-                            <tr id={follower.id}>
-                                <td>{follower.first_name}</td>
-                                <td>{follower.last_name}</td>
-                                <td>{follower.email}</td>
-                                <td>{follower.nick_name}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>}
+                <div>
+                    <button onClick={toggleFollowers}>Show/Hide Followers</button>
+                    {followersVisible && <Followers followers={follows.followers} />}
+                </div>}
                 {follows.followings.length > 0 &&
-                <table>
-                    <thead>
-                        <h2>Followings:</h2>
-                        <tr>
-                            <th>FirstName</th>
-                            <th>LastName</th>
-                            <th>Email</th>
-                            <th>NickName</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {follows.followings.map(following =>
-                            <tr id={following.id}>
-                                <td>{following.first_name}</td>
-                                <td>{following.last_name}</td>
-                                <td>{following.email}</td>
-                                <td>{following.nick_name}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>}
+                <div>
+                    <button onClick={toggleFollowings}>Show/Hide Followings</button>
+                    {followingsVisible && <Followings followings={follows.followings} />}
+                </div>}
             </div>}
         </div>
     )

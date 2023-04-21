@@ -8,6 +8,7 @@ const Posts = ({posts}) => {
                     <tr>
                         <th>Creator ID</th>
                         <th>Creator Name</th>
+                        <th>Group ID</th>
                         <th>Visibility</th>
                         <th>Title</th>
                         <th>Content</th>
@@ -20,6 +21,7 @@ const Posts = ({posts}) => {
                         <tr id={post.id}>
                             <td>{post.creator_id}</td>
                             <td>{post.creator_name}</td>
+                            <td>{post.group_id}</td>
                             <td>{post.visibility}</td>
                             <td>{post.title}</td>
                             <td>{post.content}</td>

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { config } from './LoginService'
+import config from './LoginService'
 
 const registerUrl = 'http://localhost:8080/register'
 
@@ -50,8 +50,6 @@ const register = async formData => {
     })
 }
 
-const registerService = {
-  register: register,
-}
+const registerService = { register }
 
 export default registerService

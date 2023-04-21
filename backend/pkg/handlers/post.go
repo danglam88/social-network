@@ -17,7 +17,7 @@ import (
 const MAX_SIZE = 20971520
 
 // function to get all posts per profile- or group page
-func PostsGet(w http.ResponseWriter, r *http.Request) {
+func PostGet(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	//fmt.Println(ValidateField("content", " hello!<br> ", 1, 100))

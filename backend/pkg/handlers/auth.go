@@ -142,7 +142,7 @@ func IsOn(w http.ResponseWriter, r *http.Request) bool {
 }
 
 func IsUser(w http.ResponseWriter, r *http.Request) string {
-	//Get username from session not checking for error as we know it exists
+	//Get username from session
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
 		return ""
@@ -153,7 +153,5 @@ func IsUser(w http.ResponseWriter, r *http.Request) string {
 		return ""
 	}
 
-	username := session.Username
-
-	return username
+	return session.Username
 }

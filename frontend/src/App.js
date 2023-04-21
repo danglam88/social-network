@@ -8,7 +8,6 @@ import PersonalProfile from "./components/PersonalProfile";
 
 function App() {
   const [token, setToken] = useState("");
-  const [userId, setUserId] = useState(0);
   const loggedInUrl = "http://localhost:8080/loggedin";
   const config = {
     headers: {
@@ -20,7 +19,6 @@ function App() {
     .post(loggedInUrl, JSON.stringify({}), config)
     .then((response) => {
       setToken(response.data.token);
-      setUserId(response.data.user_id);
     })
     .catch((error) => console.log(error));
 

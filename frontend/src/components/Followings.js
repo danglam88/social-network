@@ -2,7 +2,7 @@ function Followings(props) {
     return (
         <table>
             <thead>
-                <h2>Followings:</h2>
+                <h2>Following(s):</h2>
                 <tr>
                     <th>FirstName</th>
                     <th>LastName</th>

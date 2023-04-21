@@ -235,7 +235,7 @@ func (db *Db) GetPosts(userfilter, groupfilter int) (posts []Post, err error) {
 	query = "select id,creator_id,group_id,visibility,title,content,created_at,img_url from post"
 
 	if userfilter > 0 {
-		query = query + fmt.Sprintf(" where creator_id = %v", userfilter)
+		query = query + fmt.Sprintf(" where creator_id = %v and group_id = 0", userfilter)
 	} else if groupfilter > 0 {
 		query = query + fmt.Sprintf(" where group_id = %v", groupfilter)
 	}
@@ -327,7 +327,7 @@ func (db *Db) GetUserID(username string) int {
 		//fmt.Fprintln(os.Stderr, err)
 		return -1
 	}
-	fmt.Println("ended")
+
 	return userId
 }
 

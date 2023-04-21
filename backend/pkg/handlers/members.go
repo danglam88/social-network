@@ -7,17 +7,14 @@ import (
 )
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	if !IsOn(w, r) {
+		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
+		return
+	}
 
-	// if !IsOn(w, r) {
-	// 	GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-	// 	return
-	// }
+	username := IsUser(w, r)
 
-	//replace with session when implemented
-	userMail := "malin.oscarius@gritlab.ax" //IsUser(w, r)
-	//user_id := DB.GetUserID(userMail)
-
-	users, err := DB.GetAllUsers(userMail)
+	users, err := DB.GetAllUsers(username)
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}

@@ -14,6 +14,7 @@ const Follows = (props) => {
             .then(response => {
                 setFollows(response.data)
             })
+            .catch(error => console.log(error))
     }, [])
 
     const toggleFollowers = () => {

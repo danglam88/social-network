@@ -136,7 +136,7 @@ const PersonalProfile = () => {
 
   return (
     <div>
-      <div className="App-header">
+      <div className="Header">
         {data.nickname ? (
           <div>
             WELCOME <span onClick={handleShowPersonalProfile}><i><u>{data.nickname}</u></i></span>!
@@ -151,17 +151,19 @@ const PersonalProfile = () => {
           <button type="submit">Logout</button>
         </form>
       </div>
-      <div>
+      <div className="Menu">
         {users.length > 0 &&
-        <div>
-          <button onClick={handleSetUsersVisible}>Show Users</button>
-          {usersVisible && <UserList users={users} />}
-        </div>}
+          <div>
+            <button onClick={handleSetUsersVisible}>Show Users</button>
+            {usersVisible && <UserList users={users} />}
+          </div>}
         {groups.length > 0 &&
-        <div>
-          <button onClick={handleSetGroupsVisible}>Show Groups</button>
-          {groupsVisible && <GroupList />}
-        </div>}
+          <div>
+            <button onClick={handleSetGroupsVisible}>Show Groups</button>
+            {groupsVisible && <GroupList />}
+          </div>}
+      </div>
+      <div className="Mainpage">
         {showPersonalProfile ? (
           <div>
             <PersonalInfo data={data} />

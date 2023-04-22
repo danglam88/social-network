@@ -26,17 +26,13 @@ function App() {
     <div className="App">
       <div className="App-body">
         {token !== "" ? (
-          <div>
-            <PersonalProfile />
-          </div>
+          <PersonalProfile />
         ) : (
           <div>
             <img src={logo} className="App-logo" alt="logo" />
             <div id="div-form">
               <RegisterForm />
-            </div>
-            <div id="div-form">
-            <LoginForm />
+              <LoginForm />
             </div>
           </div>
         )}

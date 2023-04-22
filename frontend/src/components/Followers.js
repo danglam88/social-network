@@ -1,26 +1,17 @@
-function Followers(props) {
+function Followers({followers}) {
     return (
-        <table>
-            <thead>
-                <h2>Follower(s):</h2>
-                <tr>
-                    <th>FirstName</th>
-                    <th>LastName</th>
-                    <th>Email</th>
-                    <th>NickName</th>
-                </tr>
-            </thead>
-            <tbody>
-                {props.followers.map(follower =>
-                    <tr id={follower.id}>
-                        <td>{follower.first_name}</td>
-                        <td>{follower.last_name}</td>
-                        <td>{follower.email}</td>
-                        <td>{follower.nick_name}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
+        <div>
+            <h3>Follower(s):</h3>
+            {followers.map(follower =>
+                <div id={follower.id}>
+                    {follower.nick_name ? (
+                        <span>{follower.nick_name}</span>
+                    ) : (
+                        <span>{follower.first_name} {follower.last_name}</span>
+                    )}
+                </div>
+            )}
+        </div>
     )
 }
 

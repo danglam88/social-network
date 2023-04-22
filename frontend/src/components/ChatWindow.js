@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import ChatService from "../services/ChatService";
 
-const ChatWindow = ({ userId, chat }) => {
+const ChatWindow = ({ chat }) => {
   const [chatMessages, setChatMessages] = useState(chat.history);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);

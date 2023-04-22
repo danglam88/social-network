@@ -6,10 +6,15 @@ import WebSocketService from '../services/WebSocketService'
 import GroupList from './GroupList'
 import NotificationIcon from './NotificationIcon'
 import Posts from './Posts'
-import Follows from './Follows'
 import PostForm from './PostForm'
 import postsService from '../services/PostsService'
-import Users from './Users'
+import PersonalInfo from './PersonalInfo'
+import usersService from "../services/UsersService"
+import UserList from './UserList'
+import followsService from "../services/FollowsService"
+import Followers from './Followers'
+import Followings from './Followings'
+import groupService from '../services/GroupsService'
 
 const PersonalProfile = () => {
   const [data, setData] = useState({
@@ -28,6 +33,9 @@ const PersonalProfile = () => {
   WebSocketService.connect("ws://localhost:8080/ws");
 
   const [posts, setPosts] = useState([])
+  const [follows, setFollows] = useState(null)
+  const [followersVisible, setFollowersVisible] = useState(false)
+  const [followingsVisible, setFollowingsVisible] = useState(false)
 
   useEffect(() => {
     perProfileService
@@ -51,6 +59,12 @@ const PersonalProfile = () => {
             setPosts(response.data) 
           })
           .catch((error) => console.log(error))
+
+        followsService.follows('http://localhost:8080/follow?user_id=' + response.data.id)
+          .then(response => {
+              setFollows(response.data)
+          })
+          .catch(error => console.log(error))
       })
       .catch((error) => console.log(error));
   }, []);
@@ -64,8 +78,7 @@ const PersonalProfile = () => {
       .then((response) => {
         console.log(response);
 
-        document.cookie =
-          "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         sessionStorage.removeItem("userid");
         sessionStorage.removeItem("username");
         window.location.reload();
@@ -73,42 +86,107 @@ const PersonalProfile = () => {
       .catch((error) => console.log(error));
   };
 
-    return (
+  const toggleFollowers = () => {
+    setFollowersVisible(!followersVisible)
+  }
+
+  const toggleFollowings = () => {
+    setFollowingsVisible(!followingsVisible)
+  }
+
+  const [showPersonalProfile, setShowPersonalProfile] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [usersVisible, setUsersVisible] = useState(false);
+  const [groups, setGroups] = useState([]);
+  const [groupsVisible, setGroupsVisible] = useState(false);
+
+  const handleShowPersonalProfile = () => {
+    setShowPersonalProfile(true);
+    setUsersVisible(false);
+    setGroupsVisible(false);
+  };
+
+  const handleSetUsersVisible = () => {
+    setShowPersonalProfile(false);
+    setUsersVisible(true);
+    setGroupsVisible(false);
+  };
+
+  const handleSetGroupsVisible = () => {
+    setShowPersonalProfile(false);
+    setUsersVisible(false);
+    setGroupsVisible(true);
+  };
+
+  useEffect(() => {
+    usersService.users()
+      .then(response => {
+        setUsers(response.data)
+      })
+      .catch(error => console.log(error))
+  }, []);
+
+  useEffect(() => {
+    groupService.groups()
+      .then(response => {
+        setGroups(response.data)
+      })
+      .catch(error => console.log(error))
+  }, []);
+
+  return (
+    <div>
+      <div className="App-header">
+        {data.nickname ? (
+          <div>
+            WELCOME <span onClick={handleShowPersonalProfile}><i><u>{data.nickname}</u></i></span>!
+          </div>
+        ) : (
+          <div>
+            WELCOME <span onClick={handleShowPersonalProfile}><i><u>{data.firstName} + " " + {data.lastName}</u></i></span>!
+          </div>
+        )}
+        <NotificationIcon />
+        <form onSubmit={handleLogout}>
+          <button type="submit">Logout</button>
+        </form>
+      </div>
+      <div>
+        {users.length > 0 &&
         <div>
-            {data.id && data.firstName && data.lastName && data.birthDate && data.email && data.createdAt &&
+          <button onClick={handleSetUsersVisible}>Show Users</button>
+          {usersVisible && <UserList users={users} />}
+        </div>}
+        {groups.length > 0 &&
+        <div>
+          <button onClick={handleSetGroupsVisible}>Show Groups</button>
+          {groupsVisible && <GroupList />}
+        </div>}
+        {showPersonalProfile ? (
+          <div>
+            <PersonalInfo data={data} />
             <div>
-                <div className="App-header">
-                    <div>
-                        <NotificationIcon />
-                    </div>
-                </div>
+            {follows &&
+              <div>
+                {follows.followers.length > 0 &&
                 <div>
-                    User {data.email} has been logged-in successfully.
-                    <form onSubmit={handleLogout}>
-                        <button type="submit">Logout</button>
-                    </form>
-                    <ul>
-                        <li>ID: {data.id}</li>
-                        <li>First Name: {data.firstName}</li>
-                        <li>Last Name: {data.lastName}</li>
-                        <li>Birth Date: {data.birthDate}</li>
-                        <li>Is Private: {data.isPrivate}</li>
-                        <li>Email: {data.email}</li>
-                        <li>Created At: {data.createdAt}</li>
-                        <li>Avatar Url: {data.avatarUrl}</li>
-                        <li>Nick Name: {data.nickname}</li>
-                        <li>About Me: {data.aboutMe}</li>
-                    </ul>
-                    <PostForm />
-                    <Posts posts={posts} />
-                    <Follows userId={data.id}/>
-                    <Users />
-                    <GroupList />
-                    <Chat />
-                </div>
-            </div>}
-        </div>
-    )
+                  <button onClick={toggleFollowers}>Show/Hide Followers</button>
+                  {followersVisible && <Followers followers={follows.followers} />}
+                </div>}
+                {follows.followings.length > 0 &&
+                <div>
+                  <button onClick={toggleFollowings}>Show/Hide Followings</button>
+                  {followingsVisible && <Followings followings={follows.followings} />}
+                </div>}
+              </div>}
+            </div>
+            <PostForm />
+            {posts && <Posts posts={posts} />}
+            <Chat />
+          </div>) : null}
+      </div>
+    </div>
+  )
 }
 
 export default PersonalProfile;

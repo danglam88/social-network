@@ -4,7 +4,7 @@ const Posts = ({posts}) => {
         <div>
             <table>
                 <thead>
-                    <h2>Created Posts:</h2>
+                    <h3>Created Posts:</h3>
                     <tr>
                         <th>Creator ID</th>
                         <th>Creator Name</th>

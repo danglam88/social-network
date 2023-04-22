@@ -99,6 +99,7 @@ const PostForm = (groupId) => {
   };
 
   return (
+  <div>
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="title">Title:</label>
@@ -155,6 +156,7 @@ const PostForm = (groupId) => {
       </div>
       {errorMessage && <div>{errorMessage}</div>}
     </form>
+  </div>
   );
 };
 

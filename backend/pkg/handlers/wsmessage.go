@@ -160,9 +160,9 @@ func (c *Client) readMessages() {
 		fmt.Println(res)
 
 		if res.From > 0 {
+			res.CreatedAt = DB.GetTime()
+			message, _ := json.Marshal(res)
 			if res.Type == MESSAGE_TYPE {
-				res.CreatedAt = DB.GetTime()
-				message, _ := json.Marshal(res)
 
 				fmt.Println("Message: ", res.Message)
 
@@ -222,6 +222,14 @@ func (c *Client) readMessages() {
 				if err != nil {
 					log.Println(err)
 				}
+
+				group, err := DB.GetGroup(res.To)
+				if err != nil {
+					log.Println(err)
+				}
+
+				res.Message = res.UserName + " wants to join your group " + group.GroupName
+
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == creatorId {
 						message, _ := json.Marshal(res)

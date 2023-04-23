@@ -13,6 +13,7 @@ const NotificationService = {
         message.type === "joinreqnotification" ||
         message.type === "eventnotification"
       ) {
+        console.log("Notification received", message)
         notifications.push(message);
         if (updateCallback) {
           updateCallback(notifications);

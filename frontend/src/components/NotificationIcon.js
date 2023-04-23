@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import NotificationService from '../services/NotificationService';
+import WebSocketService from '../services/WebSocketService';
 
 const NotificationIcon = () => {
   const [notifications, setNotifications] = useState([]);
   const [showList, setShowList] = useState(false);
 
   useEffect(() => {
-    const handleUpdate = (newNotifications) => {
-      setNotifications(newNotifications);
-    };
-
-    NotificationService.onUpdate(handleUpdate);
-    return () => {
-      // Clean up any resources when the component is unmounted
-    };
+    WebSocketService.connect("ws://localhost:8080/ws");
+    WebSocketService.onMessage((message) => {
+      if (
+        message.type === "follownotification" ||
+        message.type === "invitenotification" ||
+        message.type === "joinreqnotification" ||
+        message.type === "eventnotification"
+      ) {
+        console.log("Notification received", message);
+        setNotifications((prevNotifications) => [...prevNotifications, message]);
+      }
+    });
   }, []);
 
   const handleClearNotification = (index) => {
-    NotificationService.clearNotification(index);
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((_, i) => i !== index)
+    );
   };
 
   const toggleShowList = () => {

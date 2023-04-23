@@ -2,9 +2,16 @@
 let socket;
 
 const WebSocketService = {
-  connect: (url) => {
+  connect: (url, callback) => {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
-        socket = new WebSocket(url);
+      socket = new WebSocket(url);
+
+      socket.addEventListener("open", () => {
+        console.log("WebSocket connected to:", url);
+        if (callback) {
+          callback();
+        }
+      });
     }
   },
 
@@ -17,6 +24,7 @@ const WebSocketService = {
   onMessage: (callback) => {
     if (socket) {
       socket.addEventListener("message", (event) => {
+        console.log("Message received", event.data)
         const message = JSON.parse(event.data);
         callback(message);
       });

@@ -24,7 +24,6 @@ type ValidationJson struct {
 }
 
 func RegisterPost(w http.ResponseWriter, r *http.Request) {
-
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -46,10 +45,6 @@ func RegisterPost(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(string(json))
 	w.WriteHeader(status)
 	io.WriteString(w, string(json))
-}
-
-func RegisterGet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "index.html")
 }
 
 func addUsertoJson(user []DataValidation, status int) []byte {

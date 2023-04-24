@@ -1,19 +1,32 @@
+import axios from 'axios';
 import React, { useState, useEffect } from "react";
 import ChatService from "../services/ChatService";
+
+const clientToken = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("session_token="))
+  ?.split("=")[1];
+
+const config = {
+  headers: {
+    "Authorization": `Bearer ${clientToken}`,
+    "Content-Type": "application/json",
+  },
+};
 
 const ChatList = ({ selectedChat, onSelectChat }) => {
   const [availableChats, setAvailableChats] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/allchats")
-      .then((response) => response.json())
-      .then((data) => setAvailableChats(data))
+    axios.get("http://localhost:8080/allchats", config)
+      .then((response) => setAvailableChats(response.data))
       .catch((error) => console.error("Error fetching chats:", error));
   }, []);
 
   const handleClick = async (chat) => {
-    const history = await ChatService.fetchChatHistory(chat.GroupID, chat.ChatID);
-    onSelectChat({ ...chat, history });
+    ChatService.fetchChatHistory(chat.GroupID, chat.ChatID)
+      .then(response => onSelectChat({ ...chat, history: response.data }))
+      .catch(error => console.error("Error fetching chat history:", error));
   };
 
   return (

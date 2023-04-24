@@ -19,11 +19,6 @@ func GetFollows(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if filterUser == 0 {
-		if !IsOn(w, r) {
-			GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-			return
-		}
-
 		username := IsUser(w, r)
 		filterUser = DB.GetUserID(username)
 	}

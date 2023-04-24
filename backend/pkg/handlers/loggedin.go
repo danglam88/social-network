@@ -21,7 +21,6 @@ func LoggedIn(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 		}
-
 	} else {
 		response.Token = ""
 		response.UserId = 0

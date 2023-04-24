@@ -6,14 +6,21 @@ import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import PersonalProfile from "./components/PersonalProfile";
 
+const clientToken = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("session_token="))
+  ?.split("=")[1];
+
+const config = {
+  headers: {
+    "Authorization": `Bearer ${clientToken}`,
+    "Content-Type": "application/json",
+  },
+};
+
 function App() {
   const [token, setToken] = useState("");
   const loggedInUrl = "http://localhost:8080/loggedin";
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
 
   axios
     .post(loggedInUrl, JSON.stringify({}), config)

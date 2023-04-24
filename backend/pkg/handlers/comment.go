@@ -30,12 +30,6 @@ func CommentGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func CommentAdd(w http.ResponseWriter, r *http.Request) {
-
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-
 	userMail := IsUser(w, r)
 	userId := DB.GetUserID(userMail)
 

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -14,16 +13,15 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 	var groupId, to, page int
 	var err error
 
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-
 	username := IsUser(w, r)
 	user_id := DB.GetUserID(username)
 
 	if groupStr, isGroupExist := params["group_id"]; isGroupExist {
 		groupId, err = strconv.Atoi(groupStr[0])
+		if err != nil {
+			GetErrResponse(w, "Invalid group_id", http.StatusBadRequest)
+			return
+		}
 	} else {
 		GetErrResponse(w, "group_id is mandatory", http.StatusBadRequest)
 		return
@@ -32,6 +30,10 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 	if groupId == 0 {
 		if toStr, isToExist := params["to"]; isToExist {
 			to, err = strconv.Atoi(toStr[0])
+			if err != nil {
+				GetErrResponse(w, "Invalid to", http.StatusBadRequest)
+				return
+			}
 		} else {
 			GetErrResponse(w, "to is mandatory", http.StatusBadRequest)
 			return
@@ -40,6 +42,10 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 
 	if pageStr, isPageExist := params["page"]; isPageExist {
 		page, err = strconv.Atoi(pageStr[0])
+		if err != nil {
+			GetErrResponse(w, "Invalid page", http.StatusBadRequest)
+			return
+		}
 	} else {
 		GetErrResponse(w, "page is mandatory", http.StatusBadRequest)
 		return
@@ -56,12 +62,6 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 }
 
 /*func GetUsers(w http.ResponseWriter, r *http.Request) {
-
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-
 	username := IsUser(w, r)
 	userId := DB.GetUserID(username)
 
@@ -77,14 +77,6 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 }*/
 
 func GetAllChat(w http.ResponseWriter, r *http.Request) {
-
-	if !IsOn(w, r) {
-		fmt.Println("failed here: chat.go:81")
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-	fmt.Println("passed here: chat.go:85")
-
 	username := IsUser(w, r)
 	userId := DB.GetUserID(username)
 

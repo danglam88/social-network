@@ -13,7 +13,6 @@ func main() {
 		{
 			Endpoint:     "/login",
 			PostFunction: handlers.Login,
-			GetFunction:  handlers.IsLogin,
 		},
 		{
 			Endpoint:     "/logout",

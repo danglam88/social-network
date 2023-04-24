@@ -2,10 +2,16 @@ import axios from 'axios'
 
 const perProfileUrl = 'http://localhost:8080/perprofile'
 
-export const config = {
-    headers : {
-      'Content-Type': 'application/json'
-    }
+const clientToken = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("session_token="))
+  ?.split("=")[1];
+
+const config = {
+  headers: {
+    "Authorization": `Bearer ${clientToken}`,
+    "Content-Type": "application/json",
+  },
 };
 
 const perProfile = async data => {

@@ -54,13 +54,6 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostAdd(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("PostAdd")
-
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-	fmt.Println("PostAdd 64")
 	username := IsUser(w, r)
 	creatorID := DB.GetUserID(username)
 	groupID := 0

@@ -32,10 +32,13 @@ type ResponseError struct {
 	Error  string
 }
 
+type Data struct {
+	Token string `json:"token"`
+}
+
 var DB db.Db
 
 func Start(collection []Handler) {
-
 	// Opening the database
 	DB = db.OpenDatabase()
 	defer DB.Close()
@@ -62,6 +65,11 @@ func GetFunc(handler Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		enableCors(&w, r)
+
+		if !IsOn(w, r) && handler.Endpoint != "/login" && handler.Endpoint != "/register" && handler.Endpoint != "/logout" && handler.Endpoint != "/loggedin" {
+			GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
+			return
+		}
 
 		if r.Method == "GET" && handler.GetFunction != nil {
 			handler.GetFunction(w, r)

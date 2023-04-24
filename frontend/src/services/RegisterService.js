@@ -1,7 +1,19 @@
 import axios from 'axios'
-import config from './LoginService'
 
 const registerUrl = 'http://localhost:8080/register'
+
+const clientToken = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("session_token="))
+  ?.split("=")[1];
+
+const postConfig = {
+  mode: 'no-cors',
+  headers : {
+    "Authorization": `Bearer ${clientToken}`,
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+};
 
 const createOrUpdateResultWrapper = () => {
   let resultWrapper = document.getElementById('result-wrapper')
@@ -23,7 +35,7 @@ const register = async formData => {
   }
 
   axios
-    .post(registerUrl, data, config)
+    .post(registerUrl, data, postConfig)
     .then(response => {
         if (response.status == 200){
             const resultWrapper = createOrUpdateResultWrapper()

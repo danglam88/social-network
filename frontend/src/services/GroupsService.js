@@ -3,18 +3,25 @@ import axios from 'axios'
 const groupUrl = 'http://localhost:8080/group'
 const groupJoinUrl = 'http://localhost:8080/group_join'
 
+const clientToken = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("session_token="))
+  ?.split("=")[1];
+
 const config = {
-    headers : {
-      'Content-Type': 'application/json'
-    }
+  headers: {
+    "Authorization": `Bearer ${clientToken}`,
+    "Content-Type": "application/json",
+  },
 };
 
 const postConfig = {
-    mode: 'no-cors',
-    headers : {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  };
+  mode: 'no-cors',
+  headers : {
+    "Authorization": `Bearer ${clientToken}`,
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+};
 
 const getGroups = async data => {
     const request = await axios.get(groupUrl, config)

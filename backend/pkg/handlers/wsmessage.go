@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	db "socialnetwork/backend/pkg/db/sqlite"
 	"sync"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -25,21 +25,13 @@ var (
 	websocketUpgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true }, //Allow all origins
 	}
 )
 
 type Manager struct {
 	clients ClientList
 	sync.RWMutex
-}
-
-type Message struct {
-	Type      string `json:"type"`
-	From      int    `json:"from"`
-	To        int    `json:"to"` //chat id
-	Message   string `json:"message"`
-	UserName  string `json:"username"`
-	CreatedAt string `json:"created_at"`
 }
 
 func NewManager() *Manager {
@@ -101,14 +93,14 @@ type Client struct {
 	userId     int
 }
 
-var (
+/*var (
 	// pongWait is how long we will await a pong response from client
 	pongWait = 10 * time.Second
 	// pingInterval has to be less than pongWait, We cant multiply by 0.9 to get 90% of time
 	// Because that can make decimals, so instead *9 / 10 to get 90%
 	// The reason why it has to be less than PingRequency is becuase otherwise it will send a new Ping before getting response
 	pingInterval = (pongWait * 9) / 10
-)
+)*/
 
 func NewClient(conn *websocket.Conn, manager *Manager, id int) *Client {
 	return &Client{
@@ -143,7 +135,7 @@ func (c *Client) readMessages() {
 			break // Break the loop to close conn & Cleanup
 		}
 
-		res := Message{}
+		res := db.Message{}
 		err = json.Unmarshal([]byte(payload), &res)
 		if err != nil {
 			log.Printf("error unmarshalling message: %v", err)

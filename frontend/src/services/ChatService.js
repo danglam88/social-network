@@ -1,6 +1,17 @@
+import axios from 'axios';
 import WebSocketService from "./WebSocketService";
 
+const clientToken = document.cookie
+  .split("; ")
+  .find((row) => row.startsWith("session_token="))
+  ?.split("=")[1];
 
+const config = {
+  headers: {
+    "Authorization": `Bearer ${clientToken}`,
+    "Content-Type": "application/json",
+  },
+};
 
 const ChatService = {
   onMessage: (callback) => {
@@ -23,11 +34,8 @@ const ChatService = {
   },
 
   fetchChatHistory: async (groupId, to, page = 1) => {
-    const response = await fetch(
-      `http://localhost:8080/history?group_id=${groupId}&to=${to}&page=${page}`
-    );
-    const history = await response.json();
-    return history;
+    const request = await axios.get(`http://localhost:8080/history?group_id=${groupId}&to=${to}&page=${page}`, config);
+    return request;
   },
 };
 

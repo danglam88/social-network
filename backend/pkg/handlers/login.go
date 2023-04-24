@@ -8,16 +8,7 @@ import (
 	"strings"
 )
 
-func IsLogin(w http.ResponseWriter, r *http.Request) {
-	if IsOn(w, r) {
-		GetErrResponse(w, "Authorized", http.StatusOK)
-	} else {
-		GetErrResponse(w, "Unauthorized", http.StatusUnauthorized)
-	}
-}
-
 func Login(w http.ResponseWriter, r *http.Request) {
-
 	err := r.ParseForm()
 	if err != nil {
 		GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
@@ -46,7 +37,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Setting the client cookie with a generated session token
-	err = SetClientCookieWithSessionToken(w, username)
+	err = SetNewSessionWithSessionToken(w, username)
 	if err != nil {
 		GetErrResponse(w, "Invalid credentials", http.StatusUnauthorized)
 		return

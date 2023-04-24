@@ -88,11 +88,12 @@ type Chat struct {
 }
 
 type Message struct {
-	From      int       `json:"from"`
-	To        int       `json:"to"`
-	Message   string    `json:"message"`
-	Username  string    `json:"username"`
-	CreatedAt time.Time `json:"created_at"`
+	Type      string `json:"type"`
+	From      int    `json:"from"`
+	To        int    `json:"to"` //chat id
+	Message   string `json:"message"`
+	UserName  string `json:"username"`
+	CreatedAt string `json:"created_at"`
 }
 
 type MessageUser struct {
@@ -288,7 +289,7 @@ func (db *Db) CreatePostFollower(postID int64, followerID int) error {
 func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 	var comment Comment
 
-	query := fmt.Sprintf("select id,creator_id,post_id,content,created_at,img_url from comment")
+	query := "select id,creator_id,post_id,content,created_at,img_url from comment"
 
 	if postId != 0 {
 		query = query + fmt.Sprintf(" where post_id = %v", postId)
@@ -593,6 +594,7 @@ func (db *Db) GetUser(id int) User {
 	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.IsPrivate, &user.BirthDate, &user.CreatedAt, &user.NickName, &user.AvatarUrl, &user.AboutMe)
 	if err != nil {
 		fmt.Println(err)
+		return user
 	}
 	return user
 }
@@ -854,9 +856,13 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 
 		if users[message.From] == "" {
 			users[message.From], err = db.GetUserName(message.From)
+			if err != nil {
+				fmt.Printf("Error in getting username: %v\n", err) // Debug log statement
+				return messages, err
+			}
 		}
 
-		message.Username, _ = users[message.From]
+		message.UserName = users[message.From]
 		messages = append(messages, message)
 	}
 	defer rows.Close()

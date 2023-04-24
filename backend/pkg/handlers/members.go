@@ -7,11 +7,6 @@ import (
 )
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-
 	username := IsUser(w, r)
 
 	users, err := DB.GetAllUsers(username)

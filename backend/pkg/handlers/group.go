@@ -9,12 +9,6 @@ import (
 )
 
 func GroupGet(w http.ResponseWriter, r *http.Request) {
-
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-
 	userId := GetLoggedInUserID(w, r)
 
 	params := r.URL.Query()
@@ -24,9 +18,9 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 
 	if paramsId, isExist := params["id"]; isExist {
 		filterId, err = strconv.Atoi(paramsId[0])
-
 		if err != nil {
-			//todo err validation
+			GetErrResponse(w, "Invalid id", http.StatusBadRequest)
+			return
 		}
 	}
 
@@ -51,12 +45,6 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func GroupAdd(w http.ResponseWriter, r *http.Request) {
-
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-
 	userID := GetLoggedInUserID(w, r)
 
 	err := r.ParseForm()
@@ -94,12 +82,6 @@ func GroupAdd(w http.ResponseWriter, r *http.Request) {
 }
 
 func GroupJoin(w http.ResponseWriter, r *http.Request) {
-
-	if !IsOn(w, r) {
-		GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
-		return
-	}
-
 	userId := GetLoggedInUserID(w, r)
 
 	err := r.ParseForm()

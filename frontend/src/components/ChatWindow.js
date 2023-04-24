@@ -28,7 +28,6 @@ const ChatWindow = ({ chat }) => {
     };
   }, []);
 
-
   const sendMessage = () => {
     if (typedMessage.trim() !== "") {
       ChatService.sendMessage(chat.ChatID, typedMessage);
@@ -36,18 +35,21 @@ const ChatWindow = ({ chat }) => {
     }
   };
 
-
   const loadMoreMessages = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     setPage((prevPage) => prevPage + 1);
-    const newHistory = await ChatService.fetchChatHistory(chat.GroupID, chat.ChatID, page + 1);
-    if (newHistory && newHistory.length > 0) {
-      setChatMessages((prevMessages) => [...newHistory, ...prevMessages]);
-    } else {
-      setHasMore(false);
-    }
-    setLoading(false);
+    ChatService.fetchChatHistory(chat.GroupID, chat.ChatID, page + 1)
+      .then((response) => {
+        const newHistory = response.data;
+        if (newHistory && newHistory.length > 0) {
+          setChatMessages((prevMessages) => [...newHistory, ...prevMessages]);
+        } else {
+          setHasMore(false);
+        }
+        setLoading(false);
+      })
+      .catch((error) => console.error("Error fetching chat history:", error));
   }, [chat.GroupID, chat.ChatID, loading, page]);
 
   useEffect(() => {

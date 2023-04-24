@@ -11,20 +11,26 @@ const ChatWindow = ({ chat }) => {
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
-    ChatService.onMessage((messageData) => {
-      setChatMessages((previousMessages) => [...previousMessages, messageData]);
-      
+    const callback = (messageData) => {
+      setChatMessages((previousMessages) => [
+        ...previousMessages,
+        messageData,
+      ]);
+  
       // Scroll chat textarea to the bottom when a new message is received
       if (chatContainerRef.current) {
         // Add a short delay to allow the browser to render the updated content
         setTimeout(() => {
-          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+          chatContainerRef.current.scrollTop =
+            chatContainerRef.current.scrollHeight;
         }, 50);
       }
-    });
+    };
+  
+    ChatService.onMessage(callback);
   
     return () => {
-      ChatService.close();
+      ChatService.removeMessageListener(callback);
     };
   }, []);
 

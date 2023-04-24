@@ -1,6 +1,9 @@
 // services/WebSocketService.js
 let socket;
 
+let messageListenerRegistered = false;
+
+
 const clientToken = document.cookie
   .split("; ")
   .find((row) => row.startsWith("session_token="))
@@ -16,6 +19,10 @@ const WebSocketService = {
         if (callback) {
           callback();
         }
+
+      });
+      socket.addEventListener("close", (event) => {
+        console.log("WebSocket closed:", event);
       });
     }
   },
@@ -27,20 +34,30 @@ const WebSocketService = {
   },
 
   onMessage: (callback) => {
-    if (socket) {
+    if (socket && socket.readyState === WebSocket.OPEN) {
       socket.addEventListener("message", (event) => {
-        console.log("Message received", event.data)
+        console.log("Message received", event.data);
         const message = JSON.parse(event.data);
         callback(message);
       });
+    } else {
+      setTimeout(() => WebSocketService.onMessage(callback), 100);
     }
   },
 
   sendMessage: (message) => {
     if (socket) {
-      socket.send(JSON.stringify(message));
+      setTimeout(() => {
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(message));
+        } else {
+          console.error("Unable to send message: WebSocket is not open");
+        }
+      }, 100);
     }
   },
 };
+
+
 
 export default WebSocketService;

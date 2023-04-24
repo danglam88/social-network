@@ -13,11 +13,15 @@ const config = {
   },
 };
 
+const callbacks = new Set();
+
 const ChatService = {
   onMessage: (callback) => {
-    WebSocketService.onMessage((data) => {
-        callback(data);
-    });
+    callbacks.add(callback);
+  },
+
+  removeMessageListener: (callback) => {
+    callbacks.delete(callback);
   },
 
   sendMessage: (receiverId, message) => {
@@ -38,5 +42,9 @@ const ChatService = {
     return request;
   },
 };
+
+WebSocketService.onMessage((data) => {
+  callbacks.forEach((cb) => cb(data));
+});
 
 export default ChatService;

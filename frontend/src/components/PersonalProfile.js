@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import perProfileService from "../services/PerProfileService"
 import loginService from "../services/LoginService"
 import Chat from './Chat'
-import WebSocketService from '../services/WebSocketService'
 import GroupList from './GroupList'
 import NotificationIcon from './NotificationIcon'
 import Posts from './Posts'

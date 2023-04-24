@@ -62,12 +62,6 @@ func GroupAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	err = DB.JoinToGroup(userID, int(groupId))
-
-	if err != nil {
-		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
-	}
-
 	group := db.Group{
 		CreatorId:   userID,
 		GroupName:   title,
@@ -97,7 +91,7 @@ func GroupJoin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = DB.JoinToGroup(userId, groupId)
+	err = DB.JoinToGroup(userId, groupId, 1, 0)
 
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)

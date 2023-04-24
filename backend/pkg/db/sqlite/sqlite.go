@@ -75,6 +75,18 @@ type Group struct {
 	IsMember    bool      `json:"is_member"`
 	IsRequested bool      `json:"is_requested"`
 	Posts       []Post    `json:"posts"`
+	Events      []Event   `json:"events"`
+}
+
+type Event struct {
+	ID          int       `json:"id"`
+	CreatorId   int       `json:"creator_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	OccurTime   time.Time `json:"occur_time"`
+	VotedYes    int       `json:"voted_yes"`
+	VotedNo     int       `json:"voted_no"`
+	IsUserVoted bool      `json:"is_user_voted"`
 }
 
 type Chat struct {
@@ -417,10 +429,37 @@ func (db *Db) GetGroup(id int) (group Group, err error) {
 		return group, err
 	}
 
+	events, err := db.GetEvents(id)
+
+	if err != nil {
+		fmt.Println(err)
+		return group, err
+	}
+
 	group.Members = members
 	group.Posts = posts
+	group.Events = events
 
 	return group, err
+}
+
+func (db *Db) GetEvents(groupId int) (events []Event, err error) {
+
+	rows, err := db.connection.Query("select id,creator_id,title,descript,occur_time from event where group_id = ?", groupId)
+	if err != nil {
+		return events, err
+	}
+
+	var event Event
+	for rows.Next() {
+		err := rows.Scan(&event.ID, &event.CreatorId, &event.Name, &event.Description, &event.OccurTime)
+		if err != nil {
+			return events, err
+		}
+
+		events = append(events, event)
+	}
+	return events, err
 }
 
 func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
@@ -541,11 +580,15 @@ func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int
 	}
 
 	groupId, err = res.LastInsertId()
+
+	err = db.JoinToGroup(creatorId, int(groupId), 0, 1)
+
 	return groupId, err
 }
 
-func (db *Db) JoinToGroup(userId, groupId int) (err error) {
-	_, err = db.connection.Exec("insert into group_relation(user_id,group_id,is_requested,is_approved) values(?,?,?,?)", userId, groupId, 1, 0)
+func (db *Db) JoinToGroup(userId, groupId, isRequested, isApproved int) (err error) {
+
+	_, err = db.connection.Exec("insert into group_relation(user_id,group_id,is_requested,is_approved) values(?,?,?,?)", userId, groupId, isRequested, isApproved)
 	return err
 }
 

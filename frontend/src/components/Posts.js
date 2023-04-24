@@ -17,7 +17,7 @@ const Posts = ({posts}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {posts.map(post =>
+                    {posts && posts.map(post =>
                         <tr key={post.id}>
                             <td>{post.creator_id}</td>
                             <td>{post.creator_name}</td>

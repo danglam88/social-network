@@ -106,7 +106,11 @@ func IsUser(w http.ResponseWriter, r *http.Request) string {
 }
 
 func getToken(w http.ResponseWriter, r *http.Request) string {
-	token := r.Header.Get("Authorization")
+	token := r.URL.Query().Get("Authorization")
+	if token == "" {
+		token = r.Header.Get("Authorization")
+	}
+
 	if token != "" {
 		token = strings.Replace(token, "Bearer ", "", 1)
 		log.Printf("Received token: %s", token)

@@ -3,7 +3,7 @@ function Followings({followings}) {
         <div>
             <h3>Following(s):</h3>
             {followings.map(following =>
-                <div id={following.id}>
+                <div key={following.id}>
                     {following.nick_name ? (
                         <span>{following.nick_name}</span>
                     ) : (

@@ -45,11 +45,11 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 
 	userEmail := AuthenticateUser(w, r)
 
-	fmt.Println("user", userEmail)
+	fmt.Println("user after auth: ", userEmail)
 
 	id := DB.GetUserID(userEmail)
 
-	fmt.Println("id", id)
+	fmt.Println("id after auth: ", id)
 
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {

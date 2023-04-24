@@ -3,7 +3,7 @@ function UserList({users}) {
         <div>
             <h2>User(s):</h2>
             {users.map(user =>
-                <div id={user.id}>
+                <div key={user.id}>
                     {user.nick_name ? (
                         <span>{user.nick_name}</span>
                     ) : (

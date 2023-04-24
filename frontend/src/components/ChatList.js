@@ -14,6 +14,27 @@ const config = {
   },
 };
 
+const ChatItem = ({ chat, selectedChat, onSelectChat }) => {
+
+  const handleClick = async (chat) => {
+    ChatService.fetchChatHistory(chat.GroupID, chat.ChatID)
+      .then(response => onSelectChat({ ...chat, history: response.data }))
+      .catch(error => console.error("Error fetching chat history:", error));
+  };
+
+  return (
+    <li
+      onClick={() => handleClick(chat)}
+      style={{
+        cursor: "pointer",
+        fontWeight: selectedChat && selectedChat.ChatID === chat.ChatID ? "bold" : "normal",
+      }}
+    >
+      {chat.DisplayName}
+    </li>
+  )
+};
+
 const ChatList = ({ selectedChat, onSelectChat }) => {
   const [availableChats, setAvailableChats] = useState([]);
 
@@ -22,12 +43,6 @@ const ChatList = ({ selectedChat, onSelectChat }) => {
       .then((response) => setAvailableChats(response.data))
       .catch((error) => console.error("Error fetching chats:", error));
   }, []);
-
-  const handleClick = async (chat) => {
-    ChatService.fetchChatHistory(chat.GroupID, chat.ChatID)
-      .then(response => onSelectChat({ ...chat, history: response.data }))
-      .catch(error => console.error("Error fetching chat history:", error));
-  };
 
   return (
     <div
@@ -40,16 +55,7 @@ const ChatList = ({ selectedChat, onSelectChat }) => {
       <h2>Available Chats</h2>
       <ul>
         {availableChats.map((chat) => (
-          <li
-            key={chat.ID}
-            onClick={() => handleClick(chat)}
-            style={{
-              cursor: "pointer",
-              fontWeight: selectedChat && selectedChat.ID === chat.ID ? "bold" : "normal",
-            }}
-          >
-            {chat.DisplayName}
-          </li>
+          <ChatItem chat={chat} key={chat.ChatID} selectedChat={selectedChat} onSelectChat={onSelectChat}/>
         ))}
       </ul>
     </div>

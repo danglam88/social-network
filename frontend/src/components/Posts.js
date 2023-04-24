@@ -1,10 +1,26 @@
+const Post = ({ post }) => {
+    return (
+        <tr>
+            <td>{post.creator_id}</td>
+            <td>{post.creator_name}</td>
+            <td>{post.group_id}</td>
+            <td>{post.visibility}</td>
+            <td>{post.title}</td>
+            <td>{post.content}</td>
+            <td>{post.created_at}</td>
+            <td>{post.img_url}</td>
+        </tr>
+    )
+}
 
 const Posts = ({posts}) => {
+
+    <h3>Created Posts:</h3>
+    
     return (
         <div>
             <table>
                 <thead>
-                    <h3>Created Posts:</h3>
                     <tr>
                         <th>Creator ID</th>
                         <th>Creator Name</th>
@@ -18,16 +34,7 @@ const Posts = ({posts}) => {
                 </thead>
                 <tbody>
                     {posts && posts.map(post =>
-                        <tr key={post.id}>
-                            <td>{post.creator_id}</td>
-                            <td>{post.creator_name}</td>
-                            <td>{post.group_id}</td>
-                            <td>{post.visibility}</td>
-                            <td>{post.title}</td>
-                            <td>{post.content}</td>
-                            <td>{post.created_at}</td>
-                            <td>{post.img_url}</td>
-                        </tr>
+                        <Post post={post} key={post.id} />
                     )}
                 </tbody>
             </table>

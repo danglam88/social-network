@@ -1,15 +1,21 @@
-function Followers({followers}) {
+const Follower = ({follower}) => {
+    return (
+        <div>
+            {follower.nick_name ? (
+                <span>{follower.nick_name}</span>
+            ) : (
+                <span>{follower.first_name} {follower.last_name}</span>
+            )}
+        </div>
+    )
+}
+
+const Followers = ({followers}) => {
     return (
         <div>
             <h3>Follower(s):</h3>
-            {followers.map(follower =>
-                <div key={follower.id}>
-                    {follower.nick_name ? (
-                        <span>{follower.nick_name}</span>
-                    ) : (
-                        <span>{follower.first_name} {follower.last_name}</span>
-                    )}
-                </div>
+            {followers && followers.map(follower =>
+                <Follower follower={follower} key={follower.id} />
             )}
         </div>
     )

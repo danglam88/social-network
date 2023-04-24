@@ -90,8 +90,6 @@ const RegisterForm = () => {
                     <button type="submit">Register</button>
                 </div>
             </form>
-
-
         )
 }
 

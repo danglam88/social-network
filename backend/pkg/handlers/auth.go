@@ -113,7 +113,6 @@ func getToken(w http.ResponseWriter, r *http.Request) string {
 
 	if token != "" {
 		token = strings.Replace(token, "Bearer ", "", 1)
-		log.Printf("Received token: %s", token)
 	} else {
 		log.Printf("No token received")
 	}

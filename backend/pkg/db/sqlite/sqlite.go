@@ -1097,7 +1097,7 @@ func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
 			return nil, err
 		}
 
-		group, err := db.GetGroup(notification.GroupId)
+		group, err := db.GetGroup(notification.GroupId, userID)
 		if err != nil {
 			return nil, err
 		}

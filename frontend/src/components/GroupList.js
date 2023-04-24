@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import groupService from "../services/GroupsService"
 import Group from './Group'
 import WebSocketService from '../services/WebSocketService'

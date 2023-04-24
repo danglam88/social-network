@@ -35,7 +35,7 @@ const LoginForm = () => {
 
   return (
     <div>
-      {unauthorizedAccess ? <div>Invalid credentials. Please login again.</div> : null}
+      {unauthorizedAccess ? <div className="login-error">Invalid credentials. Please login again.</div> : null}
       <form onSubmit={handleLogin}>
         <div className="input-container">
           <input type="email" id="email" value={email} onChange={handleEmailChange}/>

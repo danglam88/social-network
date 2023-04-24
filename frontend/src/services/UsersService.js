@@ -13,12 +13,18 @@ const config = {
 };
 
 const usersUrl = 'http://localhost:8080/allusers'
+const userUrl = 'http://localhost:8080/user'
 
 const users = async () => {
     const request = await axios.get(usersUrl, config)
     return request
 }
 
-const usersService = { users }
+const user = async (userId) => {
+    const request = await axios.get(`${userUrl}?user_id=${userId}`, config)
+    return request
+}
+
+const usersService = { users, user }
 
 export default usersService

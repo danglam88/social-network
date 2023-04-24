@@ -11,24 +11,12 @@ import PersonalInfo from './PersonalInfo'
 import usersService from "../services/UsersService"
 import UserList from './UserList'
 import followsService from "../services/FollowsService"
-import Followers from './Followers'
-import Followings from './Followings'
+import Follows from './Follows'
 import groupService from '../services/GroupsService'
 import NotificationService from '../services/NotificationService'
 
 const PersonalProfile = () => {
-  const [data, setData] = useState({
-    id: "",
-    firstName: "",
-    lastName: "",
-    birthDate: "",
-    isPrivate: "",
-    email: "",
-    createdAt: "",
-    avatarUrl: "",
-    nickname: "",
-    aboutMe: "",
-  });
+  const [data, setData] = useState({});
 
   const [posts, setPosts] = useState([])
   const [follows, setFollows] = useState(null)
@@ -39,18 +27,7 @@ const PersonalProfile = () => {
     perProfileService
       .perprofile(data)
       .then((response) => {
-        setData({
-          id: response.data.id,
-          firstName: response.data.first_name,
-          lastName: response.data.last_name,
-          birthDate: response.data.birth_date,
-          isPrivate: response.data.is_private,
-          email: response.data.email,
-          createdAt: response.data.created_at,
-          avatarUrl: response.data.avatar_url,
-          nickname: response.data.nick_name,
-          aboutMe: response.data.about_me,
-        });
+        setData(response.data);
 
         postsService.posts('http://localhost:8080/post?creator_id=' + response.data.id)
           .then(response => {
@@ -139,13 +116,13 @@ const PersonalProfile = () => {
   return (
     <div>
       <div className="Header">
-        {data.nickname ? (
+        {data.nick_name ? (
           <div className="header">
-            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.nickname}</u></i></span>!
+            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.nick_name}</u></i></span>!
           </div>
         ) : (
           <div className="header">
-            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.firstName} + " " + {data.lastName}</u></i></span>!
+            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.first_name} {data.last_name}</u></i></span>!
           </div>
         )}
         <NotificationIcon />
@@ -171,18 +148,18 @@ const PersonalProfile = () => {
         <h1>Personal profile</h1>
         {showPersonalProfile ? (
           <div>
-            <PersonalInfo data={data} />
+            <PersonalInfo user={data} />
             {follows &&
               <div className="follow">
                 {follows.followers.length > 0 &&
                 <div>
                   <button onClick={toggleFollowers}>Show/Hide Followers</button>
-                  {followersVisible && <Followers followers={follows.followers} />}
+                  {followersVisible && <Follows follows={follows.followers} title="Follower(s):" />}
                 </div>}
                 {follows.followings.length > 0 &&
                 <div>
                   <button onClick={toggleFollowings}>Show/Hide Followings</button>
-                  {followingsVisible && <Followings followings={follows.followings} />}
+                  {followingsVisible && <Follows follows={follows.followings} title="Following(s):" />}
                 </div>}
               </div>}
             <PostForm />

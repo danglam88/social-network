@@ -699,7 +699,7 @@ func (db *Db) GetUser(id int) User {
 
 func (db *Db) GetAllUsers(username string) (users []User, err error) {
 
-	query := "select id,email,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where email != ? order by email asc"
+	query := "select id,email,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where email != ? order by id asc"
 	rows, err := db.connection.Query(query, username)
 	if err != nil {
 		return users, err

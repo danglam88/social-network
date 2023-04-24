@@ -1,15 +1,15 @@
-const PersonalInfo = ({data}) => {
+const PersonalInfo = ({user}) => {
     return (
         <div className="personal-info">
-          <div>First Name: {data.firstName}</div>
-          <div>Last Name: {data.lastName}</div>
-          <div>Birth Date: {data.birthDate}</div>
-          <div>Is Private: {data.isPrivate}</div>
-          <div>Email: {data.email}</div>
-          <div>Created At: {data.createdAt}</div>
-          <div>Avatar Url: {data.avatarUrl}</div>
-          <div>Nick Name: {data.nickname}</div>
-          <div>About Me: {data.aboutMe}</div>
+          <div>First Name: {user.first_name}</div>
+          <div>Last Name: {user.last_name}</div>
+          <div>Birth Date: {user.birth_date}</div>
+          <div>Is Private: {user.is_private}</div>
+          <div>Email: {user.email}</div>
+          <div>Created At: {user.created_at}</div>
+          {user.avatar_url && <div>Avatar Url: {user.avatar_url}</div>}
+          {user.nick_name && <div>Nick Name: {user.nick_name}</div>}
+          {user.about_me && <div>About Me: {user.about_me}</div>}
         </div>
     )
 }

@@ -28,10 +28,10 @@ func main() {
 			PostFunction: handlers.CommentAdd,
 			GetFunction:  handlers.CommentGet,
 		},
-		/*{
-			Endpoint:    "/users",
-			GetFunction: handlers.GetUsers,
-		},*/
+		{
+			Endpoint:    "/user",
+			GetFunction: handlers.GetUser,
+		},
 		{
 			Endpoint:    "/allusers",
 			GetFunction: handlers.GetAllUsers,

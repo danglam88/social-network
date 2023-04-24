@@ -14,15 +14,13 @@ const config = {
   },
 };
 
-const perProfile = async data => {
+const perprofile = async data => {
     console.log(data)
 
     const request = await axios.post(perProfileUrl, JSON.stringify(data), config)
     return request
 }
 
-const perProfileService = { 
-    perprofile: perProfile
-}
+const perProfileService = { perprofile }
 
 export default perProfileService

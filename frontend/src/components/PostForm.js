@@ -82,15 +82,19 @@ const PostForm = (groupId) => {
         formData.append("picture", picture);
       }
 
-      const response = await axios.post(
-        "http://localhost:8080/post",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const clientToken = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("session_token="))
+        ?.split("=")[1];
+
+      const config = {
+        headers: {
+          "Authorization": `Bearer ${clientToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      const response = await axios.post("http://localhost:8080/post", formData, config);
 
       console.log("Post created:", response.data);
     } catch (error) {

@@ -141,12 +141,12 @@ const PersonalProfile = () => {
     <div>
       <div className="Header">
         {data.nickname ? (
-          <div>
-            WELCOME <span onClick={handleShowPersonalProfile}><i><u>{data.nickname}</u></i></span>!
+          <div className="header">
+            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.nickname}</u></i></span>!
           </div>
         ) : (
-          <div>
-            WELCOME <span onClick={handleShowPersonalProfile}><i><u>{data.firstName} + " " + {data.lastName}</u></i></span>!
+          <div className="header">
+            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.firstName} + " " + {data.lastName}</u></i></span>!
           </div>
         )}
         <NotificationIcon />
@@ -154,8 +154,9 @@ const PersonalProfile = () => {
           <button type="submit">Logout</button>
         </form>
       </div>
+      <div className="page-body">
       <div className="Menu">
-        {users.length > 0 &&
+        <div className="button-wrapper">{users.length > 0 &&
           <div>
             <button onClick={handleSetUsersVisible}>Show Users</button>
             {usersVisible && <UserList users={users} />}
@@ -165,14 +166,15 @@ const PersonalProfile = () => {
             <button onClick={handleSetGroupsVisible}>Show Groups</button>
             {groupsVisible && <GroupList />}
           </div>}
+          </div>
       </div>
       <div className="Mainpage">
+        <h1>Personal profile</h1>
         {showPersonalProfile ? (
           <div>
             <PersonalInfo data={data} />
-            <div>
             {follows &&
-              <div>
+              <div className="follow">
                 {follows.followers.length > 0 &&
                 <div>
                   <button onClick={toggleFollowers}>Show/Hide Followers</button>
@@ -184,11 +186,11 @@ const PersonalProfile = () => {
                   {followingsVisible && <Followings followings={follows.followings} />}
                 </div>}
               </div>}
-            </div>
             <PostForm />
             {posts && <Posts posts={posts} />}
             <Chat />
           </div>) : null}
+      </div>
       </div>
     </div>
   )

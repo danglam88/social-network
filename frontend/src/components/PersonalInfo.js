@@ -1,6 +1,6 @@
 const PersonalInfo = ({data}) => {
     return (
-        <div>
+        <div className="personal-info">
           <div>First Name: {data.firstName}</div>
           <div>Last Name: {data.lastName}</div>
           <div>Birth Date: {data.birthDate}</div>

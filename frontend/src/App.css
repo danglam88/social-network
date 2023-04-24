@@ -1,3 +1,23 @@
+/* GENERAL STYLES */
+.header {
+  font-family: 'Playfair Display', serif;
+  font-size: larger;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  /* color: green */
+}
+
+h1 {
+  font-size: 3.2rem;
+  margin-top: 0;
+}
+
+input, body {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
 .App {
   text-align: center;
 }
@@ -5,6 +25,10 @@
 .App-logo {
   height: 25vmin;
   pointer-events: none;
+}
+
+body {
+  background-color: #fbf9e5
 }
 
 input[type="text"],
@@ -122,19 +146,9 @@ button:focus {
   }
 }
 
-.App-header {
-  background-color: #fbf9e5;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: black;
-}
+/* HEADER */
 
 .App-body {
-  background-color: #fbf9e5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -144,8 +158,170 @@ button:focus {
   color: black;
 }
 
-.App-link {
-  color: #61dafb;
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #DBBBF5;
+  padding: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.Header div:first-child {
+  display: flex;
+  align-items: center;
+}
+
+.Header div:first-child span {
+  color: #4C2C72;
+  margin-left: 5px;
+}
+
+u {
+  text-decoration: none;
+}
+
+.Header form {
+  margin: 0;
+}
+
+.login-error{
+
+}
+
+.notification-icon {
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon .icon {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  position: relative;
+}
+
+.notification-icon .icon i {
+  font-size: 24px;
+}
+
+.notification-icon .icon .notification-count {
+  background-color: #4C2C72;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
+
+@media screen and (max-width: 768px) {
+  .Header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .Header div:first-child {
+    margin-bottom: 10px;
+  }
+
+  .notification-icon .icon {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+/* User Page */
+.page-body {
+  display: flex;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+
+.Menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.Menu div {
+  margin-bottom: 20px
+}
+
+.Mainpage {
+  flex: 1;
+  padding: 20px;
+}
+
+.button-wrapper {
+  margin-top: 20px;
+  margin-left: 20px;
+  padding: 20px;
+  border-radius: 5px
+}
+
+.personal-info div{
+  margin-bottom: 10px;
+}
+
+.follow {
+  display: flex;
+}
+
+.follow div {
+  display: inline-block;
+}
+
+.follow button {
+  margin-right: 10px;
+}
+
+.post-form {
+  margin-top: 20px;
+}
+
+.post-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-form label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-form label > span {
+  margin-bottom: 5px;
+}
+
+.post-form input[type="text"],
+.post-form input[type="file"],
+.post-form select,
+.post-form textarea {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #223127;
+  flex: 1;
+}
+
+.post-form input[type="file"] {
+  padding: 0;
 }
 
 /*

@@ -99,7 +99,7 @@ const PostForm = (groupId) => {
   };
 
   return (
-  <div>
+  <div className="post-form">
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="title">Title:</label>

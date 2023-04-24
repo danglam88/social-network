@@ -49,6 +49,7 @@ const RegisterForm = () => {
         }
 
         return (
+            <>
             <form onSubmit={handleRegister}>
                 <div className="input-container">
                     <input type="email" name="email" value={email} onChange={handleEmailChange} placeholder=" " required />
@@ -90,6 +91,7 @@ const RegisterForm = () => {
                     <button type="submit">Register</button>
                 </div>
             </form>
+            </>
         )
 }
 

@@ -30,21 +30,17 @@ function App() {
     .catch((error) => console.log(error));
 
   return (
-    <div className="App">
-      <div className="App-body">
-        {token !== "" ? (
-          <PersonalProfile />
-        ) : (
-          <div>
-            <img src={logo} className="App-logo" alt="logo" />
-            <div id="div-form">
+    <>
+      {token !== "" ? (
+        <PersonalProfile />
+      ) : (
+        <div className="App-body">
+            <div><img src={logo} className="App-logo" alt="logo" /></div>
               <RegisterForm />
               <LoginForm />
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
 

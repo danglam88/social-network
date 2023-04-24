@@ -26,7 +26,7 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 
 	if filterId > 0 {
 		//todo error + 404
-		group, _ := DB.GetGroup(filterId)
+		group, _ := DB.GetGroup(filterId, userId)
 
 		w.WriteHeader(http.StatusOK)
 		res, _ := json.Marshal(group)
@@ -92,6 +92,39 @@ func GroupJoin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = DB.JoinToGroup(userId, groupId, 1, 0)
+
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func EventJoin(w http.ResponseWriter, r *http.Request) {
+
+	userId := GetLoggedInUserID(w, r)
+
+	err := r.ParseForm()
+	if err != nil {
+		GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
+		return
+	}
+
+	eventId, err := strconv.Atoi(r.FormValue("event_id"))
+
+	if err != nil {
+		GetErrResponse(w, "Invalid event id", http.StatusBadRequest)
+		return
+	}
+
+	isGoing, err := strconv.Atoi(r.FormValue("is_going"))
+
+	if err != nil {
+		GetErrResponse(w, "Invalid vote value", http.StatusBadRequest)
+		return
+	}
+
+	err = DB.JoinToEvent(userId, eventId, 1, isGoing)
 
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)

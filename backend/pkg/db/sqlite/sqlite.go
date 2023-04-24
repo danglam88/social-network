@@ -86,7 +86,7 @@ type Event struct {
 	OccurTime   time.Time `json:"occur_time"`
 	VotedYes    int       `json:"voted_yes"`
 	VotedNo     int       `json:"voted_no"`
-	IsUserVoted bool      `json:"is_user_voted"`
+	UserVote    int       `json:"user_vote"`
 }
 
 type Chat struct {
@@ -411,7 +411,7 @@ func (db *Db) GetUserName(id int) (string, error) {
 	return username, err
 }
 
-func (db *Db) GetGroup(id int) (group Group, err error) {
+func (db *Db) GetGroup(id, userId int) (group Group, err error) {
 
 	row := db.connection.QueryRow("select id,creator_id,group_name,descript,created_at from user_group where id = ?", id)
 	err = row.Scan(&group.ID, &group.CreatorId, &group.GroupName, &group.Description, &group.CreatedAt)
@@ -429,7 +429,7 @@ func (db *Db) GetGroup(id int) (group Group, err error) {
 		return group, err
 	}
 
-	events, err := db.GetEvents(id)
+	events, err := db.GetEvents(id, userId)
 
 	if err != nil {
 		fmt.Println(err)
@@ -443,7 +443,7 @@ func (db *Db) GetGroup(id int) (group Group, err error) {
 	return group, err
 }
 
-func (db *Db) GetEvents(groupId int) (events []Event, err error) {
+func (db *Db) GetEvents(groupId, userId int) (events []Event, err error) {
 
 	rows, err := db.connection.Query("select id,creator_id,title,descript,occur_time from event where group_id = ?", groupId)
 	if err != nil {
@@ -457,9 +457,51 @@ func (db *Db) GetEvents(groupId int) (events []Event, err error) {
 			return events, err
 		}
 
+		event.VotedYes, event.VotedNo, event.UserVote, err = db.GetVotes(event.ID, userId)
+
+		if err != nil {
+			return events, err
+		}
 		events = append(events, event)
 	}
 	return events, err
+}
+
+func (db *Db) GetVotes(eventId, userId int) (votedYes, votedNo, userVote int, err error) {
+
+	votedYes = 0
+	votedNo = 0
+
+	query := "select user_id, is_going from event_relation where event_id = ? and is_approved = 1"
+	rows, err := db.connection.Query(query, eventId)
+	if err != nil {
+		fmt.Println(err)
+		return votedYes, votedNo, userVote, err
+	}
+
+	for rows.Next() {
+		var eventUserId, isGoing int
+
+		err := rows.Scan(&eventUserId, &isGoing)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		if isGoing == 0 {
+			votedNo++
+		}
+		if isGoing == 1 {
+			votedYes++
+		}
+
+		if eventUserId == userId {
+			userVote = isGoing
+		}
+	}
+	defer rows.Close()
+
+	return votedYes, votedNo, userVote, err
 }
 
 func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
@@ -548,7 +590,7 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 	//add displayname to the chats visual use
 	for i := range chats {
 		if chats[i].GroupID != 0 {
-			wholeGroup, _ := db.GetGroup(chats[i].GroupID)
+			wholeGroup, _ := db.GetGroup(chats[i].GroupID, userId)
 			chats[i].DisplayName = wholeGroup.GroupName
 		} else if chats[i].UserOne == userId {
 			chats[i].DisplayName, _ = db.GetUserName(chats[i].UserTwo)
@@ -589,6 +631,12 @@ func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int
 func (db *Db) JoinToGroup(userId, groupId, isRequested, isApproved int) (err error) {
 
 	_, err = db.connection.Exec("insert into group_relation(user_id,group_id,is_requested,is_approved) values(?,?,?,?)", userId, groupId, isRequested, isApproved)
+	return err
+}
+
+func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) {
+
+	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?)", userId, eventId, isApproved, isGoing)
 	return err
 }
 

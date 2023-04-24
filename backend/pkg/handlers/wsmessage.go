@@ -215,7 +215,7 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-				group, err := DB.GetGroup(res.To)
+				group, err := DB.GetGroup(res.To, c.userId)
 				if err != nil {
 					log.Println(err)
 				}

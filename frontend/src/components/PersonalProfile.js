@@ -15,6 +15,7 @@ import followsService from "../services/FollowsService"
 import Followers from './Followers'
 import Followings from './Followings'
 import groupService from '../services/GroupsService'
+import NotificationService from '../services/NotificationService'
 
 const PersonalProfile = () => {
   const [data, setData] = useState({
@@ -29,8 +30,6 @@ const PersonalProfile = () => {
     nickname: "",
     aboutMe: "",
   });
-
-  WebSocketService.connect("ws://localhost:8080/ws");
 
   const [posts, setPosts] = useState([])
   const [follows, setFollows] = useState(null)
@@ -132,6 +131,10 @@ const PersonalProfile = () => {
         setGroups(response.data)
       })
       .catch(error => console.log(error))
+  }, []);
+
+  useEffect(() => {
+    NotificationService.initialize("ws://localhost:8080/ws");
   }, []);
 
   return (

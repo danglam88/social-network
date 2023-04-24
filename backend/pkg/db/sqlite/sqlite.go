@@ -115,6 +115,13 @@ type MessageUser struct {
 	HasMessages bool   `json:"has_messages"`
 }
 
+type GroupNotification struct {
+	GroupId   int
+	UserId    int
+	UserName  string
+	GroupName string
+}
+
 func RunMigrations(db *sql.DB, state bool) error {
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {
@@ -1058,4 +1065,50 @@ func (db *Db) GetGroupCreatorId(groupId int) (creatorId int, err error) {
 
 func (db *Db) GetTime() string {
 	return time.Now().Local().Format(time_format)
+}
+
+func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
+	var notifications []GroupNotification
+
+	rows, err := db.connection.Query(`
+		SELECT
+			group_relation.group_id,
+			group_relation.user_id
+		FROM group_relation
+		WHERE group_relation.is_requested = 1 AND group_relation.is_approved = 0 AND EXISTS (
+			SELECT 1 FROM user_group WHERE user_group.id = group_relation.group_id AND user_group.creator_id = $1
+		)`, userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var notification GroupNotification
+		err = rows.Scan(&notification.GroupId, &notification.UserId)
+		if err != nil {
+			return nil, err
+		}
+
+		notification.UserName, err = db.GetUserName(notification.UserId)
+		if err != nil {
+			return nil, err
+		}
+
+		group, err := db.GetGroup(notification.GroupId)
+		if err != nil {
+			return nil, err
+		}
+		notification.GroupName = group.GroupName
+
+		notifications = append(notifications, notification)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return notifications, nil
 }

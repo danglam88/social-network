@@ -1,24 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import NotificationService from '../services/NotificationService';
-import WebSocketService from '../services/WebSocketService';
 
 const NotificationIcon = () => {
   const [notifications, setNotifications] = useState([]);
   const [showList, setShowList] = useState(false);
 
+  // Wrap the onUpdate with useEffect
   useEffect(() => {
-    WebSocketService.connect("ws://localhost:8080/ws");
-    WebSocketService.onMessage((message) => {
-      if (
-        message.type === "follownotification" ||
-        message.type === "invitenotification" ||
-        message.type === "joinreqnotification" ||
-        message.type === "eventnotification"
-      ) {
-        console.log("Notification received", message);
-        setNotifications((prevNotifications) => [...prevNotifications, message]);
-      }
-    });
+    NotificationService.onUpdate(setNotifications);
   }, []);
 
   const handleClearNotification = (index) => {

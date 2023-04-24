@@ -5,7 +5,8 @@ let notifications = [];
 let updateCallback;
 
 const NotificationService = {
-  onMessage: (callback) => {
+  initialize: (url) => {
+    webSocketService.connect(url);
     webSocketService.onMessage((message) => {
       if (
         message.type === "follownotification" ||
@@ -13,14 +14,19 @@ const NotificationService = {
         message.type === "joinreqnotification" ||
         message.type === "eventnotification"
       ) {
-        console.log("Notification received", message)
-        notifications.push(message);
-        if (updateCallback) {
-          updateCallback(notifications);
+        console.log("Notification received", message);
+        if (!notifications.some((n) => n.message === message.message)) {
+          notifications.push(message);
+          if (updateCallback) {
+            updateCallback(notifications);
+          }
         }
       }
-      callback(message);
     });
+  },
+
+  onMessage: (callback) => {
+    webSocketService.onMessage(callback);
   },
 
   sendMessage: (message) => {

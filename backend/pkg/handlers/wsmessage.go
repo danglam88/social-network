@@ -59,10 +59,34 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 
 	client := NewClient(conn, m, id)
 	m.addClient(client)
+	//Send all the notifications to the client
+	GroupNotifications, err := DB.GetGroupNotifications(id)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	//Start client
 	go client.readMessages()
 	go client.writeMessages()
+
+	fmt.Println("GroupNotifications: ", GroupNotifications)
+
+	if len(GroupNotifications) > 0 {
+		for _, n := range GroupNotifications {
+			msg := db.Message{
+				Type:     JOINREQNOTIFICATION_TYPE,
+				From:     n.UserId,
+				UserName: n.UserName,
+				To:       id,
+				Message:  fmt.Sprintf("%s wants to join your group %s", n.UserName, n.GroupName),
+			}
+			message, _ := json.Marshal(msg)
+			fmt.Println("GroupNotifications: ", string(message))
+			client.eggress <- message
+		}
+	}
+
 }
 
 func (m *Manager) addClient(client *Client) {

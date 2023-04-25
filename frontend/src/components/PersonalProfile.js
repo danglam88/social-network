@@ -145,7 +145,7 @@ const PersonalProfile = () => {
             {users && (
               <div>
                 <button onClick={handleSetUsersVisible}>Show Users</button>
-                {usersVisible && <UserList users={users} />}
+                {usersVisible && <UserList users={users} followings={follows.followings} />}
               </div>
             )}
             {groups && (

@@ -70,8 +70,9 @@ func main() {
 			PostFunction: handlers.LoggedIn,
 		},
 		{
-			Endpoint:    "/follow",
-			GetFunction: handlers.GetFollows,
+			Endpoint:     "/follow",
+			GetFunction:  handlers.GetFollows,
+			PostFunction: handlers.ToggleFollow,
 		},
 	}
 

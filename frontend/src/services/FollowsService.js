@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+const followPostUrl = 'http://localhost:8080/follow'
+
 const clientToken = document.cookie
   .split("; ")
   .find((row) => row.startsWith("session_token="))
@@ -17,6 +19,11 @@ const follows = async (followUrl) => {
     return request
 }
 
-const followsService = { follows }
+const follow = async (data) => {
+    const request = await axios.post(followPostUrl, data, config)
+    return request
+}
+
+const followsService = { follows, follow }
 
 export default followsService

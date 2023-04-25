@@ -201,6 +201,68 @@ func (db *Db) Close() {
 	db.connection.Close()
 }
 
+func (db *Db) ToggleFollow(followerId int, followedUser User) (err error) {
+	var isApproved int
+
+	query := "select is_approved from follow_relation where follower_id=? and followed_id=?"
+	row := db.connection.QueryRow(query, followerId, followedUser.ID)
+	err = row.Scan(&isApproved)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			var newErr error
+
+			if followedUser.IsPrivate == 1 {
+				_, newErr = db.connection.Exec("insert into follow_relation(follower_id,followed_id,is_approved) values(?,?,0)", followerId, followedUser.ID)
+			} else {
+				_, newErr = db.connection.Exec("insert into follow_relation(follower_id,followed_id,is_approved) values(?,?,1)", followerId, followedUser.ID)
+			}
+
+			if newErr != nil {
+				log.Printf("Insert Error: %v\n", newErr)
+				return newErr
+			}
+		} else {
+			log.Printf("Select Error: %v\n", err)
+			return err
+		}
+	}
+
+	if isApproved == 1 {
+		_, err = db.connection.Exec("delete from follow_relation where follower_id=? and followed_id=?", followerId, followedUser.ID)
+		if err != nil {
+			log.Printf("Delete Error: %v\n", err)
+			return err
+		}
+	}
+
+	if err == sql.ErrNoRows {
+		return nil
+	}
+
+	return err
+}
+
+func (db *Db) CheckPending(followerId int, followedUser User) (isPending bool, err error) {
+	var isApproved int
+
+	query := "select is_approved from follow_relation where follower_id=? and followed_id=?"
+	row := db.connection.QueryRow(query, followerId, followedUser.ID)
+	err = row.Scan(&isApproved)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		} else {
+			return false, err
+		}
+	}
+
+	if isApproved == 0 {
+		return true, err
+	}
+
+	return false, err
+}
+
 func (db *Db) GetFollows(id int) (follows Follows, err error) {
 	var follow_id int
 
@@ -210,7 +272,7 @@ func (db *Db) GetFollows(id int) (follows Follows, err error) {
 		return follows, err
 	}
 
-	rows, err := db.connection.Query("select followed_id from follow_relation where follower_id = ?", id)
+	rows, err := db.connection.Query("select followed_id from follow_relation where follower_id=? and is_approved=1", id)
 	if err != nil {
 		return follows, err
 	}
@@ -225,7 +287,7 @@ func (db *Db) GetFollows(id int) (follows Follows, err error) {
 		follows.Followings = append(follows.Followings, following)
 	}
 
-	rows, err = db.connection.Query("select follower_id from follow_relation where followed_id = ?", id)
+	rows, err = db.connection.Query("select follower_id from follow_relation where followed_id=? and is_approved=1", id)
 	if err != nil {
 		return follows, err
 	}

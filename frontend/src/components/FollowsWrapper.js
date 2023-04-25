@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Follows from './Follows'
+import Follows from './Follows';
 
 const FollowsWrapper = ({follows, title}) => {
     const [followsVisible, setFollowsVisible] = useState(false)

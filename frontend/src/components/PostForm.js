@@ -4,6 +4,7 @@ import followsService from "../services/FollowsService";
 
 //send in "groupId={nbr}" as groupId.
 const PostForm = (groupId) => {
+  console.log(groupId);
   const group_id = groupId.groupId;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -89,12 +90,16 @@ const PostForm = (groupId) => {
 
       const config = {
         headers: {
-          "Authorization": `Bearer ${clientToken}`,
+          Authorization: `Bearer ${clientToken}`,
           "Content-Type": "multipart/form-data",
         },
       };
 
-      const response = await axios.post("http://localhost:8080/post", formData, config);
+      const response = await axios.post(
+        "http://localhost:8080/post",
+        formData,
+        config
+      );
 
       console.log("Post created:", response.data);
     } catch (error) {
@@ -103,64 +108,70 @@ const PostForm = (groupId) => {
   };
 
   return (
-  <div className="post-form">
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="title">Title:</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={title}
-          onChange={handleTitleChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="content">Content:</label>
-        <textarea
-          id="content"
-          name="content"
-          value={content}
-          onChange={handleContentChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="privacy">Privacy:</label>
-        <select
-          id="privacy"
-          name="privacy"
-          value={privacy}
-          onChange={handlePrivacyChange}>
-          <option value="public">Public</option>
-          <option value="allfollowers">Followers Only</option>
-          <option value="superprivate">Choose Followers</option>
-        </select>
-      </div>
-      {privacy === "superprivate" && (
+    <div className="post-form">
+      <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="users">Users:</label>
-          <select id="users" name="users" multiple onChange={handleUsersChange}>
-            <option value="user1">User 1</option>
-            <option value="user2">User 2</option>
-            <option value="user3">User 3</option>
-          </select>
+          <label htmlFor="title">Title:</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={title}
+            onChange={handleTitleChange}
+          />
         </div>
-      )}
-      <div>
-        <label htmlFor="picture">Picture:</label>
-        <input
-          type="file"
-          id="picture"
-          name="picture"
-          onChange={handlePictureChange}
-        />
-      </div>
-      <div>
-        <button type="submit">Submit</button>
-      </div>
-      {errorMessage && <div>{errorMessage}</div>}
-    </form>
-  </div>
+        <div>
+          <label htmlFor="content">Content:</label>
+          <textarea
+            id="content"
+            name="content"
+            value={content}
+            onChange={handleContentChange}
+          />
+        </div>
+        {!groupId.hasOwnProperty("groupId") && (
+          <div>
+            <label htmlFor="privacy">Privacy:</label>
+            <select
+              id="privacy"
+              name="privacy"
+              value={privacy}
+              onChange={handlePrivacyChange}>
+              <option value="public">Public</option>
+              <option value="allfollowers">Followers Only</option>
+              <option value="superprivate">Choose Followers</option>
+            </select>
+          </div>
+        )}
+        {privacy === "superprivate" && (
+          <div>
+            <label htmlFor="users">Followers:</label>
+            <select
+              id="users"
+              name="users"
+              multiple
+              onChange={handleUsersChange}>
+              <option value="user1">User 1</option>
+              <option value="user2">User 2</option>
+              <option value="user3">User 3</option>
+            </select>
+          </div>
+        )}
+        <div>
+          <label htmlFor="picture">Picture:</label>
+          <input
+            type="file"
+            id="picture"
+            name="picture"
+            onChange={handlePictureChange}
+          />
+        </div>
+        <div>
+          <button type="submit">Submit</button>
+        </div>
+        {errorMessage && <div>{errorMessage}</div>}
+      </form>
+    </div>
   );
 };
 

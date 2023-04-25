@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import perProfileService from "../services/PerProfileService"
-import loginService from "../services/LoginService"
-import Chat from './Chat'
-import GroupList from './GroupList'
-import NotificationIcon from './NotificationIcon'
-import Posts from './Posts'
-import PostForm from './PostForm'
-import postsService from '../services/PostsService'
-import PersonalInfo from './PersonalInfo'
-import usersService from "../services/UsersService"
-import UserList from './UserList'
-import followsService from "../services/FollowsService"
-import Follows from './Follows'
-import groupService from '../services/GroupsService'
-import NotificationService from '../services/NotificationService'
+import React, { useState, useEffect } from "react";
+import perProfileService from "../services/PerProfileService";
+import loginService from "../services/LoginService";
+import Chat from "./Chat";
+import GroupList from "./GroupList";
+import NotificationIcon from "./NotificationIcon";
+import Posts from "./Posts";
+import PostForm from "./PostForm";
+import postsService from "../services/PostsService";
+import PersonalInfo from "./PersonalInfo";
+import usersService from "../services/UsersService";
+import UserList from "./UserList";
+import followsService from "../services/FollowsService";
+import Follows from "./Follows";
+import groupService from "../services/GroupsService";
+import NotificationService from "../services/NotificationService";
 
 const PersonalProfile = () => {
   const [data, setData] = useState({});
 
-  const [posts, setPosts] = useState([])
-  const [follows, setFollows] = useState(null)
-  const [followersVisible, setFollowersVisible] = useState(false)
-  const [followingsVisible, setFollowingsVisible] = useState(false)
+  const [posts, setPosts] = useState([]);
+  const [follows, setFollows] = useState(null);
+  const [followersVisible, setFollowersVisible] = useState(false);
+  const [followingsVisible, setFollowingsVisible] = useState(false);
 
   useEffect(() => {
     perProfileService
@@ -29,17 +29,19 @@ const PersonalProfile = () => {
       .then((response) => {
         setData(response.data);
 
-        postsService.posts('http://localhost:8080/post?creator_id=' + response.data.id)
-          .then(response => {
-            setPosts(response.data) 
+        postsService
+          .posts("http://localhost:8080/post?creator_id=" + response.data.id)
+          .then((response) => {
+            setPosts(response.data);
           })
-          .catch((error) => console.log(error))
+          .catch((error) => console.log(error));
 
-        followsService.follows('http://localhost:8080/follow?user_id=' + response.data.id)
-          .then(response => {
-              setFollows(response.data)
+        followsService
+          .follows("http://localhost:8080/follow?user_id=" + response.data.id)
+          .then((response) => {
+            setFollows(response.data);
           })
-          .catch(error => console.log(error))
+          .catch((error) => console.log(error));
       })
       .catch((error) => console.log(error));
   }, []);
@@ -53,7 +55,8 @@ const PersonalProfile = () => {
       .then((response) => {
         console.log(response);
 
-        document.cookie = "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         sessionStorage.removeItem("userid");
         sessionStorage.removeItem("username");
         window.location.reload();
@@ -62,12 +65,12 @@ const PersonalProfile = () => {
   };
 
   const toggleFollowers = () => {
-    setFollowersVisible(!followersVisible)
-  }
+    setFollowersVisible(!followersVisible);
+  };
 
   const toggleFollowings = () => {
-    setFollowingsVisible(!followingsVisible)
-  }
+    setFollowingsVisible(!followingsVisible);
+  };
 
   const [showPersonalProfile, setShowPersonalProfile] = useState(true);
   const [users, setUsers] = useState([]);
@@ -94,19 +97,21 @@ const PersonalProfile = () => {
   };
 
   useEffect(() => {
-    usersService.users()
-      .then(response => {
-        setUsers(response.data)
+    usersService
+      .users()
+      .then((response) => {
+        setUsers(response.data);
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    groupService.groups()
-      .then(response => {
-        setGroups(response.data)
+    groupService
+      .groups()
+      .then((response) => {
+        setGroups(response.data);
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
@@ -118,11 +123,25 @@ const PersonalProfile = () => {
       <div className="Header">
         {data.nick_name ? (
           <div className="header">
-            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.nick_name}</u></i></span>!
+            Welcome{" "}
+            <span onClick={handleShowPersonalProfile}>
+              <i>
+                <u>{data.nick_name}</u>
+              </i>
+            </span>
+            !
           </div>
         ) : (
           <div className="header">
-            Welcome <span onClick={handleShowPersonalProfile}><i><u>{data.first_name} {data.last_name}</u></i></span>!
+            Welcome{" "}
+            <span onClick={handleShowPersonalProfile}>
+              <i>
+                <u>
+                  {data.first_name} {data.last_name}
+                </u>
+              </i>
+            </span>
+            !
           </div>
         )}
         <NotificationIcon />
@@ -131,45 +150,66 @@ const PersonalProfile = () => {
         </form>
       </div>
       <div className="page-body">
-      <div className="Menu">
-        <div className="button-wrapper">{users.length > 0 &&
-          <div>
-            <button onClick={handleSetUsersVisible}>Show Users</button>
-            {usersVisible && <UserList users={users} />}
-          </div>}
-        {groups.length > 0 &&
-          <div>
-            <button onClick={handleSetGroupsVisible}>Show Groups</button>
-            {groupsVisible && <GroupList />}
-          </div>}
+        <div className="Menu">
+          <div className="button-wrapper">
+            {users.length > 0 && (
+              <div>
+                <button onClick={handleSetUsersVisible}>Show Users</button>
+                {usersVisible && <UserList users={users} />}
+              </div>
+            )}
+            {groups.length > 0 && (
+              <div>
+                <button onClick={handleSetGroupsVisible}>Show Groups</button>
+                {groupsVisible && <GroupList />}
+              </div>
+            )}
           </div>
-      </div>
-      <div className="Mainpage">
-        <h1>Personal profile</h1>
-        {showPersonalProfile ? (
-          <div>
-            <PersonalInfo user={data} />
-            {follows &&
-              <div className="follow">
-                {follows.followers.length > 0 &&
-                <div>
-                  <button onClick={toggleFollowers}>Show/Hide Followers</button>
-                  {followersVisible && <Follows follows={follows.followers} title="Follower(s):" />}
-                </div>}
-                {follows.followings.length > 0 &&
-                <div>
-                  <button onClick={toggleFollowings}>Show/Hide Followings</button>
-                  {followingsVisible && <Follows follows={follows.followings} title="Following(s):" />}
-                </div>}
-              </div>}
-            <PostForm />
-            {posts && <Posts posts={posts} />}
-            <Chat />
-          </div>) : null}
-      </div>
+        </div>
+        <div className="Mainpage">
+          <h1>Personal profile</h1>
+          {showPersonalProfile ? (
+            <div>
+              <PersonalInfo user={data} />
+              {follows && (
+                <div className="follow">
+                  {follows.followers.length > 0 && (
+                    <div>
+                      <button onClick={toggleFollowers}>
+                        Show/Hide Followers
+                      </button>
+                      {followersVisible && (
+                        <Follows
+                          follows={follows.followers}
+                          title="Follower(s):"
+                        />
+                      )}
+                    </div>
+                  )}
+                  {follows.followings.length > 0 && (
+                    <div>
+                      <button onClick={toggleFollowings}>
+                        Show/Hide Followings
+                      </button>
+                      {followingsVisible && (
+                        <Follows
+                          follows={follows.followings}
+                          title="Following(s):"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+              <PostForm />
+              {posts && <Posts posts={posts} />}
+              <Chat />
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default PersonalProfile;

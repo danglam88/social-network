@@ -40,12 +40,12 @@ const User = ({ user }) => {
             <div>
             {follows &&
               <div>
-                {follows.followers.length > 0 &&
+                {follows.followers &&
                 <div>
                   <button onClick={toggleFollowers}>Show/Hide Followers</button>
                   {followersVisible && <Follows follows={follows.followers} title="Follower(s):" />}
                 </div>}
-                {follows.followings.length > 0 &&
+                {follows.followings &&
                 <div>
                   <button onClick={toggleFollowings}>Show/Hide Followings</button>
                   {followingsVisible && <Follows follows={follows.followings} title="Following(s):" />}

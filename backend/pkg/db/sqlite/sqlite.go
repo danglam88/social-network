@@ -205,6 +205,10 @@ func (db *Db) GetFollows(id int) (follows Follows, err error) {
 	var follow_id int
 
 	follows.UserID = id
+	follows.Username, err = db.GetUserName(id)
+	if err != nil {
+		return follows, err
+	}
 
 	rows, err := db.connection.Query("select followed_id from follow_relation where follower_id = ?", id)
 	if err != nil {

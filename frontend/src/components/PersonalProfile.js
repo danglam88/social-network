@@ -152,13 +152,13 @@ const PersonalProfile = () => {
       <div className="page-body">
         <div className="Menu">
           <div className="button-wrapper">
-            {users.length > 0 && (
+            {users && (
               <div>
                 <button onClick={handleSetUsersVisible}>Show Users</button>
                 {usersVisible && <UserList users={users} />}
               </div>
             )}
-            {groups.length > 0 && (
+            {groups && (
               <div>
                 <button onClick={handleSetGroupsVisible}>Show Groups</button>
                 {groupsVisible && <GroupList />}
@@ -173,7 +173,7 @@ const PersonalProfile = () => {
               <PersonalInfo user={data} />
               {follows && (
                 <div className="follow">
-                  {follows.followers.length > 0 && (
+                  {follows.followers && (
                     <div>
                       <button onClick={toggleFollowers}>
                         Show/Hide Followers
@@ -186,7 +186,7 @@ const PersonalProfile = () => {
                       )}
                     </div>
                   )}
-                  {follows.followings.length > 0 && (
+                  {follows.followings && (
                     <div>
                       <button onClick={toggleFollowings}>
                         Show/Hide Followings

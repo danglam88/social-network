@@ -8,6 +8,9 @@ CREATE TABLE IF NOT EXISTS event_relation (
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
 
+CREATE UNIQUE INDEX idx_event_user 
+ON event_relation (event_id, user_id);
+
 INSERT INTO event_relation (id,event_id,user_id,is_approved,is_going)
 VALUES
     (1,1,7,1,1),

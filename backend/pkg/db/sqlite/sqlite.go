@@ -458,6 +458,7 @@ func (db *Db) GetEvents(groupId, userId int) (events []Event, err error) {
 	}
 
 	var event Event
+
 	for rows.Next() {
 		err := rows.Scan(&event.ID, &event.CreatorId, &event.Name, &event.Description, &event.OccurTime)
 		if err != nil {
@@ -469,6 +470,7 @@ func (db *Db) GetEvents(groupId, userId int) (events []Event, err error) {
 		if err != nil {
 			return events, err
 		}
+
 		events = append(events, event)
 	}
 	return events, err
@@ -478,6 +480,7 @@ func (db *Db) GetVotes(eventId, userId int) (votedYes, votedNo, userVote int, er
 
 	votedYes = 0
 	votedNo = 0
+	userVote = -1
 
 	query := "select user_id, is_going from event_relation where event_id = ? and is_approved = 1"
 	rows, err := db.connection.Query(query, eventId)
@@ -643,7 +646,8 @@ func (db *Db) JoinToGroup(userId, groupId, isRequested, isApproved int) (err err
 
 func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) {
 
-	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?)", userId, eventId, isApproved, isGoing)
+	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?) ON CONFLICT(event_id, user_id) DO UPDATE SET is_approved = 1, is_going = ?;", userId, eventId, isApproved, isGoing, isGoing)
+	fmt.Print("err", err)
 	return err
 }
 

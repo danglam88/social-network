@@ -1,12 +1,11 @@
 import EventList from "./EventList"
 import Posts from "./Posts"
+import PostForm from "./PostForm"
 
 const Group = ({group}) => {
 
   const membersCount = group.members?.length === 0 ? 0 : group.members.length
 
-  console.log(group.members)
-  console.log(membersCount)
     return (  
         <>
         <h1>{group.name}</h1>
@@ -16,6 +15,7 @@ const Group = ({group}) => {
           <li>Members : {membersCount}</li>
         </ul>
         <EventList list= {group.events}/>
+        <PostForm groupId={group.id}/>
         <Posts posts ={group.posts}/>
         </>
       )

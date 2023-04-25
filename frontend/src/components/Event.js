@@ -5,6 +5,10 @@ import groupService from "../services/GroupsService"
 const Event = ({event}) => {
 
     const [isGoing, setIsGoing] = useState(event.user_vote)
+    const [votes, setVotes] = useState({
+      votedYes : event.voted_yes, 
+      votedNo : event.voted_no,
+    })
 
     const handleChange = (value, eventId) => {
 
@@ -18,9 +22,12 @@ const Event = ({event}) => {
         groupService.eventJoin(data)
         .then(response => {
           console.log(response)
+          setVotes({
+            votedYes : response.data.voted_yes, 
+            votedNo : response.data.voted_no,
+          })
         })
         .catch(error => console.log(error))
-
     }
 
     return (
@@ -36,7 +43,7 @@ const Event = ({event}) => {
             onChange={() => handleChange(1, event.id)}
             checked={isGoing === 1}
           />
-          <label htmlFor='is_going_1'>I am in! ({event.voted_yes} members)</label>
+          <label htmlFor='is_going_1'>I am in! ({votes.votedYes} members)</label>
            <input
             type='radio'
             id='is_going_0'
@@ -44,7 +51,7 @@ const Event = ({event}) => {
             onChange={() => handleChange(0, event.id)}
             checked={isGoing === 0}
           />
-          <label htmlFor='is_going_0'>Not for me ({event.voted_no} members)</label>
+          <label htmlFor='is_going_0'>Not for me ({votes.votedNo} members)</label>
         </ul>
     )
 }

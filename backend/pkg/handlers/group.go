@@ -130,5 +130,17 @@ func EventJoin(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	event := db.Event{
+		ID: eventId,
+	}
+
+	event.VotedYes, event.VotedNo, event.UserVote, err = DB.GetVotes(eventId, userId)
+
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
+
 	w.WriteHeader(http.StatusOK)
+	res, _ := json.Marshal(event)
+	io.WriteString(w, string(res))
 }

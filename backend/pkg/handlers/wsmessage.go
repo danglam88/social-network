@@ -7,6 +7,7 @@ import (
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -70,8 +71,6 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 	go client.readMessages()
 	go client.writeMessages()
 
-	fmt.Println("GroupNotifications: ", GroupNotifications)
-
 	if len(GroupNotifications) > 0 {
 		for _, n := range GroupNotifications {
 			msg := db.Message{
@@ -82,7 +81,10 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				Message:  fmt.Sprintf("%s wants to join your group %s", n.UserName, n.GroupName),
 			}
 			message, _ := json.Marshal(msg)
-			fmt.Println("GroupNotifications: ", string(message))
+
+			//wait 1 second before sending the next message to let the notification component load
+			time.Sleep(1 * time.Second)
+
 			client.eggress <- message
 		}
 	}

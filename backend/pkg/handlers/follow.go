@@ -32,7 +32,7 @@ func GetFollows(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("filterUser: ", filterUser)
 
 	follows, err := DB.GetFollows(filterUser)
-	fmt.Println("follows: ", follows)
+
 	if err != nil {
 		errorMess := "Error while getting follows"
 		GetErrResponse(w, errorMess, http.StatusBadRequest)

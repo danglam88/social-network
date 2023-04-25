@@ -4,7 +4,10 @@ import followsService from "../services/FollowsService";
 
 //send in "groupId={nbr}" as groupId.
 const PostForm = (groupId) => {
-  const group_id = groupId.groupId;
+  var group_id = groupId.groupId;
+  if (group_id === undefined) {
+    group_id = 0;
+  }
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [privacy, setPrivacy] = useState("public");
@@ -18,7 +21,6 @@ const PostForm = (groupId) => {
   useEffect(() => {
     if (!groupId.hasOwnProperty("groupId")) {
       followsService.follows(followUrl).then((response) => {
-        console.log(response.data);
         setFollows(response.data);
       });
     }
@@ -48,7 +50,6 @@ const PostForm = (groupId) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(follows.followers);
 
     // Validation
     const textRegex = /^[\x20-\x7E]+$/;

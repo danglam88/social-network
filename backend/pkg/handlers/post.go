@@ -64,19 +64,16 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("PostAdd 75", creatorID)
-
 	visibility := r.FormValue("visibility")
 	visibilityNbr := 0
 	if visibility == "allmembers" {
 		visibilityNbr = 1
-	} else if visibility == "private" {
+	} else if visibility == "superprivate" {
 		visibilityNbr = 2
 	}
-	fmt.Println("PostAdd 89", visibility)
 
 	followersID := []int{}
-	if visibility == "private" {
+	if visibility == "superprivate" {
 		followersID = append(followersID, creatorID)
 		//fetch chosen users from form, add their ids to followers
 		followers := strings.Split(r.FormValue("allowed_followers"), ",")
@@ -89,20 +86,23 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 			followersID = append(followersID, followerID)
 		}
 	}
-	groupIDvalue := r.FormValue("group_id")
-	fmt.Println("PostAdd 76", groupIDvalue)
 
-	fmt.Println("PostAdd 85", groupID)
+	groupIDvalue := r.FormValue("group_id")
+	if groupIDvalue != "" {
+		groupID, err = strconv.Atoi(groupIDvalue)
+		if err != nil {
+			GetErrResponse(w, "Invalid group id format", http.StatusBadRequest)
+			return
+		}
+	}
 
 	imgUrl, imgErr := UploadFile(w, r)
 	if imgErr != nil {
 		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("PostAdd 111", imgUrl)
 
 	title := r.FormValue("title")
-	fmt.Println("PostAdd 113", title)
 	ErrorCheck, TitleErrorMessage := ValidateField("Title", title, 1, 30)
 	if ErrorCheck {
 		GetErrResponse(w, TitleErrorMessage, http.StatusBadRequest)
@@ -110,7 +110,6 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	content := r.FormValue("content")
-	fmt.Println("PostAdd 120", content)
 	descriptionErrorCheck, DescriptionErrorMessage := ValidateField("Content", content, 1, 3000)
 
 	if descriptionErrorCheck {
@@ -123,9 +122,8 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, postErr.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("PostID: ", postID)
 
-	if visibility == "private" {
+	if visibility == "superprivate" {
 		for _, followerID := range followersID {
 			postVisiblyErr := DB.CreatePostFollower(postID, followerID)
 			if postVisiblyErr != nil {

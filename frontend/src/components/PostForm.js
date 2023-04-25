@@ -4,7 +4,6 @@ import followsService from "../services/FollowsService";
 
 //send in "groupId={nbr}" as groupId.
 const PostForm = (groupId) => {
-  console.log(groupId);
   const group_id = groupId.groupId;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -19,6 +18,7 @@ const PostForm = (groupId) => {
   useEffect(() => {
     if (!groupId.hasOwnProperty("groupId")) {
       followsService.follows(followUrl).then((response) => {
+        console.log(response.data);
         setFollows(response.data);
       });
     }
@@ -48,6 +48,7 @@ const PostForm = (groupId) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(follows.followers);
 
     // Validation
     const textRegex = /^[\x20-\x7E]+$/;
@@ -151,9 +152,13 @@ const PostForm = (groupId) => {
               name="users"
               multiple
               onChange={handleUsersChange}>
-              <option value="user1">User 1</option>
-              <option value="user2">User 2</option>
-              <option value="user3">User 3</option>
+              {follows.followers.map((follow) => (
+                <option key={follow.id} value={follow.id}>
+                  {follow.nick_name
+                    ? follow.nick_name
+                    : follow.first_name + " " + follow.last_name}
+                </option>
+              ))}
             </select>
           </div>
         )}

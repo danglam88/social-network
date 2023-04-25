@@ -66,8 +66,12 @@ func GetFunc(handler Handler) http.HandlerFunc {
 
 		enableCors(&w, r)
 
+		if r.Method == "OPTIONS" {
+			return
+		}
+
 		if !IsOn(w, r) && handler.Endpoint != "/login" && handler.Endpoint != "/register" && handler.Endpoint != "/logout" && handler.Endpoint != "/loggedin" {
-			GetErrResponse(w, "User not logged in", http.StatusUnauthorized)
+			http.Error(w, "User not logged in", http.StatusUnauthorized)
 			return
 		}
 
@@ -76,12 +80,14 @@ func GetFunc(handler Handler) http.HandlerFunc {
 		} else if r.Method == "POST" && handler.PostFunction != nil {
 			handler.PostFunction(w, r)
 		} else {
-			w.WriteHeader(http.StatusNotFound)
+			http.NotFound(w, r)
+			return
 		}
 	}
 }
 
 func GetErrResponse(w http.ResponseWriter, errorMess string, statusCode int) {
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	response := ResponseError{Status: RESPONSE_ERR, Error: errorMess}
 	res, _ := json.Marshal(response)

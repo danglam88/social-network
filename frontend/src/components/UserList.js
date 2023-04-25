@@ -12,7 +12,7 @@ const UserItem = ({user, handleUserProfile}) => {
             {user.nick_name ? (
                 <span onClick={() => handleShowUserProfile(user.id)}>{user.nick_name}</span>
             ) : (
-                <span>{user.first_name} {user.last_name}</span>
+                <span onClick={() => handleShowUserProfile(user.id)}>{user.first_name} {user.last_name}</span>
             )}
         </div>
     )

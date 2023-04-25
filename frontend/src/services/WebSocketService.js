@@ -3,11 +3,12 @@ let socket;
 
 let messageListenerRegistered = false;
 
-
 const clientToken = document.cookie
   .split("; ")
   .find((row) => row.startsWith("session_token="))
   ?.split("=")[1];
+
+const messageCallbacks = new Set();
 
 const WebSocketService = {
   connect: (url, callback) => {
@@ -19,7 +20,13 @@ const WebSocketService = {
         if (callback) {
           callback();
         }
-
+        if (!messageListenerRegistered) {
+          socket.addEventListener("message", (event) => {
+            const message = JSON.parse(event.data);
+            messageCallbacks.forEach((cb) => cb(message));
+          });
+          messageListenerRegistered = true;
+        }
       });
       socket.addEventListener("close", (event) => {
         console.log("WebSocket closed:", event);
@@ -34,15 +41,11 @@ const WebSocketService = {
   },
 
   onMessage: (callback) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.addEventListener("message", (event) => {
-        console.log("Message received", event.data);
-        const message = JSON.parse(event.data);
-        callback(message);
-      });
-    } else {
-      setTimeout(() => WebSocketService.onMessage(callback), 100);
-    }
+    messageCallbacks.add(callback);
+  },
+
+  removeMessageListener: (callback) => {
+    messageCallbacks.delete(callback);
   },
 
   sendMessage: (message) => {
@@ -57,7 +60,5 @@ const WebSocketService = {
     }
   },
 };
-
-
 
 export default WebSocketService;

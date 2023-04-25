@@ -5,9 +5,26 @@ const NotificationIcon = () => {
   const [notifications, setNotifications] = useState([]);
   const [showList, setShowList] = useState(false);
 
-  // Wrap the onUpdate with useEffect
   useEffect(() => {
-    NotificationService.onUpdate(setNotifications);
+    const messageListener = (message) => {
+      console.log("Notification received", message)
+      if (
+        message.type === "follownotification" ||
+        message.type === "invitenotification" ||
+        message.type === "joinreqnotification" ||
+        message.type === "eventnotification"
+      ) {
+        setNotifications((prevNotifications) => {
+          if (!prevNotifications.some((n) => n.message === message.message)) {
+            return [...prevNotifications, message];
+          } else {
+            return prevNotifications;
+          }
+        });
+      }
+    };
+
+    NotificationService.onMessage(messageListener);
   }, []);
 
   const handleClearNotification = (index) => {

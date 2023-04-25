@@ -71,12 +71,12 @@ const EventList = ({list, groupId}) => {
 
     const handleNewEvent = (groupId, newEvent) => {
 
-            console.log("handleNewEvent")
-
             //send notification
             const payload = {
                 type: "eventnotification",
                 to: parseInt(groupId),
+                //send message with event name
+                message: newEvent.name
             };
             WebSocketService.sendMessage(payload);
 

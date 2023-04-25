@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -86,7 +85,6 @@ func IsOn(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	user_name := session.Username
-	fmt.Println(user_name)
 
 	return user_name != ""
 }

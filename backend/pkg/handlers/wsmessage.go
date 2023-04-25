@@ -46,11 +46,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 
 	userEmail := AuthenticateUser(w, r)
 
-	fmt.Println("user after auth: ", userEmail)
-
 	id := DB.GetUserID(userEmail)
-
-	fmt.Println("id after auth: ", id)
 
 	conn, err := websocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -175,17 +171,12 @@ func (c *Client) readMessages() {
 			log.Println(err)
 		}
 
-		fmt.Println(res)
-
 		if res.From > 0 {
 			res.CreatedAt = DB.GetTime()
 			message, _ := json.Marshal(res)
 			if res.Type == MESSAGE_TYPE {
 
-				fmt.Println("Message: ", res.Message)
-
 				chatUsers, err := DB.GetUserIdsfromChatId(res.To)
-				fmt.Println("chat user Ids: ", chatUsers)
 				if err != nil {
 					log.Println(err)
 				}
@@ -193,7 +184,6 @@ func (c *Client) readMessages() {
 				for _, chatUser := range chatUsers {
 					for wsclient := range c.manager.clients {
 						if wsclient.userId == chatUser {
-							fmt.Println("sending to: ", wsclient.userId)
 							wsclient.eggress <- message
 						}
 					}

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -15,14 +14,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(r.FormValue("email"))
-	fmt.Println(r.FormValue("password"))
-
 	// Getting the credentials (given by the user) from the login form
 	username := r.FormValue("email")
 	password := r.FormValue("password")
-	fmt.Println("username: ", username)
-	fmt.Println("password: ", password)
 
 	// Getting the password of the given user from the database
 	expected_pass, err := DB.GetPassword4User(username)
@@ -43,7 +37,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("login successful")
 	w.WriteHeader(http.StatusOK)
 	response := Response{Status: RESPONSE_OK}
 	for _, session := range sessions {

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -28,8 +27,6 @@ func GetFollows(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, errorMess, http.StatusBadRequest)
 		return
 	}
-
-	fmt.Println("filterUser: ", filterUser)
 
 	follows, err := DB.GetFollows(filterUser)
 

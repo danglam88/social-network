@@ -251,9 +251,17 @@ func (c *Client) readMessages() {
 				if err != nil {
 					log.Println(err)
 				}
+
+				group, err := DB.GetGroup(res.To, c.userId)
+				if err != nil {
+					log.Println(err)
+				}
+
+				res.Message = res.UserName + " created an event in your group " + group.GroupName
+
 				for groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {
-						if wsclient.userId == groupUser {
+						if wsclient.userId == groupUser && wsclient.userId != res.From {
 							message, _ := json.Marshal(res)
 							wsclient.eggress <- message
 						}

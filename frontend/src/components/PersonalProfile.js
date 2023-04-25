@@ -11,7 +11,7 @@ import PersonalInfo from "./PersonalInfo";
 import usersService from "../services/UsersService";
 import UserList from "./UserList";
 import followsService from "../services/FollowsService";
-import Follows from "./Follows";
+import FollowsWrapper from './FollowsWrapper'
 import groupService from "../services/GroupsService";
 import NotificationService from "../services/NotificationService";
 
@@ -20,8 +20,6 @@ const PersonalProfile = () => {
 
   const [posts, setPosts] = useState([]);
   const [follows, setFollows] = useState(null);
-  const [followersVisible, setFollowersVisible] = useState(false);
-  const [followingsVisible, setFollowingsVisible] = useState(false);
 
   useEffect(() => {
     perProfileService
@@ -62,14 +60,6 @@ const PersonalProfile = () => {
         window.location.reload();
       })
       .catch((error) => console.log(error));
-  };
-
-  const toggleFollowers = () => {
-    setFollowersVisible(!followersVisible);
-  };
-
-  const toggleFollowings = () => {
-    setFollowingsVisible(!followingsVisible);
   };
 
   const [showPersonalProfile, setShowPersonalProfile] = useState(true);
@@ -173,32 +163,8 @@ const PersonalProfile = () => {
               <PersonalInfo user={data} />
               {follows && (
                 <div className="follow">
-                  {follows.followers && (
-                    <div>
-                      <button onClick={toggleFollowers}>
-                        Show/Hide Followers
-                      </button>
-                      {followersVisible && (
-                        <Follows
-                          follows={follows.followers}
-                          title="Follower(s):"
-                        />
-                      )}
-                    </div>
-                  )}
-                  {follows.followings && (
-                    <div>
-                      <button onClick={toggleFollowings}>
-                        Show/Hide Followings
-                      </button>
-                      {followingsVisible && (
-                        <Follows
-                          follows={follows.followings}
-                          title="Following(s):"
-                        />
-                      )}
-                    </div>
-                  )}
+                  {follows.followers && <FollowsWrapper follows={follows.followers} title="Follower(s):" />}
+                  {follows.followings && <FollowsWrapper follows={follows.followings} title="Following(s):" />}
                 </div>
               )}
               <PostForm />

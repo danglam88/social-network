@@ -2,9 +2,9 @@ const Follow = ({follow}) => {
     return (
         <div>
             {follow.nick_name ? (
-                <span>{follow.nick_name}</span>
+                <div>{follow.nick_name}</div>
             ) : (
-                <span>{follow.first_name} {follow.last_name}</span>
+                <div>{follow.first_name} {follow.last_name}</div>
             )}
         </div>
     )

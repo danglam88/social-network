@@ -1,23 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import PersonalInfo from './PersonalInfo'
-import Follows from './Follows'
 import Posts from './Posts'
 import postsService from '../services/PostsService'
 import followsService from "../services/FollowsService"
+import FollowsWrapper from './FollowsWrapper'
 
 const User = ({ user }) => {
     const [posts, setPosts] = useState([])
     const [follows, setFollows] = useState(null)
-    const [followersVisible, setFollowersVisible] = useState(false)
-    const [followingsVisible, setFollowingsVisible] = useState(false)
-
-    const toggleFollowers = () => {
-        setFollowersVisible(!followersVisible)
-      }
-    
-      const toggleFollowings = () => {
-        setFollowingsVisible(!followingsVisible)
-      }
 
     useEffect(() => {
         postsService.posts('http://localhost:8080/post?creator_id=' + user.id)
@@ -40,16 +30,8 @@ const User = ({ user }) => {
             <div>
             {follows &&
               <div>
-                {follows.followers &&
-                <div>
-                  <button onClick={toggleFollowers}>Show/Hide Followers</button>
-                  {followersVisible && <Follows follows={follows.followers} title="Follower(s):" />}
-                </div>}
-                {follows.followings &&
-                <div>
-                  <button onClick={toggleFollowings}>Show/Hide Followings</button>
-                  {followingsVisible && <Follows follows={follows.followings} title="Following(s):" />}
-                </div>}
+                {follows.followers && <FollowsWrapper follows={follows.followers} title="Follower(s):" />}
+                {follows.followings && <FollowsWrapper follows={follows.followings} title="Following(s):" />}
               </div>}
             </div>
             {posts && <Posts posts={posts} />}

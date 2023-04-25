@@ -280,7 +280,7 @@ u {
 }
 
 .follow div {
-  display: inline-block;
+  display: block;
 }
 
 .follow button {

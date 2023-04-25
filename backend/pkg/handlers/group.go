@@ -6,6 +6,7 @@ import (
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
 	"strconv"
+	"time"
 )
 
 func GroupGet(w http.ResponseWriter, r *http.Request) {
@@ -101,6 +102,7 @@ func GroupJoin(w http.ResponseWriter, r *http.Request) {
 }
 
 func EventAdd(w http.ResponseWriter, r *http.Request) {
+
 	userID := GetLoggedInUserID(w, r)
 
 	err := r.ParseForm()
@@ -113,7 +115,9 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 
 	title := r.FormValue("title")
 	description := r.FormValue("description")
-	occurTime := r.FormValue("occur_time")
+	occurTimeStr := r.FormValue("occur_date")
+
+	occurTime, _ := time.Parse("2006-01-02T15:04", occurTimeStr)
 
 	eventId, err := DB.CreateEvent(userID, int(groupId), title, description, occurTime)
 
@@ -121,15 +125,21 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	groupUsers, err := DB.GetGroupUserIds(groupId)
+
+	for groupUser := range groupUsers {
+		DB.JoinToEvent(groupUser, int(eventId), 0, 0)
+	}
+
 	event := db.Event{
 		ID:          int(eventId),
 		CreatorId:   userID,
 		Name:        title,
 		Description: description,
-		//OccurTime: occurTime,
-		VotedYes: 0,
-		VotedNo:  0,
-		UserVote: 0,
+		OccurTime:   occurTime,
+		VotedYes:    0,
+		VotedNo:     0,
+		UserVote:    -1,
 	}
 
 	w.WriteHeader(http.StatusOK)

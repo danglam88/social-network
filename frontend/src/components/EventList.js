@@ -34,7 +34,10 @@ const NewEvent = ({groupId, handleNewEvent}) => {
    
       groupService.eventCreate(data)
         .then(response => {
-            handleNewEvent(groupId)
+            setTitle("")
+            setDescription("")
+            setOccurDate("")
+            handleNewEvent(groupId, response.data)
         })
         .catch(error => console.log(error))
     }
@@ -62,9 +65,11 @@ const NewEvent = ({groupId, handleNewEvent}) => {
 
 const EventList = ({list, groupId}) => {
 
+    const [eventList, setList] = useState(list)    
+
     const events = []
 
-    const handleNewEvent = (groupId) => {
+    const handleNewEvent = (groupId, newEvent) => {
 
             console.log("handleNewEvent")
 
@@ -74,15 +79,18 @@ const EventList = ({list, groupId}) => {
                 to: parseInt(groupId),
             };
             WebSocketService.sendMessage(payload);
+
+            const newList = eventList.concat(newEvent)
+            setList(newList)
     }
 
-    if (list !== null) {
-        list.forEach((event) => {
+    if (eventList !== null) {
+        eventList.forEach((event) => {
             events.push(<Event event={event} key={event.id}/>)
         })
     }
    
-    return (  
+    return (
         <>
             <h2>Events</h2>
             {events}

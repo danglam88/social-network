@@ -638,9 +638,9 @@ func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int
 	return groupId, err
 }
 
-func (db *Db) CreateEvent(creatorId, groupId int, title, description, occurTime string) (eventId int64, err error) {
+func (db *Db) CreateEvent(creatorId, groupId int, title, description string, occurTime time.Time) (eventId int64, err error) {
 
-	res, err := db.connection.Exec("insert into event(creator_id,group_id,title,descript,occur_time,created_at) values(?,?,?,?,?,?)", creatorId, groupId, title, description, occurTime, time.Now().Local().Format(time_format))
+	res, err := db.connection.Exec("insert into event(creator_id,group_id,title,descript,occur_time,created_at) values(?,?,?,?,?,?)", creatorId, groupId, title, description, occurTime.Format(time_format), time.Now().Local().Format(time_format))
 	if err != nil {
 		return eventId, err
 	}

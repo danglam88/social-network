@@ -35,6 +35,7 @@ const User = ({ user }) => {
 
     return (
         <div>
+            <h2>User Profile</h2>
             <PersonalInfo user={user} />
             <div>
             {follows &&

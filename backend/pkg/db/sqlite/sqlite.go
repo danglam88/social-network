@@ -638,6 +638,20 @@ func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int
 	return groupId, err
 }
 
+func (db *Db) CreateEvent(creatorId, groupId int, title, description, occurTime string) (eventId int64, err error) {
+
+	res, err := db.connection.Exec("insert into event(creator_id,group_id,title,descript,occur_time,created_at) values(?,?,?,?,?,?)", creatorId, groupId, title, description, occurTime, time.Now().Local().Format(time_format))
+	if err != nil {
+		return eventId, err
+	}
+
+	eventId, err = res.LastInsertId()
+
+	err = db.JoinToGroup(creatorId, int(groupId), 0, 1)
+
+	return eventId, err
+}
+
 func (db *Db) JoinToGroup(userId, groupId, isRequested, isApproved int) (err error) {
 
 	_, err = db.connection.Exec("insert into group_relation(user_id,group_id,is_requested,is_approved) values(?,?,?,?)", userId, groupId, isRequested, isApproved)

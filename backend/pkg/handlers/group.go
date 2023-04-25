@@ -100,6 +100,43 @@ func GroupJoin(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func EventAdd(w http.ResponseWriter, r *http.Request) {
+	userID := GetLoggedInUserID(w, r)
+
+	err := r.ParseForm()
+	if err != nil {
+		GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
+		return
+	}
+
+	groupId, err := strconv.Atoi(r.FormValue("group_id"))
+
+	title := r.FormValue("title")
+	description := r.FormValue("description")
+	occurTime := r.FormValue("occur_time")
+
+	eventId, err := DB.CreateEvent(userID, int(groupId), title, description, occurTime)
+
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	event := db.Event{
+		ID:          int(eventId),
+		CreatorId:   userID,
+		Name:        title,
+		Description: description,
+		//OccurTime: occurTime,
+		VotedYes: 0,
+		VotedNo:  0,
+		UserVote: 0,
+	}
+
+	w.WriteHeader(http.StatusOK)
+	res, _ := json.Marshal(event)
+	io.WriteString(w, string(res))
+}
+
 func EventJoin(w http.ResponseWriter, r *http.Request) {
 
 	userId := GetLoggedInUserID(w, r)

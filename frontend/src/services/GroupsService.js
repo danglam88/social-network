@@ -2,7 +2,9 @@ import axios from 'axios'
 
 const groupUrl = 'http://localhost:8080/group'
 const groupJoinUrl = 'http://localhost:8080/group_join'
+const eventUrl = 'http://localhost:8080/event'
 const eventJoinUrl = 'http://localhost:8080/event_join'
+
 
 const clientToken = document.cookie
   .split("; ")
@@ -50,12 +52,18 @@ const joinEvent = async data => {
   return request
 }
 
+const createEvent = async data => {
+  const request = await axios.post(eventUrl, data, postConfig)
+  return request
+}
+
 const GroupService = { 
     groups: getGroups,
     group : getGroup,
     create : createGroup,
     join : joinGroup,
-    eventJoin : joinEvent
+    eventJoin : joinEvent,
+    eventCreate : createEvent,
 }
 
 export default GroupService

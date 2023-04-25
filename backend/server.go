@@ -46,6 +46,10 @@ func main() {
 			PostFunction: handlers.GroupJoin,
 		},
 		{
+			Endpoint:     "/event",
+			PostFunction: handlers.EventAdd,
+		},
+		{
 			Endpoint:     "/event_join",
 			PostFunction: handlers.EventJoin,
 		},

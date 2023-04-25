@@ -21,7 +21,6 @@ const Event = ({event}) => {
         
         groupService.eventJoin(data)
         .then(response => {
-          console.log(response)
           setVotes({
             votedYes : response.data.voted_yes, 
             votedNo : response.data.voted_no,

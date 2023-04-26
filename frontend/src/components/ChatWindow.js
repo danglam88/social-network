@@ -12,10 +12,12 @@ const ChatWindow = ({ chat }) => {
 
   useEffect(() => {
     const callback = (messageData) => {
-      setChatMessages((previousMessages) => [
-        ...previousMessages,
-        messageData,
-      ]);
+      setChatMessages((previousMessages) => {
+        const updatedMessages = [...previousMessages, messageData];
+        return updatedMessages.sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        );
+      });
   
       // Scroll chat textarea to the bottom when a new message is received
       if (chatContainerRef.current) {
@@ -49,14 +51,14 @@ const ChatWindow = ({ chat }) => {
       .then((response) => {
         const newHistory = response.data;
         if (newHistory && newHistory.length > 0) {
-          setChatMessages((prevMessages) => [...newHistory, ...prevMessages]);
+          setChatMessages((prevMessages) => [...prevMessages, ...newHistory]);
         } else {
           setHasMore(false);
         }
         setLoading(false);
       })
       .catch((error) => console.error("Error fetching chat history:", error));
-  }, [chat.GroupID, chat.ChatID, loading, page]);
+  }, [chat.GroupID, chat.ChatID, loading, page, hasMore]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -68,33 +70,37 @@ const ChatWindow = ({ chat }) => {
       { threshold: 1 }
     );
 
-    if (topRef.current) {
-      observer.observe(topRef.current);
+    const currentTopRef = topRef.current;
+
+    if (currentTopRef) {
+      observer.observe(currentTopRef);
     }
 
     return () => {
-      if (topRef.current) {
-        observer.unobserve(topRef.current);
+      if (currentTopRef) {
+        observer.unobserve(currentTopRef);
       }
     };
-  }, [loadMoreMessages]);
+  }, [loadMoreMessages, hasMore]);
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
       <h2>Chat Window</h2>
 
       <textarea
-  ref={chatContainerRef}
-  cols="50"
-  readOnly
-  value={chatMessages
-    .map((msg) => `${msg.created_at} - ${msg.username}: ${msg.message}`)
-    .join('\n')}
-  style={{
-    height: '200px', // Set the desired height for the chat container
-    overflowY: 'scroll',
-  }}
-></textarea>
+        ref={chatContainerRef}
+        cols="50"
+        readOnly
+        value={chatMessages
+          .slice()
+          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+          .map((msg) => `${new Date(msg.created_at).toLocaleString()} - ${msg.username}: ${msg.message}`)
+          .join('\n')}
+        style={{
+          height: '200px',
+          overflowY: 'scroll',
+        }}
+      ></textarea>
 
       <div ref={topRef}></div>
       <div>

@@ -207,6 +207,7 @@ func (c *Client) readMessages() {
 					}
 				}
 			} else if res.Type == FOLLOWNOTIFICATION_TYPE {
+				res.Message = fmt.Sprintf("%s requested to follow you", res.UserName)
 				//notify the user that he has a new follower
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {

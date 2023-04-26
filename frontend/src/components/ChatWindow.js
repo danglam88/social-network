@@ -1,36 +1,82 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import ChatService from "../services/ChatService";
 
+const sortMessagesByDate = (messages) => {
+
+  const sortedMessages = messages.sort((a, b) => {
+    const dateA = new Date(a.created_at.replace("T", " ").replace("Z", ""));
+    const dateB = new Date(b.created_at.replace("T", " ").replace("Z", ""));
+    
+    const timestampA = dateA.getTime() || dateA.valueOf();
+    const timestampB = dateB.getTime() || dateB.valueOf();
+    
+
+    // Handle the case when `created_at` is not a valid date
+    if (isNaN(timestampA)) return 1;
+    if (isNaN(timestampB)) return -1;
+    
+    return timestampA - timestampB;
+  });
+
+  return sortedMessages;
+};
+
+
 const ChatWindow = ({ chat }) => {
-  const [chatMessages, setChatMessages] = useState(chat.history);
+  const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const topRef = useRef(null);
   const [hasMore, setHasMore] = useState(true);
   const chatContainerRef = useRef(null);
+  const [scrollToBottom, setScrollToBottom] = useState(false);
+
+  const fetchInitialChatHistory = useCallback(async () => {
+    try {
+      const response = await ChatService.fetchChatHistory(chat.GroupID, chat.ChatID);
+      const initialHistory = response.data;
+      setChatMessages(sortMessagesByDate(initialHistory));
+      // Scroll chat textarea to the bottom when it first loads
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+    } catch (error) {
+      console.error("Error fetching initial chat history:", error);
+    }
+  }, [chat.GroupID, chat.ChatID]);
+
+  useEffect(() => {
+    fetchInitialChatHistory();
+  }, [fetchInitialChatHistory]);
+
+  useEffect(() => {
+    ChatService.fetchChatHistory(chat.GroupID, chat.ChatID)
+      .then((response) => {
+        const initialHistory = response.data;
+        setChatMessages(sortMessagesByDate(initialHistory));
+      })
+      .catch((error) => console.error("Error fetching initial chat history:", error));
+  }, [chat.GroupID, chat.ChatID]);
 
   useEffect(() => {
     const callback = (messageData) => {
       setChatMessages((previousMessages) => {
         const updatedMessages = [...previousMessages, messageData];
-        return updatedMessages.sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
+        return sortMessagesByDate(updatedMessages);
       });
-  
+
       // Scroll chat textarea to the bottom when a new message is received
       if (chatContainerRef.current) {
         // Add a short delay to allow the browser to render the updated content
         setTimeout(() => {
-          chatContainerRef.current.scrollTop =
-            chatContainerRef.current.scrollHeight;
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }, 50);
       }
     };
-  
+
     ChatService.onMessage(callback);
-  
+
     return () => {
       ChatService.removeMessageListener(callback);
     };
@@ -40,8 +86,14 @@ const ChatWindow = ({ chat }) => {
     if (typedMessage.trim() !== "") {
       ChatService.sendMessage(chat.ChatID, typedMessage);
       setTypedMessage("");
+      setScrollToBottom(true);
     }
   };
+
+
+
+
+  
 
   const loadMoreMessages = useCallback(async () => {
     if (loading || !hasMore) return;
@@ -51,7 +103,10 @@ const ChatWindow = ({ chat }) => {
       .then((response) => {
         const newHistory = response.data;
         if (newHistory && newHistory.length > 0) {
-          setChatMessages((prevMessages) => [...prevMessages, ...newHistory]);
+          setChatMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages, ...newHistory];
+            return sortMessagesByDate(updatedMessages);
+          });
         } else {
           setHasMore(false);
         }
@@ -60,6 +115,13 @@ const ChatWindow = ({ chat }) => {
       .catch((error) => console.error("Error fetching chat history:", error));
   }, [chat.GroupID, chat.ChatID, loading, page, hasMore]);
 
+  
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -67,7 +129,7 @@ const ChatWindow = ({ chat }) => {
           loadMoreMessages();
         }
       },
-      { threshold: 1 }
+      { threshold: 0 }
     );
 
     const currentTopRef = topRef.current;
@@ -87,22 +149,30 @@ const ChatWindow = ({ chat }) => {
     <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
       <h2>Chat Window</h2>
 
-      <textarea
+      <div
         ref={chatContainerRef}
-        cols="50"
-        readOnly
-        value={chatMessages
-          .slice()
-          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-          .map((msg) => `${new Date(msg.created_at).toLocaleString()} - ${msg.username}: ${msg.message}`)
-          .join('\n')}
+        className="chat-container"
         style={{
-          height: '200px',
-          overflowY: 'scroll',
+          height: "150px",
+          overflowY: "scroll",
+          border: "1px solid #ccc",
+          padding: "4px",
+          whiteSpace: "pre-wrap",
         }}
-      ></textarea>
+      >
+        <div style={{ minHeight: "1px" }}>
+        <div ref={topRef}></div>
+        </div>
+        {chatMessages
+          .map(
+            (msg) =>
+              `${msg.created_at
+                .replace("T", " ")
+                .replace("Z", "")} - ${msg.username}: ${msg.message}`
+          )
+          .join("\n")}
+      </div>
 
-      <div ref={topRef}></div>
       <div>
         <input
           type="text"

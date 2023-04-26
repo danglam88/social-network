@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
 	"strconv"
@@ -65,6 +66,7 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 	userId := GetLoggedInUserID(w, r)
 
 	if !pendingFollow.CheckPending {
+		log.Println("Toggling follow")
 		err = DB.ToggleFollow(userId, pendingFollow.User)
 		if err != nil {
 			GetErrResponse(w, "Error while toggling follow", http.StatusInternalServerError)
@@ -72,7 +74,7 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		response := ResponseError{Status: RESPONSE_OK}
+		response := ResponseError{Status: RESPONSE_OK, Error: "No checking pending"}
 		res, _ := json.Marshal(response)
 		io.WriteString(w, string(res))
 	} else {

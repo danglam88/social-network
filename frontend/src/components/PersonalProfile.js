@@ -17,9 +17,13 @@ import NotificationService from "../services/NotificationService";
 
 const PersonalProfile = () => {
   const [data, setData] = useState({});
-
   const [posts, setPosts] = useState([]);
   const [follows, setFollows] = useState(null);
+  const [showPersonalProfile, setShowPersonalProfile] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [usersVisible, setUsersVisible] = useState(false);
+  const [groups, setGroups] = useState([]);
+  const [groupsVisible, setGroupsVisible] = useState(false);
 
   useEffect(() => {
     perProfileService
@@ -42,7 +46,7 @@ const PersonalProfile = () => {
           .catch((error) => console.log(error));
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [usersVisible]);
 
   const handleLogout = (event) => {
     event.preventDefault();
@@ -61,12 +65,6 @@ const PersonalProfile = () => {
       })
       .catch((error) => console.log(error));
   };
-
-  const [showPersonalProfile, setShowPersonalProfile] = useState(true);
-  const [users, setUsers] = useState([]);
-  const [usersVisible, setUsersVisible] = useState(false);
-  const [groups, setGroups] = useState([]);
-  const [groupsVisible, setGroupsVisible] = useState(false);
 
   const handleShowPersonalProfile = () => {
     setShowPersonalProfile(true);

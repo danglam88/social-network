@@ -112,6 +112,10 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	groupId, err := strconv.Atoi(r.FormValue("group_id"))
+	if err != nil {
+		GetErrResponse(w, "Invalid group id", http.StatusBadRequest)
+		return
+	}
 
 	title := r.FormValue("title")
 	description := r.FormValue("description")
@@ -126,6 +130,9 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	groupUsers, err := DB.GetGroupUserIds(groupId)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
 
 	for groupUser := range groupUsers {
 		DB.JoinToEvent(groupUser, int(eventId), 0, 0)

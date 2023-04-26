@@ -228,10 +228,11 @@ func (db *Db) ToggleFollow(followerId int, followedUser User) (err error) {
 	}
 
 	if isApproved == 1 {
-		_, err = db.connection.Exec("delete from follow_relation where follower_id=? and followed_id=?", followerId, followedUser.ID)
-		if err != nil {
-			log.Printf("Delete Error: %v\n", err)
-			return err
+		log.Printf("%d unfollows %d\n", followerId, followedUser.ID)
+		_, newErr := db.connection.Exec("delete from follow_relation where follower_id=? and followed_id=?", followerId, followedUser.ID)
+		if newErr != nil {
+			log.Printf("Delete Error: %v\n", newErr)
+			return newErr
 		}
 	}
 

@@ -10,14 +10,6 @@ const UserItem = ({user, followings, handleUserProfile}) => {
     const [check_pending, setCheckPending] = useState(true)
 
     useEffect(() => {
-        followsService.follow({user, check_pending})
-            .then(response => {
-                if (response.data.Error === "Pending") {
-                    setUserProfilePending(true)
-                }
-            })
-            .catch(error => console.log(error))
-
         if (!user.is_private) {
             setUserProfileAccessible(true)
         }
@@ -28,25 +20,35 @@ const UserItem = ({user, followings, handleUserProfile}) => {
                 setUserProfileFollowed(true)
             }
         })
-    }, []);
+    }, [])
+
+    useEffect(() => {
+        console.log("Pending: " + check_pending)
+
+        followsService.follow({user, check_pending})
+            .then(response => {
+                if (response.data.Error === "Pending") {
+                    setUserProfilePending(true)
+                }
+            })
+            .catch(error => console.log(error))
+    }, [check_pending])
 
     const handleShowUserProfile = (userId) => {
         handleUserProfile(userId)
     }
 
     const toggleFollow = (follow) => {
+        setCheckPending(false)
+
         if (!follow || !user.is_private) {
             setUserProfileFollowed(!userProfileFollowed)
+            if (!follow && user.is_private) {
+                setUserProfileAccessible(false)
+            }
         } else {
             setUserProfilePending(true)
         }
-
-        setCheckPending(false)
-        followsService.follow({user, check_pending})
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => console.log(error))
     }
 
     return (

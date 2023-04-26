@@ -14,12 +14,14 @@ const UserItem = ({user, followings, handleUserProfile}) => {
             setUserProfileAccessible(true)
         }
 
-        followings.forEach(following => {
-            if (following.id === user.id) {
-                setUserProfileAccessible(true)
-                setUserProfileFollowed(true)
-            }
-        })
+        if (followings !== null) {
+            followings.forEach(following => {
+                if (following.id === user.id) {
+                    setUserProfileAccessible(true)
+                    setUserProfileFollowed(true)
+                }
+            })
+        }
     }, [])
 
     useEffect(() => {

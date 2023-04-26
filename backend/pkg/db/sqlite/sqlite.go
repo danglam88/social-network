@@ -699,6 +699,9 @@ func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int
 	}
 
 	groupId, err = res.LastInsertId()
+	if err != nil {
+		return groupId, err
+	}
 
 	err = db.JoinToGroup(creatorId, int(groupId), 0, 1)
 
@@ -713,6 +716,9 @@ func (db *Db) CreateEvent(creatorId, groupId int, title, description string, occ
 	}
 
 	eventId, err = res.LastInsertId()
+	if err != nil {
+		return eventId, err
+	}
 
 	err = db.JoinToGroup(creatorId, int(groupId), 0, 1)
 

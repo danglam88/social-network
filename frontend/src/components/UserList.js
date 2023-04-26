@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import usersService from '../services/UsersService'
+import React, { useState, useEffect } from 'react';
+import usersService from '../services/UsersService';
 import User from './User';
 import followsService from "../services/FollowsService";
+import WebSocketService from '../services/WebSocketService';
 
 const UserItem = ({user, followings, handleUserProfile}) => {
     const [userProfileAccessible, setUserProfileAccessible] = useState(false)
@@ -50,6 +51,13 @@ const UserItem = ({user, followings, handleUserProfile}) => {
             }
         } else {
             setUserProfilePending(true)
+
+            //send notification
+            const payload = {
+                type: "follownotification",
+                to: parseInt(user.id),
+            };
+            WebSocketService.sendMessage(payload);
         }
     }
 

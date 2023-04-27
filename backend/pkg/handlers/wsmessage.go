@@ -63,6 +63,12 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	FollowNotifications, err := DB.GetFollowNotifications(id)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	//Start client
 	go client.readMessages()
 	go client.writeMessages()
@@ -75,6 +81,24 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				UserName: n.UserName,
 				To:       id,
 				Message:  fmt.Sprintf("%s wants to join your group %s", n.UserName, n.GroupName),
+			}
+			message, _ := json.Marshal(msg)
+
+			//wait 1 second before sending the next message to let the notification component load
+			time.Sleep(1 * time.Second)
+
+			client.eggress <- message
+		}
+	}
+
+	if len(FollowNotifications) > 0 {
+		for _, follower := range FollowNotifications {
+			msg := db.Message{
+				Type:     FOLLOWNOTIFICATION_TYPE,
+				From:     0,
+				UserName: follower,
+				To:       id,
+				Message:  fmt.Sprintf("%s wants to follow you", follower),
 			}
 			message, _ := json.Marshal(msg)
 

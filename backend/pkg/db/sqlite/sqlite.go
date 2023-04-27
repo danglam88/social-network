@@ -1196,6 +1196,39 @@ func (db *Db) GetTime() string {
 	return time.Now().Local().Format(time_format)
 }
 
+func (db *Db) GetFollowNotifications(userID int) ([]string, error) {
+	var followers []string
+
+	rows, err := db.connection.Query(`
+		SELECT follow_relation.follower_id
+		FROM follow_relation
+		WHERE follow_relation.is_approved = 0 AND follow_relation.followed_id = ?
+	`, userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var followerId int
+		err = rows.Scan(&followerId)
+		if err != nil {
+			return nil, err
+		}
+		var follower string
+		follower, err = db.GetUserName(followerId)
+		if err != nil {
+			return nil, err
+		}
+
+		followers = append(followers, follower)
+	}
+
+	return followers, nil
+}
+
 func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
 	var notifications []GroupNotification
 

@@ -47,6 +47,10 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, errorMess, http.StatusBadRequest)
 		return
 	}
+	//sort posts reversed
+	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
+		posts[i], posts[j] = posts[j], posts[i]
+	}
 
 	w.WriteHeader(http.StatusAccepted)
 	res, _ := json.Marshal(posts)
@@ -207,6 +211,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) (imgUrl string, err erro
 	// Create a temporary file within our upload directory that follows
 	// a particular naming pattern
 	time := time.Now().Local().Format("2006-01-02_15:04:05")
+	time = strings.Replace(time, ":", "-", -1)
 	tempPattern := "*_" + time + "." + extension
 	tempFile, err := ioutil.TempFile("upload", tempPattern)
 	if err != nil {

@@ -68,6 +68,7 @@ const CommentForm = (postId) => {
       );
 
       console.log("Comment created:", response.data);
+      window.location.reload();
     } catch (error) {
       console.error("Error creating comment:", error);
     }

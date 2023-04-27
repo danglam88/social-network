@@ -2,6 +2,7 @@ import Comments from './Comments.js'
 import CommentForm from './CommentForm.js'
 
 const Post = ({ post }) => {
+    console.log(post.img_url)
     return (
         <div>
             <span> {post.creator_id} </span>

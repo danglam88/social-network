@@ -15,6 +15,12 @@ type PendingFollow struct {
 	CheckPending bool    `json:"check_pending"`
 }
 
+type PendingResolve struct {
+	UserId   int     `json:"user_id"`
+	Follower db.User `json:"follow"`
+	Accepted bool    `json:"accept"`
+}
+
 func GetFollows(w http.ResponseWriter, r *http.Request) {
 	var err error
 
@@ -23,16 +29,15 @@ func GetFollows(w http.ResponseWriter, r *http.Request) {
 	filterUser := 0
 	if userId, isExist := params["user_id"]; isExist {
 		filterUser, err = strconv.Atoi(userId[0])
+		if err != nil {
+			GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
+			return
+		}
 	}
 
 	if filterUser == 0 {
 		username := IsUser(w, r)
 		filterUser = DB.GetUserID(username)
-	}
-
-	if err != nil {
-		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
-		return
 	}
 
 	follows, err := DB.GetFollows(filterUser)
@@ -47,19 +52,47 @@ func GetFollows(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, string(res))
 }
 
+func ResolvePending(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var pendingResolve PendingResolve
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		GetErrResponse(w, "Error while reading request body", http.StatusBadRequest)
+		return
+	}
+
+	err = json.Unmarshal(body, &pendingResolve)
+	if err != nil {
+		GetErrResponse(w, "Error while unmarshaling json", http.StatusBadRequest)
+		return
+	}
+
+	err = DB.ResolvePending(pendingResolve.UserId, pendingResolve.Follower, pendingResolve.Accepted)
+	if err != nil {
+		GetErrResponse(w, "Error while resolving pending", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := ResponseError{Status: RESPONSE_OK}
+	res, _ := json.Marshal(response)
+	io.WriteString(w, string(res))
+}
+
 func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var pendingFollow PendingFollow
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
+		GetErrResponse(w, "Error while reading request body", http.StatusBadRequest)
 		return
 	}
 
 	err = json.Unmarshal(body, &pendingFollow)
 	if err != nil {
-		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
+		GetErrResponse(w, "Error while unmarshaling json", http.StatusBadRequest)
 		return
 	}
 

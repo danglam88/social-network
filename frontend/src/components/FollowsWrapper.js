@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import Follows from './Follows';
 
-const FollowsWrapper = ({follows, title}) => {
+const FollowsWrapper = ({userId, follows, title, handleShowPendings}) => {
     const [followsVisible, setFollowsVisible] = useState(false)
 
     const toggleFollows = () => {
         setFollowsVisible(!followsVisible)
+
+        if (title === "Pending(s):") {
+            handleShowPendings(userId)
+        }
     }
 
     return (
         <div>
             <button onClick={toggleFollows}>Show/Hide {title}</button>
-            {followsVisible && <Follows follows={follows} title={title} />}
+            {followsVisible && <Follows userId={userId} follows={follows} title={title} handleShowPendings={handleShowPendings} />}
         </div>
     )
 }

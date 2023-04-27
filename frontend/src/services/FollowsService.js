@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const followPostUrl = 'http://localhost:8080/follow'
+const pendingUrl = 'http://localhost:8080/pending'
 
 const clientToken = document.cookie
   .split("; ")
@@ -24,6 +25,11 @@ const follow = async (data) => {
     return request
 }
 
-const followsService = { follows, follow }
+const pending = async (data) => {
+    const request = await axios.post(pendingUrl, data, config)
+    return request
+}
+
+const followsService = { follows, follow, pending }
 
 export default followsService

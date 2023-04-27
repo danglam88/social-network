@@ -46,7 +46,7 @@ const PersonalProfile = () => {
           .catch((error) => console.log(error));
       })
       .catch((error) => console.log(error));
-  }, [usersVisible]);
+  }, [showPersonalProfile, usersVisible, groupsVisible]);
 
   const handleLogout = (event) => {
     event.preventDefault();
@@ -62,6 +62,15 @@ const PersonalProfile = () => {
         sessionStorage.removeItem("userid");
         sessionStorage.removeItem("username");
         window.location.reload();
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleShowPendings = (userId) => {
+    followsService
+      .follows("http://localhost:8080/follow?user_id=" + userId)
+      .then((response) => {
+        setFollows(response.data);
       })
       .catch((error) => console.log(error));
   };
@@ -161,8 +170,9 @@ const PersonalProfile = () => {
               <PersonalInfo user={data} />
               {follows && (
                 <div className="follow">
-                  {follows.followers && <FollowsWrapper follows={follows.followers} title="Follower(s):" />}
-                  {follows.followings && <FollowsWrapper follows={follows.followings} title="Following(s):" />}
+                  {follows.followers && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Follower(s):" />}
+                  {follows.followings && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Following(s):" />}
+                  {follows.pendings && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pending(s):" handleShowPendings={handleShowPendings} />}
                 </div>
               )}
               <PostForm />

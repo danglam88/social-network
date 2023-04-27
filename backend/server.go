@@ -74,6 +74,10 @@ func main() {
 			GetFunction:  handlers.GetFollows,
 			PostFunction: handlers.ToggleFollow,
 		},
+		{
+			Endpoint:     "/pending",
+			PostFunction: handlers.ResolvePending,
+		},
 	}
 
 	handlers.Start(collection)

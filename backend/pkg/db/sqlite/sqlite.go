@@ -63,6 +63,7 @@ type Follows struct {
 	Username   string `json:"user_name"`
 	Followers  []User `json:"followers"`
 	Followings []User `json:"followings"`
+	Pendings   []User `json:"pendings"`
 }
 
 type Group struct {
@@ -264,6 +265,22 @@ func (db *Db) CheckPending(followerId int, followedUser User) (isPending bool, e
 	return false, err
 }
 
+func (db *Db) ResolvePending(userId int, follower User, accepted bool) (err error) {
+	if accepted {
+		_, err = db.connection.Exec("update follow_relation set is_approved=1 where followed_id=? and follower_id=?", userId, follower.ID)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err = db.connection.Exec("delete from follow_relation where followed_id=? and follower_id=?", userId, follower.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
+}
+
 func (db *Db) GetFollows(id int) (follows Follows, err error) {
 	var follow_id int
 
@@ -301,6 +318,21 @@ func (db *Db) GetFollows(id int) (follows Follows, err error) {
 		}
 		follower := db.GetUser(follow_id)
 		follows.Followers = append(follows.Followers, follower)
+	}
+
+	rows, err = db.connection.Query("select follower_id from follow_relation where followed_id=? and is_approved=0", id)
+	if err != nil {
+		return follows, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&follow_id)
+		if err != nil {
+			return follows, err
+		}
+		pending := db.GetUser(follow_id)
+		follows.Pendings = append(follows.Pendings, pending)
 	}
 
 	return follows, nil

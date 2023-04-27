@@ -6,10 +6,7 @@ const FollowsWrapper = ({userId, follows, title, handleShowPendings}) => {
 
     const toggleFollows = () => {
         setFollowsVisible(!followsVisible)
-
-        if (title === "Pending(s):") {
-            handleShowPendings(userId)
-        }
+        handleShowPendings(userId)
     }
 
     return (

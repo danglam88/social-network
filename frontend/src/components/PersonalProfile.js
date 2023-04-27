@@ -170,8 +170,8 @@ const PersonalProfile = () => {
               <PersonalInfo user={data} />
               {follows && (
                 <div className="follow">
-                  {follows.followers && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Follower(s):" />}
-                  {follows.followings && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Following(s):" />}
+                  {follows.followers && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Follower(s):" handleShowPendings={handleShowPendings} />}
+                  {follows.followings && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Following(s):" handleShowPendings={handleShowPendings} />}
                   {follows.pendings && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pending(s):" handleShowPendings={handleShowPendings} />}
                 </div>
               )}

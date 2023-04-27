@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	db "socialnetwork/backend/pkg/db/sqlite"
 	"strconv"
 )
 
@@ -51,13 +52,26 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	history, err := DB.GetHistory(groupId, user_id, to, page)
+	history, chatId, err := DB.GetHistory(groupId, user_id, to, page)
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	res, _ := json.Marshal(history)
+
+	type Response struct {
+		ChatId  int          `json:"chat_id"`
+		History []db.Message `json:"history"`
+	}
+
+	res, err := json.Marshal(Response{ChatId: chatId, History: history})
+
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	io.WriteString(w, string(res))
 }
 

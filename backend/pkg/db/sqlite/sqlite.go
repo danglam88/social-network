@@ -918,19 +918,26 @@ func (db *Db) AddMessage(chatId, creator int, message, time string) (err error) 
 }
 
 // used for all chat creation
-func (db *Db) addChat(groupId, from, to int) (chatId int64, err error) {
+func (db *Db) addChat(groupId, from, to int) (chatId int, err error) {
 
-	res, err := db.connection.Exec("insert into private_chat(group_id, first_userid, second_userid) values(?,?)", groupId, from, to)
+	res, err := db.connection.Exec("insert into private_chat(group_id, first_userid, second_userid) values(?,?,?)", groupId, from, to)
 
 	if err != nil {
 		return chatId, err
 	}
 
-	chatId, err = res.LastInsertId()
+	//convert chatId to int64
+
+	var chatId64 int64 = int64(chatId)
+
+	chatId64, err = res.LastInsertId()
+
+	chatId = int(chatId64)
+
 	return chatId, err
 }
 
-func (db *Db) getChat(groupId, from, to int) (chatId int64, err error) {
+func (db *Db) getChat(groupId, from, to int) (chatId int, err error) {
 	query := "select id from private_chat where "
 	var options []interface{}
 
@@ -1014,8 +1021,8 @@ func (db *Db) getChat(groupId, from, to int) (chatId int64, err error) {
 	return messages, err
 }*/
 
-func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err error) {
-	var id int64
+func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatId int, err error) {
+	var id int
 
 	id, err = db.getChat(groupId, from, to)
 
@@ -1029,7 +1036,7 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 
 	rows, err := db.connection.Query(query, id, 10, (page-1)*10)
 	if err != nil {
-		return messages, err
+		return messages, id, err
 	}
 
 	var message Message
@@ -1040,14 +1047,14 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 		err := rows.Scan(&message.From, &message.Message, &message.CreatedAt)
 		if err != nil {
 			fmt.Printf("Error in row scan: %v\n", err) // Debug log statement
-			return messages, err
+			return messages, id, err
 		}
 
 		if users[message.From] == "" {
 			users[message.From], err = db.GetUserName(message.From)
 			if err != nil {
 				fmt.Printf("Error in getting username: %v\n", err) // Debug log statement
-				return messages, err
+				return messages, id, err
 			}
 		}
 
@@ -1056,9 +1063,7 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 	}
 	defer rows.Close()
 
-	fmt.Printf("Messages: %+v\n", messages) // Debug log statement
-
-	return messages, err
+	return messages, id, err
 }
 
 // in use

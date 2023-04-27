@@ -3,6 +3,8 @@ import ChatService from "../services/ChatService";
 import debounce from "lodash/debounce";
 
 const sortMessagesByDate = (messages) => {
+  if (!messages) return [];
+  if (messages.length === 0) return [];
   const sortedMessages = messages.sort((a, b) => {
     const dateA = new Date(a.created_at.replace("T", " ").replace("Z", ""));
     const dateB = new Date(b.created_at.replace("T", " ").replace("Z", ""));
@@ -49,7 +51,14 @@ const ChatWindow = ({ chat }) => {
         chat.GroupID,
         chat.ChatID
       );
-      const initialHistory = response.data;
+      if (!response.data.history) {
+        console.log("No chat history found, set recipient id to response.chat_id");
+        chat.ChatID = response.data.chat_id;
+        
+        return
+      }
+      console.log("Initial chat history:", response.history)
+      const initialHistory = response.data.history;
       setChatMessages(sortMessagesByDate(initialHistory));
       // Scroll chat textarea to the bottom when it first loads
       if (chatContainerRef.current) {
@@ -65,16 +74,7 @@ const ChatWindow = ({ chat }) => {
     fetchInitialChatHistory();
   }, [fetchInitialChatHistory]);
 
-  useEffect(() => {
-    ChatService.fetchChatHistory(chat.GroupID, chat.ChatID)
-      .then((response) => {
-        const initialHistory = response.data;
-        setChatMessages(sortMessagesByDate(initialHistory));
-      })
-      .catch((error) =>
-        console.error("Error fetching initial chat history:", error)
-      );
-  }, [chat.GroupID, chat.ChatID]);
+
 
   useEffect(() => {
     const callback = (messageData) => {
@@ -119,7 +119,7 @@ const ChatWindow = ({ chat }) => {
 
       ChatService.fetchChatHistory(chat.GroupID, chat.ChatID, page + 1)
         .then((response) => {
-          const newHistory = response.data;
+          const newHistory = response.data.history;
           if (newHistory && newHistory.length > 0) {
             setChatMessages((prevMessages) => {
               const updatedMessages = [...prevMessages, ...newHistory];

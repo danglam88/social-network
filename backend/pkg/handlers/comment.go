@@ -33,21 +33,21 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 	userMail := IsUser(w, r)
 	userId := DB.GetUserID(userMail)
 
-	err := r.ParseForm()
+	err := r.ParseMultipartForm(MAX_SIZE)
 	if err != nil {
 		GetErrResponse(w, "PARSING FORM FAILED", http.StatusInternalServerError)
 		return
 	}
 
-	comment := r.FormValue("comment")
-	postID, _ := strconv.Atoi(r.FormValue("postId"))
+	comment := r.FormValue("content")
+	postID, _ := strconv.Atoi(r.FormValue("post_id"))
 	imgUrl, imgErr := UploadFile(w, r)
 	if imgErr != nil {
 		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
 		return
 	}
 	// HANDLE ERROR
-	commentErrorCheck, commentErrorMessage := ValidateField("comment", comment, 1, 1000)
+	commentErrorCheck, commentErrorMessage := ValidateField("Content", comment, 1, 1000)
 
 	if commentErrorCheck {
 		GetErrResponse(w, commentErrorMessage, http.StatusBadRequest)
@@ -55,6 +55,7 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	commentDB := DB.CreateComment(userId, postID, comment, imgUrl)
+
 	res, _ := json.Marshal(commentDB)
 	io.WriteString(w, string(res))
 

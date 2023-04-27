@@ -1065,8 +1065,9 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, err e
 func (db *Db) CreateComment(userId int, postID int, comment string, imgUrl string) Comment {
 
 	var newComment Comment
+	//comment (id,creator_id,post_id,content,created_at,img_url)
 
-	_, err := db.connection.Exec("insert into comment(creator_id,post_id,content,created_at,img_url) values(?,?,?,?)", userId, postID, comment, time.Now().Local().Format(time_format), imgUrl)
+	_, err := db.connection.Exec("insert into comment(creator_id,post_id,content,created_at,img_url) values(?,?,?,?,?)", userId, postID, comment, time.Now().Local().Format(time_format), imgUrl)
 
 	if err != nil {
 		return newComment

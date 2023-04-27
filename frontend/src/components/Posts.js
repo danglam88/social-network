@@ -1,3 +1,6 @@
+import Comments from './Comments.js'
+import CommentForm from './CommentForm.js'
+
 const Post = ({ post }) => {
     return (
         <tr>
@@ -9,6 +12,8 @@ const Post = ({ post }) => {
             <td>{post.content}</td>
             <td>{post.created_at}</td>
             <td>{post.img_url}</td>
+            <Comments post={post.id}/>
+            <CommentForm post={post.id}/>
         </tr>
     )
 }

@@ -3,19 +3,20 @@ import commentsService from '../services/CommentsService'
 
 const Comment = ({ comment }) => {
     return (
-        <tr>
-            <td>{comment.UserID}</td>
-            <td>{comment.UserName}</td>
-            <td>{comment.Content}</td>
-            <td>{comment.CreatedAt}</td>
-            <td>{comment.ImgUrl}</td>
-        </tr>
+        <div>
+            <span> {comment.UserID} </span>
+            <span> {comment.UserName} </span>
+            <span> {comment.Content} </span>
+            <span> {comment.CreatedAt} </span>
+            <span> {comment.ImgUrl} </span>
+        </div>
     )
 }
 
 //change posts to comments
 const Comments = (id) => {
     const [comments, setComments] = useState([]);
+
     useEffect(() => {
         commentsService
           .comments("http://localhost:8080/comment?post_id=" + id.post)
@@ -27,23 +28,17 @@ const Comments = (id) => {
     
     return (
         <div>
-             <h3>Comments:</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Creator ID</th>
-                        <th>Creator Name</th>
-                        <th>Content</th>
-                        <th>Created At</th>
-                        <th>Image URL</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {comments && comments.map(comment =>
-                        <Comment comment={comment} key={comment.ID} />
-                    )}
-                </tbody>
-            </table>
+            <h3>Comments:</h3>
+            <div>
+                <span> Creator ID </span>
+                <span> Creator Name </span>
+                <span> Content </span>
+                <span> Created At </span>
+                <span> Image URL </span>
+            </div>
+            {comments && comments.map(comment =>
+                <Comment comment={comment} key={comment.ID} />
+            )}
         </div>
     )
 }

@@ -29,7 +29,19 @@ const ChatWindow = ({ chat }) => {
   const [hasMore, setHasMore] = useState(true);
   const chatContainerRef = useRef(null);
   const [scrollToBottom, setScrollToBottom] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojis = [
+    "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😉", "😊", "😋", "😎", "😍", "😘", "😗", "😙", "😚", "☺️", "🙂", "🤗", "🤩", "🤔", "🤨", "😐", "😑", "😶", "🙄", "😏", "😣", "😥", "😮", "🤐", "😯", "😪", "😫", "😴", "😌", "😛", "😜", "😝", "🤤", "😒", "😓", "😔", "😕", "🙃", "🤑", "😲", "🙁", "😖", "😞", "😟", "😤", "😢", "😭", "😦", "😧", "😨", "😩", "🤯", "😬", "😰", "😱", "🥵", "🥶", "😳", "🤪", "😵", "😡", "😠", "🤬", "😷", "🥴", "🤢", "🤮", "🤧", "😇", "🥰", "🤠", "🥳", "🥺", "🦄", "🧜", "🦸", "🦹", "🤖", "🎃", "🤡", "💩"
+  ];
+
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+  };
+
+  const addEmoji = (emoji) => {
+    setTypedMessage(typedMessage + emoji);
+    setShowEmojiPicker(false);
+  };
 
   const fetchInitialChatHistory = useCallback(async () => {
     try {
@@ -183,6 +195,36 @@ const ChatWindow = ({ chat }) => {
           }}
         />
         <button onClick={sendMessage}>Send</button>
+        <button onClick={toggleEmojiPicker}>
+      {showEmojiPicker ? "Emojis 🔼" : "Emojis 🔽"}
+    </button>
+    {showEmojiPicker && (
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          maxWidth: "250px",
+          border: "1px solid #ccc",
+          padding: "4px",
+          borderRadius: "4px",
+          backgroundColor: "#f1f1f1",
+        }}
+      >
+        {emojis.map((emoji, index) => (
+          <span
+            key={index}
+            style={{
+              cursor: "pointer",
+              fontSize: "20px",
+              padding: "4px",
+            }}
+            onClick={() => addEmoji(emoji)}
+          >
+            {emoji}
+          </span>
+        ))}
+      </div>
+    )}
       </div>
     </div>
   );

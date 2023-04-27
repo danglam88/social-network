@@ -153,7 +153,9 @@ const ChatWindow = ({ chat }) => {
     chatContainerRef.current.addEventListener("scroll", handleScroll);
 
     return () => {
-      chatContainerRef.current.removeEventListener("scroll", handleScroll);
+      if (chatContainerRef.current) {
+        chatContainerRef.current.removeEventListener("scroll", handleScroll);
+      }
     };
   }, [loadMoreMessages]);
 

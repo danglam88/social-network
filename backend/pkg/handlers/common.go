@@ -55,6 +55,9 @@ func Start(collection []Handler) {
 	reactapp := http.FileServer(http.Dir("../frontend/build"))
 	mux.Handle("/", http.StripPrefix("/", reactapp))
 
+	uploadDir := http.FileServer(http.Dir("./upload"))
+	mux.Handle("/upload/", http.StripPrefix("/upload", uploadDir))
+
 	manager := NewManager()
 	mux.HandleFunc("/ws", manager.serveWS)
 

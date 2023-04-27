@@ -2,21 +2,29 @@ import Comments from './Comments.js'
 import CommentForm from './CommentForm.js'
 
 const Post = ({ post }) => {
-    console.log(post.img_url)
+    console.log(post)
     return (
-        <div>
-            <span> {post.creator_id} </span>
-            <span> {post.creator_name} </span>
-            <span> {post.group_id} </span>
-            <span> {post.visibility} </span>
-            <span> {post.title} </span>
-            <span> {post.content} </span>
-            <span> {post.created_at} </span>
-            <span> {post.img_url} </span>
-            <Comments post={post.id} />
-            <CommentForm post={post.id} />
-        </div>
-    )
+      <div>
+        <span> {post.creator_id} </span>
+        <span> {post.creator_name} </span>
+        <span> {post.group_id} </span>
+        <span> {post.visibility} </span>
+        <span> {post.title} </span>
+        <span> {post.content} </span>
+        <span> {post.created_at} </span>
+        <span> test2 </span>
+        <span>
+          {post.img_url === "" ? null : (
+            <img
+              src={`http://localhost:8080${post.img_url}`}
+              alt="Post Image"
+            />
+          )}
+        </span>
+        <Comments post={post.id} />
+        <CommentForm post={post.id} />
+      </div>
+    );
 }
 
 const Posts = ({posts}) => {

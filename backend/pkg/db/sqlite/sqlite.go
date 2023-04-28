@@ -386,6 +386,10 @@ func (db *Db) GetVisiblePosts(followerId, followedId int) (visiblePosts []Post, 
 		}
 	}
 
+	if err == sql.ErrNoRows {
+		err = nil
+	}
+
 	return visiblePosts, err
 }
 

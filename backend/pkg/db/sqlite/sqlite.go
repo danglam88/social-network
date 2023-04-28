@@ -778,7 +778,6 @@ func (db *Db) GetUserGroups(userId int) (groups map[int]bool, requests map[int]b
 	query := "select group_id,is_requested,is_approved from group_relation where user_id=?"
 	rows, err := db.connection.Query(query, userId)
 
-	fmt.Println(err)
 	if err != nil {
 		return groups, requests, err
 	}
@@ -792,8 +791,6 @@ func (db *Db) GetUserGroups(userId int) (groups map[int]bool, requests map[int]b
 		if err != nil {
 			return groups, requests, err
 		}
-
-		fmt.Println(groupId, isRequested, isApproved)
 
 		if (isRequested == 1) && (isApproved == 0) {
 			requests[groupId] = true
@@ -933,6 +930,7 @@ func (db *Db) GetAllUsers(username string) (users []User, err error) {
 
 // can be used for both private and group chats
 func (db *Db) AddMessage(chatId, creator int, message, time string) (err error) {
+	fmt.Println("AddMessage sqlite.go 936 - chatId, creator, message, time", chatId, creator, message, time)
 
 	/*var id int64
 

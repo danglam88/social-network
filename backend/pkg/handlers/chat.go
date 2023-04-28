@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
@@ -51,8 +52,9 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, "page is mandatory", http.StatusBadRequest)
 		return
 	}
-
+	fmt.Println("chat.go 55", to, groupId, user_id)
 	history, chatId, err := DB.GetHistory(groupId, user_id, to, page)
+	fmt.Println(to, chatId, "history 57")
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 		return

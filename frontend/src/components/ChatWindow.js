@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import ChatService from "../services/ChatService";
 import debounce from "lodash/debounce";
+let recipientChatId;
 
 const sortMessagesByDate = messages => {
   if (!messages) return [];
@@ -123,6 +124,7 @@ const ChatWindow = ({ chat }) => {
     "🤡",
     "💩",
   ];
+  
 
   const toggleEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -138,17 +140,18 @@ const ChatWindow = ({ chat }) => {
       try {
         const response = await ChatService.fetchChatHistory(
           chat.GroupID,
-          chat.ChatID
+          chat.ChatID,
         );
         if (!response.data.history) {
           console.log(
-            "No chat history found, set recipient id to response.chat_id"
+            "No chat history found, set recipient id to response.chat_id" + response.data.chat_id
           );
-          chat.ChatID = response.data.chat_id;
+          recipientChatId = response.data.chat_id;
 
           return;
         }
-        console.log("Initial chat history:", response.history);
+        console.log("Initial chat history:", response.data.history);
+        recipientChatId = response.data.chat_id;
         const initialHistory = response.data.history;
         setChatMessages(sortMessagesByDate(initialHistory));
         // Scroll chat textarea to the bottom when it first loads
@@ -167,7 +170,7 @@ const ChatWindow = ({ chat }) => {
     () => {
       fetchInitialChatHistory();
     },
-    []
+    [fetchInitialChatHistory]
   );
 
   useEffect(() => {
@@ -196,8 +199,8 @@ const ChatWindow = ({ chat }) => {
 
   const sendMessage = () => {
     if (typedMessage.trim() !== "") {
-      console.log("Sending message:", typedMessage, "to chat:", chat.ChatID, "ChatWindow.js 199")
-      ChatService.sendMessage(chat.ChatID, typedMessage);
+      console.log("Sending message:", typedMessage, "to chat:", recipientChatId, "ChatWindow.js 199")
+      ChatService.sendMessage(recipientChatId, typedMessage);
       setTypedMessage("");
       setScrollToBottom(true);
     }

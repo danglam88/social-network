@@ -5,6 +5,8 @@ import "./App.css";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import PersonalProfile from "./components/PersonalProfile";
+import Chat from "./components/Chat";
+import ChatList from "./components/ChatList";
 
 const clientToken = document.cookie
   .split("; ")
@@ -32,7 +34,12 @@ function App() {
   return (
     <>
       {token !== "" ? (
+        <>
         <PersonalProfile />
+        <Chat />
+        
+        </>
+        
       ) : (
         <div className="App-body">
             <div><img src={logo} className="App-logo" alt="logo" /></div>

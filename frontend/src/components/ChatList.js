@@ -1,6 +1,6 @@
-import axios from 'axios';
-import React, { useState, useEffect } from "react";
-import ChatService from "../services/ChatService";
+import React, { useState } from "react";
+import axios from "axios";
+import "../chatlist.css";
 
 const clientToken = document.cookie
   .split("; ")
@@ -14,50 +14,51 @@ const config = {
   },
 };
 
-const ChatItem = ({ chat, selectedChat, onSelectChat }) => {
+const ChatList = ({ selectedChat, onSelectChat, onToggleChatList }) => {
+  const [availableChats, setAvailableChats] = useState([]);
+  const [chatListVisible, setChatListVisible] = useState(false);
 
-  const handleClick = async (chat) => {
-    ChatService.fetchChatHistory(chat.GroupID, chat.ChatID)
-      .then(response => onSelectChat({ ...chat, history: response.data }))
-      .catch(error => console.error("Error fetching chat history:", error));
+  const toggleChatList = () => {
+    setChatListVisible(!chatListVisible);
   };
 
-  return (
-    <li
-      onClick={() => handleClick(chat)}
-      style={{
-        cursor: "pointer",
-        fontWeight: selectedChat && selectedChat.ChatID === chat.ChatID ? "bold" : "normal",
-      }}
-    >
-      {chat.DisplayName}
-    </li>
-  )
-};
-
-const ChatList = ({ selectedChat, onSelectChat }) => {
-  const [availableChats, setAvailableChats] = useState([]);
-
-  useEffect(() => {
-    axios.get("http://localhost:8080/allchats", config)
+  React.useEffect(() => {
+    axios
+      .get("http://localhost:8080/allchats", config)
       .then((response) => setAvailableChats(response.data))
       .catch((error) => console.error("Error fetching chats:", error));
   }, []);
 
   return (
-    <div
-      style={{
-        width: "30%",
-        borderRight: "1px solid #ccc",
-        overflowY: "scroll",
-      }}
-    >
-      <h2>Available Chats</h2>
-      <ul>
-        {availableChats.map((chat) => (
-          <ChatItem chat={chat} key={chat.ChatID} selectedChat={selectedChat} onSelectChat={onSelectChat}/>
-        ))}
-      </ul>
+    <div className="chat-list-container">
+      <div className="chat-bubble" onClick={toggleChatList}>
+        💬
+      </div>
+      {chatListVisible && (
+        <div className="chat-list">
+          <h2>Available Chats</h2>
+          <ul>
+            {availableChats.map((chat) => (
+              <li
+                key={chat.ChatID}
+                onClick={() => {
+                  onSelectChat(chat);
+                  onToggleChatList();
+                }}
+                style={{
+                  cursor: "pointer",
+                  fontWeight:
+                    selectedChat && selectedChat.ChatID === chat.ChatID
+                      ? "bold"
+                      : "normal",
+                }}
+              >
+                {chat.DisplayName}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

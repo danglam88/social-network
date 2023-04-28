@@ -1,0 +1,43 @@
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .chat-bubble {
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .chat-list {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    height: 300px;
+    overflow-y: auto;
+  }
+  
+  .chat-window-modal {
+    position: fixed;
+    bottom: 70px;
+    right: 330px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 500px;
+    height: 300px;
+    overflow-y: auto;
+  }
+  

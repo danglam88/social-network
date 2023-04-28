@@ -2,7 +2,7 @@ import Comments from './Comments.js'
 import CommentForm from './CommentForm.js'
 
 const Post = ({ post }) => {
-    console.log(post)
+  console.log(post.img_url)
     return (
       <div>
         <span> {post.creator_id} </span>
@@ -12,7 +12,6 @@ const Post = ({ post }) => {
         <span> {post.title} </span>
         <span> {post.content} </span>
         <span> {post.created_at} </span>
-        <span> test2 </span>
         <span>
           {post.img_url === "" ? null : (
             <img

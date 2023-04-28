@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import ChatService from "../services/ChatService";
 import debounce from "lodash/debounce";
 
-const sortMessagesByDate = (messages) => {
+const sortMessagesByDate = messages => {
   if (!messages) return [];
   if (messages.length === 0) return [];
   const sortedMessages = messages.sort((a, b) => {
@@ -33,52 +33,146 @@ const ChatWindow = ({ chat }) => {
   const [scrollToBottom, setScrollToBottom] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojis = [
-    "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😉", "😊", "😋", "😎", "😍", "😘", "😗", "😙", "😚", "☺️", "🙂", "🤗", "🤩", "🤔", "🤨", "😐", "😑", "😶", "🙄", "😏", "😣", "😥", "😮", "🤐", "😯", "😪", "😫", "😴", "😌", "😛", "😜", "😝", "🤤", "😒", "😓", "😔", "😕", "🙃", "🤑", "😲", "🙁", "😖", "😞", "😟", "😤", "😢", "😭", "😦", "😧", "😨", "😩", "🤯", "😬", "😰", "😱", "🥵", "🥶", "😳", "🤪", "😵", "😡", "😠", "🤬", "😷", "🥴", "🤢", "🤮", "🤧", "😇", "🥰", "🤠", "🥳", "🥺", "🦄", "🧜", "🦸", "🦹", "🤖", "🎃", "🤡", "💩"
+    "😀",
+    "😁",
+    "😂",
+    "🤣",
+    "😃",
+    "😄",
+    "😅",
+    "😆",
+    "😉",
+    "😊",
+    "😋",
+    "😎",
+    "😍",
+    "😘",
+    "😗",
+    "😙",
+    "😚",
+    "☺️",
+    "🙂",
+    "🤗",
+    "🤩",
+    "🤔",
+    "🤨",
+    "😐",
+    "😑",
+    "😶",
+    "🙄",
+    "😏",
+    "😣",
+    "😥",
+    "😮",
+    "🤐",
+    "😯",
+    "😪",
+    "😫",
+    "😴",
+    "😌",
+    "😛",
+    "😜",
+    "😝",
+    "🤤",
+    "😒",
+    "😓",
+    "😔",
+    "😕",
+    "🙃",
+    "🤑",
+    "😲",
+    "🙁",
+    "😖",
+    "😞",
+    "😟",
+    "😤",
+    "😢",
+    "😭",
+    "😦",
+    "😧",
+    "😨",
+    "😩",
+    "🤯",
+    "😬",
+    "😰",
+    "😱",
+    "🥵",
+    "🥶",
+    "😳",
+    "🤪",
+    "😵",
+    "😡",
+    "😠",
+    "🤬",
+    "😷",
+    "🥴",
+    "🤢",
+    "🤮",
+    "🤧",
+    "😇",
+    "🥰",
+    "🤠",
+    "🥳",
+    "🥺",
+    "🦄",
+    "🧜",
+    "🦸",
+    "🦹",
+    "🤖",
+    "🎃",
+    "🤡",
+    "💩",
   ];
 
   const toggleEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  const addEmoji = (emoji) => {
+  const addEmoji = emoji => {
     setTypedMessage(typedMessage + emoji);
     setShowEmojiPicker(false);
   };
 
-  const fetchInitialChatHistory = useCallback(async () => {
-    try {
-      const response = await ChatService.fetchChatHistory(
-        chat.GroupID,
-        chat.ChatID
-      );
-      if (!response.data.history) {
-        console.log("No chat history found, set recipient id to response.chat_id");
-        chat.ChatID = response.data.chat_id;
-        
-        return
+  const fetchInitialChatHistory = useCallback(
+    async () => {
+      try {
+        const response = await ChatService.fetchChatHistory(
+          chat.GroupID,
+          chat.ChatID
+        );
+        if (!response.data.history) {
+          console.log(
+            "No chat history found, set recipient id to response.chat_id"
+          );
+          chat.ChatID = response.data.chat_id;
+
+          return;
+        }
+        console.log("Initial chat history:", response.history);
+        const initialHistory = response.data.history;
+        setChatMessages(sortMessagesByDate(initialHistory));
+        // Scroll chat textarea to the bottom when it first loads
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop =
+            chatContainerRef.current.scrollHeight;
+        }
+      } catch (error) {
+        console.error("Error fetching initial chat history:", error);
       }
-      console.log("Initial chat history:", response.history)
-      const initialHistory = response.data.history;
-      setChatMessages(sortMessagesByDate(initialHistory));
-      // Scroll chat textarea to the bottom when it first loads
-      if (chatContainerRef.current) {
-        chatContainerRef.current.scrollTop =
-          chatContainerRef.current.scrollHeight;
-      }
-    } catch (error) {
-      console.error("Error fetching initial chat history:", error);
-    }
-  }, [chat.GroupID, chat.ChatID]);
+    },
+    [chat.GroupID, chat.ChatID]
+  );
+
+  useEffect(
+    () => {
+      fetchInitialChatHistory();
+    },
+    []
+  );
 
   useEffect(() => {
-    fetchInitialChatHistory();
-  }, [fetchInitialChatHistory]);
-
-
-
-  useEffect(() => {
-    const callback = (messageData) => {
-      setChatMessages((previousMessages) => {
+    const callback = messageData => {
+      setChatMessages(previousMessages => {
         const updatedMessages = [...previousMessages, messageData];
         return sortMessagesByDate(updatedMessages);
       });
@@ -102,6 +196,7 @@ const ChatWindow = ({ chat }) => {
 
   const sendMessage = () => {
     if (typedMessage.trim() !== "") {
+      console.log("Sending message:", typedMessage, "to chat:", chat.ChatID, "ChatWindow.js 199")
       ChatService.sendMessage(chat.ChatID, typedMessage);
       setTypedMessage("");
       setScrollToBottom(true);
@@ -112,16 +207,16 @@ const ChatWindow = ({ chat }) => {
     debounce(async () => {
       if (loading || !hasMore) return;
       setLoading(true);
-      setPage((prevPage) => prevPage + 1);
+      setPage(prevPage => prevPage + 1);
       const chatContainer = chatContainerRef.current; // get the container element
       const oldHeight = chatContainer.scrollHeight; // get the old height
       const oldScrollPosition = chatContainer.scrollTop; // store the current scroll position
 
       ChatService.fetchChatHistory(chat.GroupID, chat.ChatID, page + 1)
-        .then((response) => {
+        .then(response => {
           const newHistory = response.data.history;
           if (newHistory && newHistory.length > 0) {
-            setChatMessages((prevMessages) => {
+            setChatMessages(prevMessages => {
               const updatedMessages = [...prevMessages, ...newHistory];
               return sortMessagesByDate(updatedMessages);
             });
@@ -137,27 +232,30 @@ const ChatWindow = ({ chat }) => {
           }
           setLoading(false);
         })
-        .catch((error) => console.error("Error fetching chat history:", error));
+        .catch(error => console.error("Error fetching chat history:", error));
     }, 500),
     [chat.GroupID, chat.ChatID, loading, page, hasMore]
   );
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (chatContainerRef.current.scrollTop === 0) {
-        setScrollToBottom(false);
-        loadMoreMessages();
-      }
-    };
+  useEffect(
+    () => {
+      const handleScroll = () => {
+        if (chatContainerRef.current.scrollTop === 0) {
+          setScrollToBottom(false);
+          loadMoreMessages();
+        }
+      };
 
-    chatContainerRef.current.addEventListener("scroll", handleScroll);
+      chatContainerRef.current.addEventListener("scroll", handleScroll);
 
-    return () => {
-      if (chatContainerRef.current) {
-        chatContainerRef.current.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [loadMoreMessages]);
+      return () => {
+        if (chatContainerRef.current) {
+          chatContainerRef.current.removeEventListener("scroll", handleScroll);
+        }
+      };
+    },
+    [loadMoreMessages]
+  );
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
@@ -175,14 +273,14 @@ const ChatWindow = ({ chat }) => {
         }}
       >
         <div style={{ minHeight: "1px" }}>
-          <div ref={topRef}></div>
+          <div ref={topRef} />
         </div>
         {chatMessages
           .map(
-            (msg) =>
-              `${msg.created_at.replace("T", " ").replace("Z", "")} - ${
-                msg.username
-              }: ${msg.message}`
+            msg =>
+              `${msg.created_at
+                .replace("T", " ")
+                .replace("Z", "")} - ${msg.username}: ${msg.message}`
           )
           .join("\n")}
       </div>
@@ -191,42 +289,41 @@ const ChatWindow = ({ chat }) => {
         <input
           type="text"
           value={typedMessage}
-          onChange={(e) => setTypedMessage(e.target.value)}
-          onKeyDown={(e) => {
+          onChange={e => setTypedMessage(e.target.value)}
+          onKeyDown={e => {
             if (e.key === "Enter") sendMessage();
           }}
         />
         <button onClick={sendMessage}>Send</button>
         <button onClick={toggleEmojiPicker}>
-      {showEmojiPicker ? "Emojis 🔼" : "Emojis 🔽"}
-    </button>
-    {showEmojiPicker && (
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          maxWidth: "250px",
-          border: "1px solid #ccc",
-          padding: "4px",
-          borderRadius: "4px",
-          backgroundColor: "#f1f1f1",
-        }}
-      >
-        {emojis.map((emoji, index) => (
-          <span
-            key={index}
+          {showEmojiPicker ? "Emojis 🔼" : "Emojis 🔽"}
+        </button>
+        {showEmojiPicker &&
+          <div
             style={{
-              cursor: "pointer",
-              fontSize: "20px",
+              display: "flex",
+              flexWrap: "wrap",
+              maxWidth: "250px",
+              border: "1px solid #ccc",
               padding: "4px",
+              borderRadius: "4px",
+              backgroundColor: "#f1f1f1",
             }}
-            onClick={() => addEmoji(emoji)}
           >
-            {emoji}
-          </span>
-        ))}
-      </div>
-    )}
+            {emojis.map((emoji, index) =>
+              <span
+                key={index}
+                style={{
+                  cursor: "pointer",
+                  fontSize: "20px",
+                  padding: "4px",
+                }}
+                onClick={() => addEmoji(emoji)}
+              >
+                {emoji}
+              </span>
+            )}
+          </div>}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import commentsService from '../services/CommentsService'
 
 const CommentForm = (postId) => {
   
@@ -49,26 +49,12 @@ const CommentForm = (postId) => {
         formData.append("picture", picture);
       }
 
-      const clientToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("session_token="))
-        ?.split("=")[1];
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${clientToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      };
-
-      const response = await axios.post(
-        "http://localhost:8080/comment",
-        formData,
-        config
-      );
-
-      console.log("Comment created:", response.data);
-      window.location.reload();
+      commentsService.comment(formData)
+        .then((response) => {
+          console.log("Comment created:", response.data);
+          window.location.reload();
+        })
+        .catch((error) => console.log(error));
     } catch (error) {
       console.error("Error creating comment:", error);
     }

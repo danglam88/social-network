@@ -8,9 +8,4 @@ CREATE TABLE IF NOT EXISTS post_visibility (
 
 INSERT INTO post_visibility (id,post_id,viewer_id)
 VALUES
-    (1,7,6),
-    (2,7,1),
-    (3,7,2),
-    (4,7,3),
-    (5,7,4),
-    (6,7,5);
+    (1,7,5);

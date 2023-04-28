@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import followsService from "../services/FollowsService";
+import postsService from "../services/PostsService";
 
 //send in "groupId={nbr}" as groupId.
 const PostForm = (groupId) => {
@@ -85,26 +85,12 @@ const PostForm = (groupId) => {
         formData.append("picture", picture);
       }
 
-      const clientToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("session_token="))
-        ?.split("=")[1];
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${clientToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      };
-
-      const response = await axios.post(
-        "http://localhost:8080/post",
-        formData,
-        config
-      );
-
-      console.log("Post created:", response.data);
-      window.location.reload();
+      postsService.post(formData)
+        .then((response) => {
+          console.log("Post created:", response.data);
+          window.location.reload();
+        })
+        .catch((error) => console.log(error));
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -145,11 +131,11 @@ const PostForm = (groupId) => {
               >
                 <option value="public">Public</option>
                 <option value="allfollowers">Followers Only</option>
-                <option value="superprivate">Choose Followers</option>
+                {follows && follows.followers && <option value="superprivate">Choose Followers</option>}
               </select>
             </div>
           )}
-          {privacy === "superprivate" && (
+          {privacy === "superprivate" && follows && follows.followers && (
             <div>
               <label htmlFor="users">Followers:</label>
               <select

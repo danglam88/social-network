@@ -16,6 +16,39 @@ import (
 
 const MAX_SIZE = 20971520
 
+func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	params := r.URL.Query()
+
+	filterUser := 0
+
+	if userId, isExist := params["creator_id"]; isExist {
+		filterUser, err = strconv.Atoi(userId[0])
+	}
+
+	if err != nil {
+		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
+		return
+	}
+
+	userId := GetLoggedInUserID(w, r)
+
+	posts, err := DB.GetVisiblePosts(userId, filterUser)
+	if err != nil {
+		GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
+		return
+	}
+	//sort posts reversed
+	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
+		posts[i], posts[j] = posts[j], posts[i]
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+	res, _ := json.Marshal(posts)
+	io.WriteString(w, string(res))
+}
+
 // function to get all posts per profile- or group page
 func PostGet(w http.ResponseWriter, r *http.Request) {
 	var err error
@@ -36,15 +69,13 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		errorMess := "Invalid Id"
-		GetErrResponse(w, errorMess, http.StatusBadRequest)
+		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
 		return
 	}
 
 	posts, err := DB.GetPosts(filterUser, filterGroup)
 	if err != nil {
-		errorMess := "Error while getting posts"
-		GetErrResponse(w, errorMess, http.StatusBadRequest)
+		GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
 		return
 	}
 	//sort posts reversed

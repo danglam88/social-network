@@ -12,7 +12,7 @@ const User = ({ user }) => {
     const [showChatWindow, setShowChatWindow] = useState(false);
 
     useEffect(() => {
-        postsService.posts('http://localhost:8080/post?creator_id=' + user.id)
+        postsService.posts('http://localhost:8080/visible?creator_id=' + user.id)
             .then(response => {
                 setPosts(response.data)
             })
@@ -37,10 +37,10 @@ const User = ({ user }) => {
             {follows && (
               <div>
                 {follows.followers && (
-                  <FollowsWrapper follows={follows.followers} title="Follower(s):" />
+                  <FollowsWrapper follows={follows.followers} title="Follower(s):" handleShowPendings={() => {}} />
                 )}
                 {follows.followings && (
-                  <FollowsWrapper follows={follows.followings} title="Following(s):" />
+                  <FollowsWrapper follows={follows.followings} title="Following(s):" handleShowPendings={() => {}} />
                 )}
               </div>
             )}

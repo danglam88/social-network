@@ -295,7 +295,6 @@ func (c *Client) readMessages() {
 					}
 				}
 			}
-
 		}
 	}
 }

@@ -346,6 +346,49 @@ func (db *Db) AddUser(username, password, email string, prev int) (bool, error) 
 	return err != nil, err
 }
 
+func (db *Db) GetVisiblePosts(followerId, followedId int) (visiblePosts []Post, err error) {
+	var followId int
+
+	row := db.connection.QueryRow("select id from follow_relation where follower_id=? and followed_id=? and is_approved=1", followerId, followedId)
+	err = row.Scan(&followId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			followId = -1
+		} else {
+			return visiblePosts, err
+		}
+	}
+
+	posts, err := db.GetPosts(followedId, 0)
+	if err != nil {
+		return visiblePosts, err
+	}
+
+	for _, post := range posts {
+		if post.Visibility == 0 || (post.Visibility == 1 && followId > 0) {
+			visiblePosts = append(visiblePosts, post)
+		} else if post.Visibility == 2 && followId > 0 {
+			var visibleId int
+
+			row := db.connection.QueryRow("select id from post_visibility where post_id=? and viewer_id=?", post.ID, followerId)
+			err = row.Scan(&visibleId)
+			if err != nil {
+				if err == sql.ErrNoRows {
+					visibleId = -1
+				} else {
+					return visiblePosts, err
+				}
+			}
+
+			if visibleId > 0 {
+				visiblePosts = append(visiblePosts, post)
+			}
+		}
+	}
+
+	return visiblePosts, err
+}
+
 // function in use
 func (db *Db) GetPosts(userfilter, groupfilter int) (posts []Post, err error) {
 	var post Post

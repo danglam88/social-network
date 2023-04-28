@@ -78,6 +78,10 @@ func main() {
 			Endpoint:     "/pending",
 			PostFunction: handlers.ResolvePending,
 		},
+		{
+			Endpoint:    "/visible",
+			GetFunction: handlers.GetVisiblePosts,
+		},
 	}
 
 	handlers.Start(collection)

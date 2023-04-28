@@ -2,7 +2,6 @@ import Comments from './Comments.js'
 import CommentForm from './CommentForm.js'
 
 const Post = ({ post }) => {
-
     return (
       <div className="post-wrapper">
         <div className="wrote">you posted:</div>

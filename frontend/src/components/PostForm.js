@@ -111,73 +111,81 @@ const PostForm = (groupId) => {
   };
 
   return (
-    <div className="post-form">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">Title:</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={title}
-            onChange={handleTitleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="content">Content:</label>
-          <textarea
-            id="content"
-            name="content"
-            value={content}
-            onChange={handleContentChange}
-          />
-        </div>
-        {!groupId.hasOwnProperty("groupId") && (
+    <div className="new-post-wrapper">
+      <h2>Create a post</h2>
+      <div className="post-comment-form">
+        <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="privacy">Privacy:</label>
-            <select
-              id="privacy"
-              name="privacy"
-              value={privacy}
-              onChange={handlePrivacyChange}>
-              <option value="public">Public</option>
-              <option value="allfollowers">Followers Only</option>
-              <option value="superprivate">Choose Followers</option>
-            </select>
+            <label htmlFor="title">Title:</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={title}
+              onChange={handleTitleChange}
+            />
           </div>
-        )}
-        {privacy === "superprivate" && (
           <div>
-            <label htmlFor="users">Followers:</label>
-            <select
-              id="users"
-              name="users"
-              multiple
-              onChange={handleUsersChange}>
-              {follows.followers.map((follow) => (
-                <option key={follow.id} value={follow.id}>
-                  {follow.nick_name
-                    ? follow.nick_name
-                    : follow.first_name + " " + follow.last_name}
-                </option>
-              ))}
-            </select>
+            <label htmlFor="content">Content:</label>
+            <textarea
+              id="content"
+              name="content"
+              value={content}
+              onChange={handleContentChange}
+            />
           </div>
-        )}
-        <div>
-          <label htmlFor="picture">Picture:</label>
-          <input
-            type="file"
-            id="picture"
-            name="picture"
-            onChange={handlePictureChange}
-          />
-        </div>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-        {errorMessage && <div>{errorMessage}</div>}
-      </form>
+          {!groupId.hasOwnProperty("groupId") && (
+            <div>
+              <label htmlFor="privacy">Privacy:</label>
+              <select
+                id="privacy"
+                name="privacy"
+                value={privacy}
+                onChange={handlePrivacyChange}
+              >
+                <option value="public">Public</option>
+                <option value="allfollowers">Followers Only</option>
+                <option value="superprivate">Choose Followers</option>
+              </select>
+            </div>
+          )}
+          {privacy === "superprivate" && (
+            <div>
+              <label htmlFor="users">Followers:</label>
+              <select
+                id="users"
+                name="users"
+                multiple
+                onChange={handleUsersChange}
+              >
+                {follows.followers.map((follow) => (
+                  <option key={follow.id} value={follow.id}>
+                    {follow.nick_name
+                      ? follow.nick_name
+                      : follow.first_name + " " + follow.last_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div>
+            <label htmlFor="picture" className="file-input-btn">
+              Upload picture
+            </label>
+            <input
+              type="file"
+              className="file-input"
+              id="picture"
+              name="picture"
+              onChange={handlePictureChange}
+            />
+          </div>
+          <div>
+            <button type="submit">Publish</button>
+          </div>
+          {errorMessage && <div>{errorMessage}</div>}
+        </form>
+      </div>
     </div>
   );
 };

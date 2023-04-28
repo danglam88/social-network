@@ -3,21 +3,13 @@ import commentsService from '../services/CommentsService'
 
 const Comment = ({ comment }) => {
     return (
-        <div>
-            <span> {comment.UserID} </span>
-            <span> {comment.UserName} </span>
-            <span> {comment.Content} </span>
-            <span> {comment.CreatedAt} </span>
-            <span> 
-            {comment.img_url === "" ? null : (
-            <img
-              src={`http://localhost:8080${comment.ImgUrl}`}
-              alt="Comment Image"
-            />
-          )}
-            </span>
-        </div>
-    )
+      <div className="comment-wrapper">
+        <div className="wrote">{comment.UserName} wrote:</div>
+        <div className="comment-content">{comment.Content}</div>
+        <div className="created-at">created at {comment.CreatedAt}</div>
+        <span> {comment.ImgUrl} </span>
+      </div>
+    );
 }
 
 //change posts to comments
@@ -33,21 +25,18 @@ const Comments = (id) => {
           .catch((error) => console.log(error));
         }, []);
     
-    return (
-        <div>
-            <h3>Comments:</h3>
-            <div>
-                <span> Creator ID </span>
-                <span> Creator Name </span>
-                <span> Content </span>
-                <span> Created At </span>
-                <span> Image URL </span>
-            </div>
-            {comments && comments.map(comment =>
-                <Comment comment={comment} key={comment.ID} />
+        return (
+          <div className="comments-wrapper">
+            {comments && (
+              <>
+                <h3>Comments:</h3>
+                {comments.map((comment) => (
+                  <Comment comment={comment} key={comment.ID} />
+                ))}
+              </>
             )}
-        </div>
-    )
+          </div>
+        );
 }
 
 export default Comments

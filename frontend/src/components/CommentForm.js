@@ -75,10 +75,10 @@ const CommentForm = (postId) => {
   };
 
   return (
-    <div className="comment-form">
+    <div className="post-comment-form">
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="content">Content:</label>
+          <label htmlFor="content">Create a comment:</label>
           <textarea
             id="content"
             name="content"
@@ -87,16 +87,19 @@ const CommentForm = (postId) => {
           />
         </div>
         <div>
-          <label htmlFor="picture">Picture:</label>
+          <label htmlFor="picture" className="file-input-btn">
+            Upload picture
+          </label>
           <input
             type="file"
+            className="file-input"
             id="picture"
             name="picture"
             onChange={handlePictureChange}
           />
         </div>
         <div>
-          <button type="submit">Submit</button>
+          <button type="submit">Reply</button>
         </div>
         {errorMessage && <div>{errorMessage}</div>}
       </form>

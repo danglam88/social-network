@@ -165,8 +165,8 @@ const PersonalProfile = () => {
         </div>
         <div className="Mainpage">
           {showPersonalProfile ? (
-            <div>
-              <h2>Personal Profile</h2>
+            <div className="personal-profile-wrapper">
+              <h2>Your profile</h2>
               <PersonalInfo user={data} />
               {follows && (
                 <div className="follow">

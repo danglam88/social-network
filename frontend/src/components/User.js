@@ -31,7 +31,11 @@ const User = ({ user }) => {
     
       return (
         <div>
-          <h2>User Profile</h2>
+          {user.nick_name ? (
+            <h2>{user.nick_name}'s profile</h2>
+          ) : (
+            <h2>{user.first_name} {user.last_name}'s profile</h2>
+          )}
           <PersonalInfo user={user} />
           <div>
             {follows && (
@@ -45,7 +49,7 @@ const User = ({ user }) => {
               </div>
             )}
           </div>
-          {posts && <Posts posts={posts} />}
+          {posts && <Posts posts={posts} type="user" />}
           <button onClick={toggleChatWindow}>
             {showChatWindow ? 'Close Chat' : 'Open Chat'} 
           </button>

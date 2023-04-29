@@ -1,10 +1,14 @@
 import Comments from './Comments.js'
 import CommentForm from './CommentForm.js'
 
-const Post = ({ post }) => {
+const Post = ({post, type}) => {
     return (
       <div className="post-wrapper">
-        <div className="wrote">you posted:</div>
+        <div className="wrote">
+          {type === "you" ? <span>{type} posted:</span> :
+            <span>{post.creator_name} posted:</span>
+          }
+        </div>
         <div>
           <h3>{post.title}</h3>
         </div>
@@ -24,12 +28,18 @@ const Post = ({ post }) => {
     );
 }
 
-const Posts = ({posts}) => {
+const Posts = ({posts, type}) => {
     return (
         <div className="created-posts-wrapper">
-            <h2>Your created posts:</h2>
+            {type === "you" ? <h2>Your created posts:</h2> :
+              type === "group" ? (
+                <h2>Group's created posts:</h2>
+              ) : (
+                <h2>Created posts:</h2>
+              )
+            }
             {posts && posts.map(post =>
-                <Post post={post} key={post.id} />
+                <Post post={post} key={post.id} type={type} />
             )}
         </div>
     )

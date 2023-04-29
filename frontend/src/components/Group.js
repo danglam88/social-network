@@ -18,7 +18,7 @@ const Group = ({group}) => {
         </ul>
         <EventList list={group.events} groupId={group.id}/>
         <PostForm groupId={group.id}/>
-        <Posts posts ={group.posts}/>
+        <Posts posts={group.posts} type="group" />
         </>
       )
 }

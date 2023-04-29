@@ -91,6 +91,7 @@ func IsOn(w http.ResponseWriter, r *http.Request) bool {
 
 func IsUser(w http.ResponseWriter, r *http.Request) string {
 	token := getToken(w, r)
+
 	if token == "" {
 		return ""
 	}

@@ -15,8 +15,6 @@ const config = {
 };
 
 const perprofile = async data => {
-    console.log(data)
-
     const request = await axios.post(perProfileUrl, JSON.stringify(data), config)
     return request
 }

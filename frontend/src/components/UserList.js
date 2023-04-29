@@ -26,8 +26,6 @@ const UserItem = ({user, followings, handleUserProfile}) => {
     }, [])
 
     useEffect(() => {
-        console.log("Pending: " + check_pending)
-
         followsService.follow({user, check_pending})
             .then(response => {
                 if (response.data.Error === "Pending") {

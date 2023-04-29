@@ -1,70 +1,21 @@
 import React, { useState, useEffect } from "react";
-import perProfileService from "../services/PerProfileService";
-import loginService from "../services/LoginService";
-import Chat from "./Chat";
-import GroupList from "./GroupList";
-import NotificationIcon from "./NotificationIcon";
 import Posts from "./Posts";
 import PostForm from "./PostForm";
-import postsService from "../services/PostsService";
 import PersonalInfo from "./PersonalInfo";
-import usersService from "../services/UsersService";
-import UserList from "./UserList";
 import followsService from "../services/FollowsService";
-import FollowsWrapper from './FollowsWrapper'
-import groupService from "../services/GroupsService";
-import NotificationService from "../services/NotificationService";
+import FollowsWrapper from "./FollowsWrapper";
 
-const PersonalProfile = () => {
-  const [data, setData] = useState({});
-  const [posts, setPosts] = useState([]);
+const PersonalProfile = ({user, posts}) => {
   const [follows, setFollows] = useState(null);
-  const [showPersonalProfile, setShowPersonalProfile] = useState(true);
-  const [users, setUsers] = useState([]);
-  const [usersVisible, setUsersVisible] = useState(false);
-  const [groups, setGroups] = useState([]);
-  const [groupsVisible, setGroupsVisible] = useState(false);
 
   useEffect(() => {
-    perProfileService
-      .perprofile(data)
+    followsService
+      .follows("http://localhost:8080/follow?user_id=" + user.id)
       .then((response) => {
-        setData(response.data);
-
-        postsService
-          .posts("http://localhost:8080/post?creator_id=" + response.data.id)
-          .then((response) => {
-            setPosts(response.data);
-          })
-          .catch((error) => console.log(error));
-
-        followsService
-          .follows("http://localhost:8080/follow?user_id=" + response.data.id)
-          .then((response) => {
-            setFollows(response.data);
-          })
-          .catch((error) => console.log(error));
+        setFollows(response.data);
       })
       .catch((error) => console.log(error));
-  }, [showPersonalProfile, usersVisible, groupsVisible]);
-
-  const handleLogout = (event) => {
-    event.preventDefault();
-    console.log("handle logout");
-
-    loginService
-      .logout({})
-      .then((response) => {
-        console.log(response);
-
-        document.cookie =
-          "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        sessionStorage.removeItem("userid");
-        sessionStorage.removeItem("username");
-        window.location.reload();
-      })
-      .catch((error) => console.log(error));
-  };
+  }, []);
 
   const handleShowPendings = (userId) => {
     followsService
@@ -75,113 +26,19 @@ const PersonalProfile = () => {
       .catch((error) => console.log(error));
   };
 
-  const handleShowPersonalProfile = () => {
-    setShowPersonalProfile(true);
-    setUsersVisible(false);
-    setGroupsVisible(false);
-  };
-
-  const handleSetUsersVisible = () => {
-    setShowPersonalProfile(false);
-    setUsersVisible(true);
-    setGroupsVisible(false);
-  };
-
-  const handleSetGroupsVisible = () => {
-    setShowPersonalProfile(false);
-    setUsersVisible(false);
-    setGroupsVisible(true);
-  };
-
-  useEffect(() => {
-    usersService
-      .users()
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  useEffect(() => {
-    groupService
-      .groups()
-      .then((response) => {
-        setGroups(response.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  useEffect(() => {
-    NotificationService.initialize("ws://localhost:8080/ws");
-  }, []);
-
   return (
-    <div>
-      <div className="Header">
-        {data.nick_name ? (
-          <div className="header">
-            Welcome{" "}
-            <span onClick={handleShowPersonalProfile}>
-              <i>
-                <u>{data.nick_name}</u>
-              </i>
-            </span>
-            !
-          </div>
-        ) : (
-          <div className="header">
-            Welcome{" "}
-            <span onClick={handleShowPersonalProfile}>
-              <i>
-                <u>
-                  {data.first_name} {data.last_name}
-                </u>
-              </i>
-            </span>
-            !
-          </div>
-        )}
-        <NotificationIcon />
-        <form onSubmit={handleLogout}>
-          <button type="submit">Logout</button>
-        </form>
-      </div>
-      <div className="page-body">
-        <div className="Menu">
-          <div className="button-wrapper">
-            {users && (
-              <div>
-                <button onClick={handleSetUsersVisible}>Show Users</button>
-                {usersVisible && <UserList users={users} followings={follows.followings} />}
-              </div>
-            )}
-            {groups && (
-              <div>
-                <button onClick={handleSetGroupsVisible}>Show Groups</button>
-                {groupsVisible && <GroupList />}
-              </div>
-            )}
-          </div>
+    <div className="personal-profile-wrapper">
+      <h2>Your profile</h2>
+      <PersonalInfo user={user} />
+      {follows && (
+        <div className="follow">
+          {follows.followers && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Follower(s):" handleShowPendings={handleShowPendings} />}
+          {follows.followings && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Following(s):" handleShowPendings={handleShowPendings} />}
+          {follows.pendings && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pending(s):" handleShowPendings={handleShowPendings} />}
         </div>
-        <div className="Mainpage">
-          {showPersonalProfile ? (
-            <div className="personal-profile-wrapper">
-              <h2>Your profile</h2>
-              <PersonalInfo user={data} />
-              {follows && (
-                <div className="follow">
-                  {follows.followers && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Follower(s):" handleShowPendings={handleShowPendings} />}
-                  {follows.followings && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Following(s):" handleShowPendings={handleShowPendings} />}
-                  {follows.pendings && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pending(s):" handleShowPendings={handleShowPendings} />}
-                </div>
-              )}
-              <PostForm />
-              {posts && <Posts posts={posts} />}
-              <Chat />
-            </div>
-          ) : null}
-        </div>
-      </div>
+      )}
+      <PostForm />
+      {posts && <Posts posts={posts} type="you" />}
     </div>
   );
 };

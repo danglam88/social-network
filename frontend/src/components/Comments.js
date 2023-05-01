@@ -7,7 +7,14 @@ const Comment = ({ comment }) => {
         <div className="wrote">{comment.UserName} wrote:</div>
         <div className="comment-content">{comment.Content}</div>
         <div className="created-at">created at {comment.CreatedAt}</div>
-        <span> {comment.ImgUrl} </span>
+        {comment.ImgUrl === "" ? null : (
+          <div className="comment-image">
+            <img
+              src={`http://localhost:8080${comment.ImgUrl}`}
+              alt="Comment Image"
+            />
+          </div>
+        )}
       </div>
     );
 }

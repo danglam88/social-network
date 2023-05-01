@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const MAX_SIZE = 20971520
+const MAX_SIZE = 50000000
 
 func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
 	var err error
@@ -43,6 +43,8 @@ func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
 	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
 		posts[i], posts[j] = posts[j], posts[i]
 	}
+
+	fmt.Println(posts)
 
 	w.WriteHeader(http.StatusAccepted)
 	res, _ := json.Marshal(posts)
@@ -241,9 +243,9 @@ func UploadFile(w http.ResponseWriter, r *http.Request) (imgUrl string, err erro
 		return imgUrl, err
 	}
 	filetype := http.DetectContentType(fileBytes)
-	if filetype != "image/jpeg" && filetype != "image/png" && filetype != "image/gif" &&
+	if filetype != "image/jpeg" && filetype != "image/jpg" && filetype != "image/png" && filetype != "image/gif" &&
 		!(headerFiletype == "image/svg+xml" && (strings.Contains(filetype, "text/xml") || strings.Contains(filetype, "text/plain;"))) {
-		return imgUrl, errors.New("invalid type, allowed types : jpeg, png, gif, svg")
+		return imgUrl, errors.New("invalid type, allowed types : jpeg, jpg, png, gif, svg")
 	}
 	fileNameSlice := strings.Split(handler.Filename, ".")
 	extension := fileNameSlice[len(fileNameSlice)-1]

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import followsService from "../services/FollowsService";
 import postsService from "../services/PostsService";
+import { TextRegex, TagRegex, ImageRegex, MaxSize } from "../services/ValidationService";
 
 //send in "groupId={nbr}" as groupId.
 const PostForm = (groupId) => {
@@ -52,18 +53,16 @@ const PostForm = (groupId) => {
     event.preventDefault();
 
     // Validation
-    const textRegex = /^[\x20-\x7E]+$/;
-    const tagRegex = /<[^>]*>/g;
-    const imageRegex = /(jpe?g|png|gif|svg)/;
+  
     if (!title || !content) {
       setErrorMessage("Title and content are required");
       return;
     }
-    if (!textRegex.test(title) || !textRegex.test(content)) {
+    if (!TextRegex.test(title) || !TextRegex.test(content)) {
       setErrorMessage("Title and content must be regular characters");
       return;
     }
-    if (tagRegex.test(title) || tagRegex.test(content)) {
+    if (TagRegex.test(title) || TagRegex.test(content)) {
       setErrorMessage("Title and content must not contain HTML tags");
       return;
     }
@@ -78,7 +77,11 @@ const PostForm = (groupId) => {
         return;
       }
     }
-    if (picture && !imageRegex.test(picture.type)) {
+    if (picture && picture.size > MaxSize) {
+      setErrorMessage("Uploaded image must be less than 50MB");
+      return;
+    }
+    if (picture && !ImageRegex.test(picture.type)) {
       setErrorMessage(
         "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"
       );

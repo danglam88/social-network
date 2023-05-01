@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import commentsService from '../services/CommentsService'
+import { TextRegex, TagRegex, ImageRegex, MaxSize } from "../services/ValidationService";
 
 const CommentForm = (postId) => {
   
@@ -19,18 +20,15 @@ const CommentForm = (postId) => {
     event.preventDefault();
 
     // Validation
-    const textRegex = /^[\x20-\x7E]+$/;
-    const tagRegex = /<[^>]*>/g;
-    const imageRegex = /(jpe?g|png|gif|svg)/;
     if (!content) {
       setErrorMessage("Content is required");
       return;
     }
-    if (!textRegex.test(content)) {
+    if (!TextRegex.test(content)) {
       setErrorMessage("Content must be regular characters");
       return;
     }
-    if (tagRegex.test(content)) {
+    if (TagRegex.test(content)) {
       setErrorMessage("Content must not contain HTML tags");
       return;
     }
@@ -45,7 +43,11 @@ const CommentForm = (postId) => {
         return;
       }
     }
-    if (picture && !imageRegex.test(picture.type)) {
+    if (picture && picture.size > MaxSize) {
+      setErrorMessage("Uploaded image must be less than 50MB");
+      return;
+    }
+    if (picture && !ImageRegex.test(picture.type)) {
       setErrorMessage(
         "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"
       );

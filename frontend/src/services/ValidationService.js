@@ -1,18 +1,18 @@
+export const TextRegex = /^[\x20-\x7E]+$/;
+export const TagRegex = /<[^>]*>/g;
+export const ImageRegex = /(jpe?g|png|gif|svg)/;
+export const MaxSize = 50000000;
 
-
-function ValidationField(validateFieldName, content, minlength, maxlength) {
-    const textRegex = /^[\x20-\x7E]+$/;
-    const tagRegex = /<[^>]*>/g;
-    const imageRegex = /(jpe?g|png|gif|svg)/;
+/*function ValidationField(validateFieldName, content, minlength, maxlength) {
     if (!title || !content) {
       setErrorMessage("Title and content are required");
       return;
     }
-    if (!textRegex.test(title) || !textRegex.test(content)) {
+    if (!TextRegex.test(title) || !TextRegex.test(content)) {
       setErrorMessage("Title and content must be regular characters");
       return;
     }
-    if (tagRegex.test(title) || tagRegex.test(content)) {
+    if (TagRegex.test(title) || TagRegex.test(content)) {
       setErrorMessage("Title and content must not contain HTML tags");
       return;
     }
@@ -27,10 +27,12 @@ function ValidationField(validateFieldName, content, minlength, maxlength) {
         return;
       }
     }
-    if (picture && !imageRegex.test(picture.type)) {
+    if (picture && !ImageRegex.test(picture.type)) {
       setErrorMessage(
         "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"
       );
       return;
     }
   }
+
+export default ValidationField;*/

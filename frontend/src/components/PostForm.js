@@ -67,6 +67,17 @@ const PostForm = (groupId) => {
       setErrorMessage("Title and content must not contain HTML tags");
       return;
     }
+    if (title.length > 30 || content.length > 3000) {
+      setErrorMessage("Title can be maximum 30 characters and content must be less than 3000 characters");
+      return;
+    }
+    var words = content.split(' ');
+    for (var i = 0; i < words.length; i++) {
+      if (words[i].length > 30) {
+        setErrorMessage("Words must be less than 30 characters");
+        return;
+      }
+    }
     if (picture && !imageRegex.test(picture.type)) {
       setErrorMessage(
         "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"

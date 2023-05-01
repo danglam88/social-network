@@ -34,6 +34,17 @@ const CommentForm = (postId) => {
       setErrorMessage("Content must not contain HTML tags");
       return;
     }
+    if (content.length > 1000) {
+      setErrorMessage("Content must be less than 1000 characters");
+      return;
+    }
+    var words = content.split(' ');
+    for (var i = 0; i < words.length; i++) {
+      if (words[i].length > 30) {
+        setErrorMessage("Words must be less than 30 characters");
+        return;
+      }
+    }
     if (picture && !imageRegex.test(picture.type)) {
       setErrorMessage(
         "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"

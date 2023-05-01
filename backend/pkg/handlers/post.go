@@ -146,7 +146,6 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 
 	content := r.FormValue("content")
 	descriptionErrorCheck, DescriptionErrorMessage := ValidateField("Content", content, 1, 3000)
-
 	if descriptionErrorCheck {
 		GetErrResponse(w, DescriptionErrorMessage, http.StatusBadRequest)
 		return
@@ -180,6 +179,16 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 	if len(field) < minLength || len(field) > maxLength {
 		errorMessage = fmt.Sprintf("%v length should be between %d - %d", fieldName, minLength, maxLength)
 		errorCheck = true
+	}
+
+	words := strings.Fields(field)
+	if len(words) > 0 {
+		for _, word := range words {
+			if len(word) > 30 {
+				errorMessage = fmt.Sprintf("%v can not contain words longer than 30 characters", fieldName)
+				errorCheck = true
+			}
+		}
 	}
 
 	//check if content only include spaces and/or tabs

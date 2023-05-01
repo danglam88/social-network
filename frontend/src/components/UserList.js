@@ -80,9 +80,8 @@ const UserItem = ({user, followings, handleUserProfile}) => {
     )
 }
 
-const UserList = ({users, followings}) => {
+const UserList = ({users, followings, showUserProfile, setShowUserProfile}) => {
     const [userData, setUserData] = useState({})
-    const [showUserProfile, setShowUserProfile] = useState(false)
 
     const handleUserProfile = (userId) => {
         usersService.user(userId)

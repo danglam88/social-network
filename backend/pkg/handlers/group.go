@@ -6,6 +6,7 @@ import (
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -79,12 +80,6 @@ func GroupAdd(w http.ResponseWriter, r *http.Request) {
 func GroupJoin(w http.ResponseWriter, r *http.Request) {
 	userId := GetLoggedInUserID(w, r)
 
-	err := r.ParseForm()
-	if err != nil {
-		GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
-		return
-	}
-
 	groupId, err := strconv.Atoi(r.FormValue("group_id"))
 
 	if err != nil {
@@ -92,10 +87,31 @@ func GroupJoin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = DB.JoinToGroup(userId, groupId, 1, 0)
+	usersId := r.FormValue("users")
 
-	if err != nil {
-		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	//In this case it is invitation to the group
+	if usersId != "" {
+		users := strings.Split(usersId, ",")
+
+		for _, item := range users {
+			userId, err = strconv.Atoi(item)
+			if err != nil {
+				GetErrResponse(w, "Invalid user list", http.StatusBadRequest)
+			}
+
+			err = DB.JoinToGroup(userId, groupId, 0, 0)
+			if err != nil {
+				GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			}
+		}
+
+		//In this case it is request to the group
+	} else {
+		err = DB.JoinToGroup(userId, groupId, 1, 0)
+
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 
 	w.WriteHeader(http.StatusOK)

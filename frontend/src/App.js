@@ -41,6 +41,8 @@ function App() {
   const [usersListVisible, setUsersListVisible] = useState(false);
   const [groups, setGroups] = useState([]);
   const [groupsListVisible, setGroupsListVisible] = useState(false);
+  const [isGroupDetailPage, setIsGroupDetailPage] = useState(false)
+ 
 
   useEffect(() => {
     axios
@@ -107,6 +109,7 @@ function App() {
     setPerProfileVisible(false);
     setUsersListVisible(false);
     setGroupsListVisible(true);
+    setIsGroupDetailPage(false);
   };
 
   const handleLogout = (event) => {
@@ -178,7 +181,7 @@ function App() {
             <div className="Mainpage">
               {perProfileVisible && <PersonalProfile user={user} posts={posts} />}
               {usersListVisible && <UserList users={users} followings={follows.followings} />}
-              {groupsListVisible && <GroupList />}
+              {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>
             <Chat />
           </div>

@@ -3,6 +3,7 @@ import groupService from "../services/GroupsService"
 import Group from './Group'
 import WebSocketService from '../services/WebSocketService'
 
+//Subcomponent for showing info abouut each group in the list
 const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
 
     const handleShowGroup = (groupId) => {
@@ -37,6 +38,7 @@ const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
     )
 }
 
+//Component for adding a new group
 const NewGroup = ({handleNewGroup}) => {
     const [title, setTitle] = useState('')           
     const [description, setDescription] = useState('')
@@ -82,11 +84,11 @@ const NewGroup = ({handleNewGroup}) => {
     )
 }
 
-const GroupList = () => {
+//Main component
+const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
 
     const [items, setItems] = useState([])
     const [isCreateGroup, setIsCreateGroup] = useState(false)
-    const [isDetailPage, setIsDetailPage] = useState(false)
     const [groupInfo, setGroupInfo] = useState({})
 
     const handleCreateGroup = (event) => {
@@ -104,7 +106,7 @@ const GroupList = () => {
 
         groupService.group(groupId).then(response => {
             setGroupInfo(response.data)
-            setIsDetailPage(true)
+            setIsGroupDetailPage(true)
         })
         .catch(error => console.log(error))
     }
@@ -149,7 +151,7 @@ const GroupList = () => {
     if (items.length > 0) {
         return (
             <>
-            {isDetailPage ? (<Group group={groupInfo}/>) : (
+            {isGroupDetailPage ? (<Group group={groupInfo}/>) : (
             <>
             <h1>Groups</h1>
                 <div>

@@ -885,6 +885,27 @@ func (db *Db) GetAllUsers(username string) (users []User, err error) {
 	return users, err
 }
 
+func (db *Db) GetNotGroupMembers(username string, groupId int) (users []User, err error) {
+
+	query := "select id,email,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where email != ? and id not in (select user_id from group_relation where group_id == ?) order by id asc"
+	rows, err := db.connection.Query(query, username, groupId)
+	if err != nil {
+		return users, err
+	}
+
+	var user User
+	for rows.Next() {
+		err := rows.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.BirthDate, &user.IsPrivate, &user.CreatedAt, &user.AvatarUrl, &user.NickName, &user.AboutMe)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	defer rows.Close()
+
+	return users, err
+}
+
 /*func (db *Db) GetUsers(userId int) (chats []Chat, err error) {
 
 	userChats, err := db.GetAllChats(userId)

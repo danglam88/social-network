@@ -25,6 +25,11 @@ const user = async (userId) => {
     return request
 }
 
-const usersService = { users, user }
+const groupUsers = async (groupId) => {
+  const request = await axios.get(`${usersUrl}?group_id=${groupId}`, config)
+  return request
+}
+
+const usersService = { users, user, groupUsers }
 
 export default usersService

@@ -2,6 +2,7 @@ import EventList from "./EventList"
 import Posts from "./Posts"
 import PostForm from "./PostForm"
 import FollowsWrapper from './FollowsWrapper'
+import GroupUsersSelect from "./GroupUsersSelect"
 
 const Group = ({group}) => {
 
@@ -15,6 +16,7 @@ const Group = ({group}) => {
           <li>Created at : {group.created_at}</li>
           <li>Members : {membersCount}</li>
           <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings= {() => {}} />
+          <GroupUsersSelect buttonName="Invite users" groupId={group.id}/>
         </ul>
         <EventList list={group.events} groupId={group.id}/>
         <PostForm groupId={group.id}/>

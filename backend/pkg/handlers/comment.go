@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -24,9 +23,6 @@ func CommentGet(w http.ResponseWriter, r *http.Request) {
 		comments, _ := DB.GetCommentsByPost(postId)
 
 		w.WriteHeader(http.StatusAccepted)
-
-		fmt.Println(comments)
-
 		res, _ := json.Marshal(comments)
 		io.WriteString(w, string(res))
 	}

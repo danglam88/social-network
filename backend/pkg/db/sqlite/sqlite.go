@@ -202,6 +202,36 @@ func (db *Db) Close() {
 	db.connection.Close()
 }
 
+func (db *Db) TogglePrivacy(userId int) (err error) {
+	var isPrivate int
+
+	query := "select is_private from user where id=?"
+	row := db.connection.QueryRow(query, userId)
+	err = row.Scan(&isPrivate)
+	if err != nil {
+		return err
+	}
+
+	if isPrivate == 1 {
+		_, err = db.connection.Exec("update user set is_private=0 where id=?", userId)
+		if err != nil {
+			return err
+		}
+
+		_, err = db.connection.Exec("update follow_relation set is_approved=1 where followed_id=?", userId)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err = db.connection.Exec("update user set is_private=1 where id=?", userId)
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
+}
+
 func (db *Db) ToggleFollow(followerId int, followedUser User) (err error) {
 	var isApproved int
 
@@ -219,20 +249,16 @@ func (db *Db) ToggleFollow(followerId int, followedUser User) (err error) {
 			}
 
 			if newErr != nil {
-				log.Printf("Insert Error: %v\n", newErr)
 				return newErr
 			}
 		} else {
-			log.Printf("Select Error: %v\n", err)
 			return err
 		}
 	}
 
 	if isApproved == 1 {
-		log.Printf("%d unfollows %d\n", followerId, followedUser.ID)
 		_, newErr := db.connection.Exec("delete from follow_relation where follower_id=? and followed_id=?", followerId, followedUser.ID)
 		if newErr != nil {
-			log.Printf("Delete Error: %v\n", newErr)
 			return newErr
 		}
 	}

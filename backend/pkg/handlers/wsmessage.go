@@ -42,9 +42,9 @@ func NewManager() *Manager {
 }
 
 func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
-	log.Println("new connection")
 
 	userEmail := AuthenticateUser(w, r)
+	log.Println("new connection from", userEmail)
 
 	id := DB.GetUserID(userEmail)
 

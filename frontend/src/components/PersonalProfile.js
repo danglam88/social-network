@@ -1,35 +1,14 @@
-import React, { useState, useEffect } from "react";
 import Posts from "./Posts";
 import PostForm from "./PostForm";
 import PersonalInfo from "./PersonalInfo";
 import followsService from "../services/FollowsService";
 import FollowsWrapper from "./FollowsWrapper";
 
-const PersonalProfile = ({user, posts}) => {
-  const [follows, setFollows] = useState(null);
-
-  useEffect(() => {
-    followsService
-      .follows("http://localhost:8080/follow?user_id=" + user.id)
-      .then((response) => {
-        setFollows(response.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  const handleShowPendings = (userId) => {
-    followsService
-      .follows("http://localhost:8080/follow?user_id=" + userId)
-      .then((response) => {
-        setFollows(response.data);
-      })
-      .catch((error) => console.log(error));
-  };
-
+const PersonalProfile = ({user, posts, follows, handleShowPendings}) => {
   return (
     <div className="personal-profile-wrapper">
       <h2>Your profile</h2>
-      <PersonalInfo user={user} />
+      <PersonalInfo user={user} type="own" handleUpdateFollows={handleShowPendings} />
       {follows && (
         <div className="follow">
           {follows.followers && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Follower(s):" handleShowPendings={handleShowPendings} />}

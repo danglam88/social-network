@@ -36,7 +36,7 @@ const User = ({ user }) => {
           ) : (
             <h2>{user.first_name} {user.last_name}'s profile</h2>
           )}
-          <PersonalInfo user={user} />
+          <PersonalInfo user={user} type="user" handleUpdateFollows={() => {}} />
           <div>
             {follows && (
               <div>

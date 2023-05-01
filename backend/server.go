@@ -59,7 +59,8 @@ func main() {
 		},
 		{
 			Endpoint:     "/perprofile",
-			PostFunction: handlers.PersonalProfile,
+			GetFunction:  handlers.PersonalProfile,
+			PostFunction: handlers.TogglePrivacy,
 		},
 		{
 			Endpoint:    "/allchats",

@@ -44,8 +44,6 @@ func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
 		posts[i], posts[j] = posts[j], posts[i]
 	}
 
-	fmt.Println(posts)
-
 	w.WriteHeader(http.StatusAccepted)
 	res, _ := json.Marshal(posts)
 	io.WriteString(w, string(res))

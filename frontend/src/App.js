@@ -56,17 +56,12 @@ function App() {
   useEffect(() => {
     if (token !== "") {
       perProfileService
-        .perprofile(user)
+        .perprofile()
         .then((response) => {
           setUser(response.data);
           NotificationService.initialize("ws://localhost:8080/ws");
 
-          followsService
-            .follows("http://localhost:8080/follow?user_id=" + response.data.id)
-            .then((response) => {
-              setFollows(response.data);
-            })
-            .catch((error) => console.log(error));
+          handleShowPendings(response.data.id);
 
           postsService
             .posts("http://localhost:8080/post?creator_id=" + response.data.id)
@@ -100,10 +95,21 @@ function App() {
   };
 
   const handleShowUsersList = () => {
-    setPerProfileVisible(false);
-    setUsersListVisible(true);
-    setShowUserProfile(false);
-    setGroupsListVisible(false);
+    handleShowPendings(user.id)
+      .then(() => {
+        usersService
+          .users()
+          .then((response) => {
+            setUsers(response.data);
+
+            setPerProfileVisible(false);
+            setUsersListVisible(true);
+            setShowUserProfile(false);
+            setGroupsListVisible(false);
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleShowGroupsList = () => {
@@ -111,6 +117,15 @@ function App() {
     setUsersListVisible(false);
     setGroupsListVisible(true);
     setIsGroupDetailPage(false);
+  };
+
+  const handleShowPendings = async (userId) => {
+    await followsService
+      .follows("http://localhost:8080/follow?user_id=" + userId)
+      .then((response) => {
+        setFollows(response.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleLogout = (event) => {
@@ -180,7 +195,7 @@ function App() {
               </div>
             </div>
             <div className="Mainpage">
-              {perProfileVisible && <PersonalProfile user={user} posts={posts} />}
+              {perProfileVisible && <PersonalProfile user={user} posts={posts} follows={follows} handleShowPendings={handleShowPendings} />}
               {usersListVisible && <UserList users={users} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
               {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>

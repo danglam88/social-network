@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -1169,6 +1170,15 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 
 	//todo err check
 	if id <= 0 {
+		if groupId == 0 {
+			user := db.GetUser(to)
+			if user.IsPrivate == 1 && !db.IsFollower(from, user) {
+				err := errors.New("not allowed to send message to this user")
+				return messages, id, err
+
+			}
+		}
+
 		id, err = db.addChat(groupId, from, to)
 	}
 

@@ -142,6 +142,16 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
           chat.GroupID,
           chat.ChatID,
         );
+        if (response.data.Status === "not allowed to send message to this user") {
+          console.log(response.data.Status);
+          //close chat window
+          onClose();
+          return;
+        }
+        if (response.data.Error) {
+          console.error(response.data.Error);
+          return;
+        }
         if (!response.data.history) {
           console.log(
             "No chat history found, set recipient id to response.chat_id" + response.data.chat_id

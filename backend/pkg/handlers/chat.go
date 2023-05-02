@@ -56,8 +56,16 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 	history, chatId, err := DB.GetHistory(groupId, user_id, to, page)
 	fmt.Println(to, chatId, "history 57")
 	if err != nil {
-		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		if err.Error() != "not allowed to send message to this user" {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		response := ResponseError{Status: err.Error()}
+		res, _ := json.Marshal(response)
+		io.WriteString(w, string(res))
 		return
+
 	}
 
 	w.WriteHeader(http.StatusAccepted)

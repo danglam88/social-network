@@ -626,6 +626,11 @@ func (db *Db) GetGroup(id, userId int) (group Group, err error) {
 		return group, err
 	}
 
+	//sort posts reversed
+	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
+		posts[i], posts[j] = posts[j], posts[i]
+	}
+
 	events, err := db.GetEvents(id, userId)
 
 	if err != nil {

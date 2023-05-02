@@ -140,7 +140,8 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
       try {
         const response = await ChatService.fetchChatHistory(
           chat.GroupID,
-          chat.ChatID,
+          // if chatId is not provided, use chat.ChatID
+          chatId || chat.ChatID,
         );
         if (response.data.Status === "not allowed to send message to this user") {
           console.log(response.data.Status);
@@ -157,9 +158,9 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
             "No chat history found, set recipient id to response.chat_id" + response.data.chat_id
           );
           recipientChatId = response.data.chat_id;
-
           return;
         }
+        recipientChatId = response.data.chat_id;
         console.log("Initial chat history:", response.data.history);
         const initialHistory = response.data.history;
         setChatMessages(sortMessagesByDate(initialHistory));
@@ -206,7 +207,7 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
   const sendMessage = () => {
     if (typedMessage.trim() !== "") {
       console.log("Sending message:", typedMessage, "to chat:", chat.ChatID, "ChatWindow.js 199")
-      ChatService.sendMessage(chat.ChatID, typedMessage);
+      ChatService.sendMessage(recipientChatId, typedMessage);
       setTypedMessage("");
       setScrollToBottom(true);
     }

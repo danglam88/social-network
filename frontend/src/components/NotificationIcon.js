@@ -7,7 +7,6 @@ const NotificationIcon = () => {
 
   useEffect(() => {
     const messageListener = (message) => {
-      console.log("Notification received", message)
       if (
         message.type === "follownotification" ||
         message.type === "invitenotification" ||

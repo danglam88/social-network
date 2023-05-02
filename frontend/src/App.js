@@ -206,7 +206,7 @@ function App() {
               {usersListVisible && <UserList users={users} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
               {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>
-            <Chat />
+            <Chat userId={user.id}/>
           </div>
         </div>
       ) : (

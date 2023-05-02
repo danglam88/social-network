@@ -4,7 +4,7 @@ import ChatWindow from "./ChatWindow";
 import "../chat.css";
 import ChatService from "../services/ChatService"
 
-const Chat = () => {
+const Chat = ({ userId }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chatListVisible, setChatListVisible] = useState(false);
   const [availableChats, setAvailableChats] = useState([]);
@@ -24,6 +24,10 @@ const Chat = () => {
   };
   const closeChatWindow = () => {
     setSelectedChat(null);
+  };
+
+  const getOtherUserId = (chat) => {
+    return chat.UserOne === userId ? chat.UserTwo : chat.UserOne;
   };
 
   return (
@@ -50,7 +54,7 @@ const Chat = () => {
           }}
           tabIndex="0"
         >
-          <ChatWindow chat={selectedChat} chatId={selectedChat.ChatID} onClose={closeChatWindow} />
+          <ChatWindow chat={selectedChat} chatId={getOtherUserId(selectedChat)} onClose={closeChatWindow} />
         </div>
       )}
     </div>

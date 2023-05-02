@@ -1,7 +1,8 @@
 .chat-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
   }
   
   .chat-bubble {
@@ -9,7 +10,10 @@
     height: 50px;
     background-color: #007bff;
     color: white;
-    display: flex;
+    display: fixed;
+    bottom: 20px;
+    right: 20px;
+    position: fixed;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
@@ -27,6 +31,14 @@
     width: 300px;
     height: 300px;
     overflow-y: auto;
+  }
+
+  .chat-list-container {
+    display: flex;
+    flex-direction: column;
+    /*position inside the chat-list*/
+    position: absolute;
+    top: 0;
   }
   
   .chat-window-modal {

@@ -14,51 +14,32 @@ const config = {
   },
 };
 
-const ChatList = ({ selectedChat, onSelectChat, onToggleChatList }) => {
-  const [availableChats, setAvailableChats] = useState([]);
-  const [chatListVisible, setChatListVisible] = useState(false);
+const ChatList = ({ availableChats, selectedChat, onSelectChat, onToggleChatList }) => {
 
-  const toggleChatList = () => {
-    setChatListVisible(!chatListVisible);
-  };
-
-  React.useEffect(() => {
-    axios
-      .get("http://localhost:8080/allchats", config)
-      .then((response) => setAvailableChats(response.data))
-      .catch((error) => console.error("Error fetching chats:", error));
-  }, []);
 
   return (
     <div className="chat-list-container">
-      <div className="chat-bubble" onClick={toggleChatList}>
-        💬
-      </div>
-      {chatListVisible && (
-        <div className="chat-list">
-          <h2>Available Chats</h2>
-          <ul>
-            {availableChats.map((chat) => (
-              <li
-                key={chat.ChatID}
-                onClick={() => {
-                  onSelectChat(chat);
-                  onToggleChatList();
-                }}
-                style={{
-                  cursor: "pointer",
-                  fontWeight:
-                    selectedChat && selectedChat.ChatID === chat.ChatID
-                      ? "bold"
-                      : "normal",
-                }}
-              >
-                {chat.DisplayName}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <h2>Available Chats</h2>
+      <ul>
+        {availableChats.map((chat) => (
+          <li
+            key={chat.ChatID}
+            onClick={() => {
+              onSelectChat(chat);
+              onToggleChatList();
+            }}
+            style={{
+              cursor: "pointer",
+              fontWeight:
+                selectedChat && selectedChat.ChatID === chat.ChatID
+                  ? "bold"
+                  : "normal",
+            }}
+          >
+            {chat.DisplayName}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

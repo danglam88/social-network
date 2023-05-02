@@ -244,6 +244,9 @@ func (c *Client) readMessages() {
 
 			} else if res.Type == INVITENOTIFICATION_TYPE {
 				// notify the user that he has a new group invitation
+
+				res.Message = fmt.Sprintf("%s invited you to join %s", res.UserName, res.Message)
+
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {
 						message, _ := json.Marshal(res)

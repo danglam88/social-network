@@ -23,7 +23,7 @@ const sortMessagesByDate = messages => {
   return sortedMessages;
 };
 
-const ChatWindow = ({ chat }) => {
+const ChatWindow = ({ chat, onClose }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
@@ -260,9 +260,22 @@ const ChatWindow = ({ chat }) => {
     [loadMoreMessages]
   );
 
+  const handleOutsideClick = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-      <h2>Chat Window</h2>
+    <div
+      className="chatBox"
+      style={{ flex: 1, display: "flex", flexDirection: "column" }}
+      onClick={handleOutsideClick}
+    >
+      <h2>
+        Chat Window{" "}
+        <button onClick={onClose} style={{ marginLeft: "auto" }}>
+          Close
+        </button>
+      </h2>
 
       <div
         ref={chatContainerRef}
@@ -303,15 +316,7 @@ const ChatWindow = ({ chat }) => {
         </button>
         {showEmojiPicker &&
           <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              maxWidth: "250px",
-              border: "1px solid #ccc",
-              padding: "4px",
-              borderRadius: "4px",
-              backgroundColor: "#f1f1f1",
-            }}
+          className="emoji-picker"
           >
             {emojis.map((emoji, index) =>
               <span

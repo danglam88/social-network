@@ -165,7 +165,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
     if (items.length > 0) {
         return (
             <>
-            {isGroupDetailPage ? (<Group group={groupInfo}/>) : (
+            {isGroupDetailPage ? (<Group group={groupInfo} setGroupInfo={setGroupInfo} />) : (
             <>
             <h1>Groups</h1>
                 <div>

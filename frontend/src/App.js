@@ -11,11 +11,11 @@ import UserList from "./components/UserList";
 import GroupList from "./components/GroupList";
 import NotificationIcon from "./components/NotificationIcon";
 import followsService from "./services/FollowsService";
-import postsService from "./services/PostsService";
 import NotificationService from "./services/NotificationService";
 import loginService from "./services/LoginService";
 import usersService from "./services/UsersService";
 import groupService from "./services/GroupsService";
+import postsService from "./services/PostsService";
 
 const clientToken = document.cookie
   .split("; ")
@@ -202,7 +202,7 @@ function App() {
               </div>
             </div>
             <div className="Mainpage">
-              {perProfileVisible && <PersonalProfile user={user} posts={posts} follows={follows} handleShowPendings={handleShowPendings} />}
+              {perProfileVisible && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} />}
               {usersListVisible && <UserList users={users} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
               {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import followsService from "../services/FollowsService";
 import postsService from "../services/PostsService";
 import ValidateField from "../services/ValidationService";
+import groupService from "../services/GroupsService";
 
 //send in "groupId={nbr}" as groupId.
-const PostForm = ({groupId = 0}) => {
+const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [privacy, setPrivacy] = useState("public");
@@ -83,7 +84,23 @@ const PostForm = ({groupId = 0}) => {
       postsService.post(formData)
         .then((response) => {
           console.log("Post created:", response.data);
-          window.location.reload();
+          //window.location.reload();
+
+          if (!groupId) {
+            postsService
+              .posts("http://localhost:8080/post?creator_id=" + userId)
+              .then((response) => {
+                setPosts(response.data);
+              })
+              .catch((error) => console.log(error));
+          } else {
+            groupService
+              .group(groupId)
+              .then(response => {
+                setGroupInfo(response.data)
+              })
+              .catch(error => console.log(error))
+          }
         })
         .catch((error) => console.log(error));
     } catch (error) {

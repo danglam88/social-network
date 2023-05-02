@@ -4,8 +4,7 @@ import PostForm from "./PostForm"
 import FollowsWrapper from './FollowsWrapper'
 import GroupUsersSelect from "./GroupUsersSelect"
 
-const Group = ({group}) => {
-
+const Group = ({group, setGroupInfo}) => {
   const membersCount = group.members?.length === 0 ? 0 : group.members.length
 
     return (  
@@ -19,7 +18,7 @@ const Group = ({group}) => {
           <GroupUsersSelect buttonName="Invite users" groupId={group.id}/>
         </ul>
         <EventList list={group.events} groupId={group.id}/>
-        <PostForm groupId={group.id}/>
+        <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
         <Posts posts={group.posts} type="group" />
         </>
       )

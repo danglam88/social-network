@@ -3,7 +3,7 @@ import PostForm from "./PostForm";
 import PersonalInfo from "./PersonalInfo";
 import FollowsWrapper from "./FollowsWrapper";
 
-const PersonalProfile = ({user, posts, follows, handleShowPendings}) => {
+const PersonalProfile = ({user, posts, setPosts, follows, handleShowPendings}) => {
   return (
     <div className="personal-profile-wrapper">
       <h2>Your profile</h2>
@@ -15,7 +15,7 @@ const PersonalProfile = ({user, posts, follows, handleShowPendings}) => {
           {follows.pendings && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pending(s):" handleShowPendings={handleShowPendings} />}
         </div>
       )}
-      <PostForm />
+      <PostForm userId={user.id} setPosts={setPosts} />
       {posts && <Posts posts={posts} type="you" userId={user.id} />}
     </div>
   );

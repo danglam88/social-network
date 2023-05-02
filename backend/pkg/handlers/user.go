@@ -18,15 +18,21 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		errorMess := "Invalid Id"
-		GetErrResponse(w, errorMess, http.StatusBadRequest)
+		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
 		return
 	}
 
+	userId := GetLoggedInUserID(w, r)
 	user := DB.GetUser(filterUser)
 
-	// Send a response
-	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(user)
-	io.WriteString(w, string(res))
+	if user.IsPrivate == 0 || DB.IsFollower(userId, user) {
+		w.WriteHeader(http.StatusOK)
+		res, _ := json.Marshal(user)
+		io.WriteString(w, string(res))
+	} else {
+		w.WriteHeader(http.StatusOK)
+		response := ResponseError{Status: RESPONSE_ERR}
+		res, _ := json.Marshal(response)
+		io.WriteString(w, string(res))
+	}
 }

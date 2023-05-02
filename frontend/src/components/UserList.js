@@ -86,8 +86,10 @@ const UserList = ({users, followings, showUserProfile, setShowUserProfile}) => {
     const handleUserProfile = (userId) => {
         usersService.user(userId)
             .then(response => {
-                setUserData(response.data)
-                setShowUserProfile(true)
+                if (response.data.Status !== "error") {
+                    setUserData(response.data)
+                    setShowUserProfile(true)
+                }
             })
             .catch(error => console.log(error))
     }

@@ -202,6 +202,23 @@ func (db *Db) Close() {
 	db.connection.Close()
 }
 
+func (db *Db) IsFollower(userId int, user User) bool {
+	var isApproved int
+
+	query := "select is_approved from follow_relation where follower_id=? and followed_id=?"
+	row := db.connection.QueryRow(query, userId, user.ID)
+	err := row.Scan(&isApproved)
+	if err != nil {
+		return false
+	}
+
+	if isApproved == 1 {
+		return true
+	}
+
+	return false
+}
+
 func (db *Db) TogglePrivacy(userId int) (err error) {
 	var isPrivate int
 

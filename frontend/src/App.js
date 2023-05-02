@@ -89,9 +89,16 @@ function App() {
   }, [token]);
 
   const handleShowPersonalProfile = () => {
-    setPerProfileVisible(true);
-    setUsersListVisible(false);
-    setGroupsListVisible(false);
+    perProfileService
+      .perprofile()
+      .then((response) => {
+        setUser(response.data);
+
+        setPerProfileVisible(true);
+        setUsersListVisible(false);
+        setGroupsListVisible(false);
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleShowUsersList = () => {

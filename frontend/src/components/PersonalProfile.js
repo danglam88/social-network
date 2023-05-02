@@ -1,7 +1,6 @@
 import Posts from "./Posts";
 import PostForm from "./PostForm";
 import PersonalInfo from "./PersonalInfo";
-import followsService from "../services/FollowsService";
 import FollowsWrapper from "./FollowsWrapper";
 
 const PersonalProfile = ({user, posts, follows, handleShowPendings}) => {

@@ -50,7 +50,7 @@ const Chat = () => {
           }}
           tabIndex="0"
         >
-          <ChatWindow chat={selectedChat} onClose={closeChatWindow} />
+          <ChatWindow chat={selectedChat} chatId={selectedChat.ChatID} onClose={closeChatWindow} />
         </div>
       )}
     </div>

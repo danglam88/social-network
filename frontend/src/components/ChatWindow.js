@@ -23,7 +23,7 @@ const sortMessagesByDate = messages => {
   return sortedMessages;
 };
 
-const ChatWindow = ({ chat, onClose }) => {
+const ChatWindow = ({ chat, onClose, chatId }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
@@ -151,7 +151,6 @@ const ChatWindow = ({ chat, onClose }) => {
           return;
         }
         console.log("Initial chat history:", response.data.history);
-        recipientChatId = response.data.chat_id;
         const initialHistory = response.data.history;
         setChatMessages(sortMessagesByDate(initialHistory));
         // Scroll chat textarea to the bottom when it first loads
@@ -166,12 +165,9 @@ const ChatWindow = ({ chat, onClose }) => {
     [chat.GroupID, chat.ChatID]
   );
 
-  useEffect(
-    () => {
-      fetchInitialChatHistory();
-    },
-    [fetchInitialChatHistory]
-  );
+  useEffect(() => {
+    fetchInitialChatHistory();
+  }, [fetchInitialChatHistory, chatId]);
 
   useEffect(() => {
     const callback = messageData => {
@@ -199,8 +195,8 @@ const ChatWindow = ({ chat, onClose }) => {
 
   const sendMessage = () => {
     if (typedMessage.trim() !== "") {
-      console.log("Sending message:", typedMessage, "to chat:", recipientChatId, "ChatWindow.js 199")
-      ChatService.sendMessage(recipientChatId, typedMessage);
+      console.log("Sending message:", typedMessage, "to chat:", chat.ChatID, "ChatWindow.js 199")
+      ChatService.sendMessage(chat.ChatID, typedMessage);
       setTypedMessage("");
       setScrollToBottom(true);
     }
@@ -273,8 +269,8 @@ const ChatWindow = ({ chat, onClose }) => {
       <h2>
         Chat Window{" "}
         <button onClick={onClose} style={{ marginLeft: "auto" }}>
-          Close
-        </button>
+  Close
+</button>
       </h2>
 
       <div

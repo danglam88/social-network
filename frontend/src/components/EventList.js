@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react'
 import Event from "./Event"
 import groupService from "../services/GroupsService"
 import WebSocketService from '../services/WebSocketService'
+import ValidateField from '../services/ValidationService'
 
 
 const NewEvent = ({groupId, handleNewEvent}) => {
     const [title, setTitle] = useState('')           
     const [description, setDescription] = useState('')
     const [occurDate, setOccurDate] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
   
     const handleTitleChange = (event) => {
       setTitle(event.target.value)          
@@ -24,6 +26,17 @@ const NewEvent = ({groupId, handleNewEvent}) => {
   
     const handleCreateEvent = (event) => {                                                                                         
       event.preventDefault()
+
+      let Message = ValidateField("Title", title, 1, 30);
+        if ( Message !== "") {
+            setErrorMessage(Message);
+            return;
+        }
+        Message = ValidateField("Content", description, 1, 100);
+        if ( Message !== "") {
+            setErrorMessage("Description " + Message.slice(8));
+            return;
+        }
    
       const data = {
           title: title,
@@ -58,6 +71,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
         <div>
             <button type="submit">Create event</button>
         </div>
+        {errorMessage && <div>{errorMessage}</div>}
         </form>
         </>
     )

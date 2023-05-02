@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import followsService from "../services/FollowsService";
 import postsService from "../services/PostsService";
-import { TextRegex, TagRegex, ImageRegex, MaxSize } from "../services/ValidationService";
+import ValidateField from "../services/ValidationService";
 
 //send in "groupId={nbr}" as groupId.
-const PostForm = (groupId) => {
-  var group_id = groupId.groupId;
-  if (group_id === undefined) {
-    group_id = 0;
-  }
+const PostForm = ({groupId = 0}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [privacy, setPrivacy] = useState("public");
@@ -20,12 +16,12 @@ const PostForm = (groupId) => {
   const followUrl = "http://localhost:8080/follow?user_id=0";
 
   useEffect(() => {
-    if (!groupId.hasOwnProperty("groupId")) {
+    if (groupId === undefined) {
       followsService.follows(followUrl).then((response) => {
         setFollows(response.data);
       });
     }
-  }, []);
+  }, [groupId]);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -53,44 +49,29 @@ const PostForm = (groupId) => {
     event.preventDefault();
 
     // Validation
-  
-    if (!title || !content) {
-      setErrorMessage("Title and content are required");
+    let Message = ValidateField("Title", title, 1, 30);
+    if ( Message !== "") {
+      setErrorMessage(Message);
       return;
     }
-    if (!TextRegex.test(title) || !TextRegex.test(content)) {
-      setErrorMessage("Title and content must be regular characters");
+    Message = ValidateField("Content", content, 1, 3000);
+    if ( Message !== "") {
+      setErrorMessage(Message);
       return;
     }
-    if (TagRegex.test(title) || TagRegex.test(content)) {
-      setErrorMessage("Title and content must not contain HTML tags");
-      return;
-    }
-    if (title.length > 30 || content.length > 3000) {
-      setErrorMessage("Title can be maximum 30 characters and content must be less than 3000 characters");
-      return;
-    }
-    var words = content.split(' ');
-    for (var i = 0; i < words.length; i++) {
-      if (words[i].length > 30) {
-        setErrorMessage("Words must be less than 30 characters");
+    if ( picture !== null && picture !== undefined) {
+      Message = ValidateField("Picture", picture);
+      if ( Message !== "") {
+        setPicture(null);
+        setErrorMessage(Message);
         return;
       }
     }
-    if (picture && picture.size > MaxSize) {
-      setErrorMessage("Uploaded image must be less than 50MB");
-      return;
-    }
-    if (picture && !ImageRegex.test(picture.type)) {
-      setErrorMessage(
-        "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"
-      );
-      return;
-    }
+
     // Send post data and picture file to backend API using Axios or other HTTP client
     try {
       const formData = new FormData();
-      formData.append("group_id", group_id);
+      formData.append("group_id", groupId);
       formData.append("title", title);
       formData.append("content", content);
       formData.append("visibility", privacy);
@@ -123,6 +104,7 @@ const PostForm = (groupId) => {
               name="title"
               value={title}
               onChange={handleTitleChange}
+              required
             />
           </div>
           <div>
@@ -132,9 +114,10 @@ const PostForm = (groupId) => {
               name="content"
               value={content}
               onChange={handleContentChange}
+              required
             />
           </div>
-          {!groupId.hasOwnProperty("groupId") && (
+          {!groupId && (
             <div>
               <label htmlFor="privacy">Privacy:</label>
               <select

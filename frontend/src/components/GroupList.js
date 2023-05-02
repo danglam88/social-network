@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import groupService from "../services/GroupsService"
 import Group from './Group'
 import WebSocketService from '../services/WebSocketService'
+import ValidateField from '../services/ValidationService'
 
 //Subcomponent for showing info abouut each group in the list
 const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
@@ -42,6 +43,7 @@ const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
 const NewGroup = ({handleNewGroup}) => {
     const [title, setTitle] = useState('')           
     const [description, setDescription] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
   
     const handleTitleChange = (event) => {
       setTitle(event.target.value)          
@@ -53,6 +55,17 @@ const NewGroup = ({handleNewGroup}) => {
   
     const handleCreateGroup = (event) => {                                                                                         
       event.preventDefault()
+
+      let Message = ValidateField("Title", title, 1, 30);
+        if ( Message !== "") {
+            setErrorMessage(Message);
+            return;
+        }
+        Message = ValidateField("Content", description, 1, 100);
+        if ( Message !== "") {
+            setErrorMessage("Description " + Message.slice(8));
+            return;
+        }
    
       const data = {
           title: title,
@@ -79,6 +92,7 @@ const NewGroup = ({handleNewGroup}) => {
         <div>
             <button type="submit">Create group</button>
         </div>
+        {errorMessage && <div>{errorMessage}</div>}
         </form>
         </>
     )

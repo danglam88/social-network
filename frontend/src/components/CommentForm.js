@@ -7,7 +7,6 @@ const CommentForm = (postId) => {
   const [content, setContent] = useState("");
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  let Message = "";
 
   const handleContentChange = (event) => {
     setContent(event.target.value);
@@ -21,13 +20,15 @@ const CommentForm = (postId) => {
     event.preventDefault();
 
     // Validation
-    if ( Message = ValidateField("Content", content, 1, 1000)) {
+    let Message = ValidateField("Content", content, 1, 1000);
+    if ( Message !== "") {
       setErrorMessage(Message);
       return;
     }
 
     if ( picture !== null && picture !== undefined) {
-      if (Message = ValidateField("Picture", picture)) {
+      Message = ValidateField("Picture", picture);
+      if ( Message !== "") {
         setPicture(null);
         setErrorMessage(Message);
         return;
@@ -63,6 +64,7 @@ const CommentForm = (postId) => {
             name="content"
             value={content}
             onChange={handleContentChange}
+            required
           />
         </div>
         <div>

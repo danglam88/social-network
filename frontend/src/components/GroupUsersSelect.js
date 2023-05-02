@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import usersService from '../services/UsersService';
 import groupService from '../services/GroupsService';
+import WebSocketService from '../services/WebSocketService'
 
 
 //Showing user info + checkbox to add user
@@ -46,14 +47,27 @@ const GroupUsersSelect = ({buttonName, groupId}) => {
   const [users, setUsers] = useState([])
   const [invitedUsers, setInvitedUsers] = useState([])
 
+
+  useEffect(() => {
+     usersService.groupUsers(groupId)
+      .then(response => {
+        if (response.data) {
+          setUsers(response.data)
+        }
+      })
+      .catch(error => console.log(error))
+}, [])
+
   const showList = () => {
 
     if (!isVisible) {
       usersService.groupUsers(groupId)
-      .then(response => {
-        setUsers(response.data)
-      })
-      .catch(error => console.log(error))
+        .then(response => {
+          if (response.data) {
+            setUsers(response.data)
+          }
+        })
+        .catch(error => console.log(error))
     }
     
     setIsVisible(!isVisible)
@@ -66,9 +80,6 @@ const GroupUsersSelect = ({buttonName, groupId}) => {
       users : invitedUsers.join(",")
     }
 
-    console.log(data)
-
-
     groupService.join(data).then(response => {
       handleSuccessInvitation()
       setIsVisible(!isVisible)
@@ -77,10 +88,23 @@ const GroupUsersSelect = ({buttonName, groupId}) => {
   }
 
   const handleSuccessInvitation = () => {
+
+    invitedUsers.forEach(userId => {
+
+        //send notification
+        const payload = {
+          type: "invitenotification",
+          to: userId,
+          message : parseInt(groupId)
+        };
+        WebSocketService.sendMessage(payload);
+    })
     
+    setInvitedUsers([])
   }
 
-  return (
+  if (users.length > 0) {
+    return (
       <div>
           <button onClick={showList}>{buttonName}</button>
           {isVisible ? (
@@ -93,7 +117,7 @@ const GroupUsersSelect = ({buttonName, groupId}) => {
           <button type="submit">Invite</button>
           </form>) : (<></>)}
       </div>
-  )
+  )}
 }
     
 export default GroupUsersSelect

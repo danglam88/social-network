@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import commentsService from '../services/CommentsService'
 import ValidateField from "../services/ValidationService";
 
-const CommentForm = (postId) => {
+const CommentForm = ({postId}) => {
   
   const [content, setContent] = useState("");
   const [picture, setPicture] = useState(null);
@@ -37,7 +37,7 @@ const CommentForm = (postId) => {
 
     try {
       const formData = new FormData();
-      formData.append("post_id", postId.post);
+      formData.append("post_id", postId);
       formData.append("content", content);
       if (picture) {
         formData.append("picture", picture);

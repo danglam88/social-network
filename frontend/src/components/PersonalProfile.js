@@ -16,7 +16,7 @@ const PersonalProfile = ({user, posts, follows, handleShowPendings}) => {
         </div>
       )}
       <PostForm />
-      {posts && <Posts posts={posts} type="you" />}
+      {posts && <Posts posts={posts} type="you" userId={user.id} />}
     </div>
   );
 };

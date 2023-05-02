@@ -35,15 +35,11 @@ const User = ({ user }) => {
     setShowChatWindow(false);
   };
 
+  const userName = user.nick_name ? user.nick_name : `${user.first_name} ${user.last_name}`;
+
   return (
     <div>
-      {user.nick_name ? (
-        <h2>{user.nick_name}'s profile</h2>
-      ) : (
-        <h2>
-          {user.first_name} {user.last_name}'s profile
-        </h2>
-      )}
+      <h2>{userName}'s profile</h2>
       <PersonalInfo user={user} type="user" handleUpdateFollows={() => {}} />
       <div>
         {follows && (
@@ -65,7 +61,7 @@ const User = ({ user }) => {
           </div>
         )}
       </div>
-      {posts && <Posts posts={posts} type="user" />}
+      {posts && <Posts posts={posts} type={userName} />}
       <button onClick={openChatWindow}>Open Chat</button>
       {showChatWindow && (
   <div

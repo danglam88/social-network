@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import commentsService from '../services/CommentsService'
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, userId }) => {
     return (
       <div className="comment-wrapper">
-        <div className="wrote">{comment.UserName} wrote:</div>
+        {userId !== comment.UserID ? <div className="wrote">{comment.UserName} wrote:</div> : <div className="wrote">you wrote:</div>}
         <div className="comment-content">{comment.Content}</div>
         <div className="created-at">created at {comment.CreatedAt}</div>
         {comment.ImgUrl === "" ? null : (
@@ -20,12 +20,12 @@ const Comment = ({ comment }) => {
 }
 
 //change posts to comments
-const Comments = (id) => {
+const Comments = ({postId, userId}) => {
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
         commentsService
-          .comments("http://localhost:8080/comment?post_id=" + id.post)
+          .comments("http://localhost:8080/comment?post_id=" + postId)
           .then((response) => {
             setComments(response.data);
           })
@@ -38,7 +38,7 @@ const Comments = (id) => {
               <>
                 <h3>Comments:</h3>
                 {comments.map((comment) => (
-                  <Comment comment={comment} key={comment.ID} />
+                  <Comment comment={comment} key={comment.ID} userId={userId} />
                 ))}
               </>
             )}

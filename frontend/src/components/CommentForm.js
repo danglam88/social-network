@@ -45,7 +45,6 @@ const CommentForm = ({postId, setComments}) => {
       commentsService.comment(formData)
         .then((response) => {
           console.log("Comment created:", response.data);
-          //window.location.reload();
 
           commentsService
             .comments("http://localhost:8080/comment?post_id=" + postId)

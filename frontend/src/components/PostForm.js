@@ -84,7 +84,6 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts}) => {
       postsService.post(formData)
         .then((response) => {
           console.log("Post created:", response.data);
-          //window.location.reload();
 
           if (!groupId) {
             postsService

@@ -148,7 +148,8 @@ function App() {
           "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         sessionStorage.removeItem("userid");
         sessionStorage.removeItem("username");
-        window.location.reload();
+
+        setToken("");
       })
       .catch((error) => console.log(error));
   };

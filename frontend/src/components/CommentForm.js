@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import commentsService from '../services/CommentsService'
 import ValidateField from "../services/ValidationService";
 
-const CommentForm = ({postId}) => {
-  
+const CommentForm = ({postId, setComments}) => {
   const [content, setContent] = useState("");
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -46,7 +45,18 @@ const CommentForm = ({postId}) => {
       commentsService.comment(formData)
         .then((response) => {
           console.log("Comment created:", response.data);
-          window.location.reload();
+          //window.location.reload();
+
+          commentsService
+            .comments("http://localhost:8080/comment?post_id=" + postId)
+            .then((response) => {
+              setComments(response.data);
+
+              setContent("");
+              setPicture(null);
+              setErrorMessage("");
+            })
+            .catch((error) => console.log(error));
         })
         .catch((error) => console.log(error));
     } catch (error) {

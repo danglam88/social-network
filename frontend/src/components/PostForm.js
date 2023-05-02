@@ -91,6 +91,13 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts}) => {
               .posts("http://localhost:8080/post?creator_id=" + userId)
               .then((response) => {
                 setPosts(response.data);
+
+                setTitle("");
+                setContent("");
+                setPrivacy("public");
+                setUsers([]);
+                setPicture(null);
+                setErrorMessage("");
               })
               .catch((error) => console.log(error));
           } else {
@@ -98,6 +105,11 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts}) => {
               .group(groupId)
               .then(response => {
                 setGroupInfo(response.data)
+
+                setTitle("");
+                setContent("");
+                setPicture(null);
+                setErrorMessage("");
               })
               .catch(error => console.log(error))
           }

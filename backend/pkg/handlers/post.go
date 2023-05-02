@@ -226,9 +226,9 @@ func UploadFile(w http.ResponseWriter, r *http.Request) (imgUrl string, err erro
 		return imgUrl, err
 	}
 	defer file.Close()
-	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-	fmt.Printf("File Size: %+v\n", handler.Size)
-	fmt.Printf("MIME Header: %+v\n", handler.Header)
+	//fmt.Printf("Uploaded File: %+v\n", handler.Filename)
+	//fmt.Printf("File Size: %+v\n", handler.Size)
+	//fmt.Printf("MIME Header: %+v\n", handler.Header)
 	if handler.Size > MAX_SIZE {
 		return imgUrl, errors.New("max size is 20Mb")
 	}

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import commentsService from '../services/CommentsService'
-import { TextRegex, TagRegex, ImageRegex, MaxSize } from "../services/ValidationService";
+import ValidateField from "../services/ValidationService";
 
 const CommentForm = (postId) => {
   
   const [content, setContent] = useState("");
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  let Message = "";
 
   const handleContentChange = (event) => {
     setContent(event.target.value);
@@ -20,38 +21,17 @@ const CommentForm = (postId) => {
     event.preventDefault();
 
     // Validation
-    if (!content) {
-      setErrorMessage("Content is required");
+    if ( Message = ValidateField("Content", content, 1, 1000)) {
+      setErrorMessage(Message);
       return;
     }
-    if (!TextRegex.test(content)) {
-      setErrorMessage("Content must be regular characters");
-      return;
-    }
-    if (TagRegex.test(content)) {
-      setErrorMessage("Content must not contain HTML tags");
-      return;
-    }
-    if (content.length > 1000) {
-      setErrorMessage("Content must be less than 1000 characters");
-      return;
-    }
-    var words = content.split(' ');
-    for (var i = 0; i < words.length; i++) {
-      if (words[i].length > 30) {
-        setErrorMessage("Words must be less than 30 characters");
+
+    if ( picture !== null && picture !== undefined) {
+      if (Message = ValidateField("Picture", picture)) {
+        setPicture(null);
+        setErrorMessage(Message);
         return;
       }
-    }
-    if (picture && picture.size > MaxSize) {
-      setErrorMessage("Uploaded image must be less than 50MB");
-      return;
-    }
-    if (picture && !ImageRegex.test(picture.type)) {
-      setErrorMessage(
-        "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"
-      );
-      return;
     }
 
     try {

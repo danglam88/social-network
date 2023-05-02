@@ -377,7 +377,7 @@ u {
   margin-top: 0;
 }
 
-.post-image img {
+.post-image img, .comment-image img {
   margin-top: 5px;
   max-width: 100%;
   border: 1px solid #998650;

@@ -3,36 +3,37 @@ export const TagRegex = /<[^>]*>/g;
 export const ImageRegex = /(jpe?g|png|gif|svg)/;
 export const MaxSize = 50000000;
 
-/*function ValidationField(validateFieldName, content, minlength, maxlength) {
-    if (!title || !content) {
-      setErrorMessage("Title and content are required");
-      return;
+function ValidateField(validateFieldName, content, minlength = 1, maxlength = 3000) {
+  console.log("ValidateField: ", validateFieldName, content, minlength, maxlength)
+    
+    if ( validateFieldName === "title" && content.length < minlength || validateFieldName === "content" && content.length < minlength) {
+      return validateFieldName+" is required";
     }
-    if (!TextRegex.test(title) || !TextRegex.test(content)) {
-      setErrorMessage("Title and content must be regular characters");
-      return;
+    if ( validateFieldName === "title" && !TextRegex.test(content) || "content" && !TextRegex.test(content)) {
+      return validateFieldName+" must be regular characters";
     }
-    if (TagRegex.test(title) || TagRegex.test(content)) {
-      setErrorMessage("Title and content must not contain HTML tags");
-      return;
+    if ( validateFieldName === "title" && TagRegex.test(content) || "content" && TagRegex.test(content)) {
+      return validateFieldName+" must not contain HTML tags";
     }
-    if (title.length > 30 || content.length > 3000) {
-      setErrorMessage("Title can be maximum 30 characters and content must be less than 3000 characters");
-      return;
+    if ( validateFieldName === "title" && content.lenth > maxlength || "content" && content.length > maxlength) {
+      return validateFieldName + " can be maximum " + maxlength + " characters";
     }
-    var words = content.split(' ');
-    for (var i = 0; i < words.length; i++) {
-      if (words[i].length > 30) {
-        setErrorMessage("Words must be less than 30 characters");
-        return;
+    if ( validateFieldName !== "Picture") {
+      var words = content.split(' ');
+      for (var i = 0; i < words.length; i++) {
+        if (words[i].length > 30) {
+          return "Words must be less than 30 characters";
+        }
       }
     }
-    if (picture && !ImageRegex.test(picture.type)) {
-      setErrorMessage(
-        "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg"
-      );
-      return;
+    if ( validateFieldName === "Picture" ) {
+      if (content.size > MaxSize) {
+        return "Uploaded image must be less than 50MB";
+      }
+      if ( !ImageRegex.test(content.type)) {
+      return "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg";
+      }
     }
   }
 
-export default ValidationField;*/
+export default ValidateField;

@@ -68,12 +68,12 @@ const UserItem = ({user, followings, handleUserProfile}) => {
             )}
 
             {userProfilePending ? (
-                <span> Pending...</span>
+                <span className='button-small pending-users'>Pending</span>
             ) : (
                 userProfileFollowed ? (
-                    <button onClick={() => {toggleFollow(false)}}>Unfollow</button>
+                    <button className="button-small unfollow-users" onClick={() => {toggleFollow(false)}}>Unfollow</button>
                 ) : (
-                    <button onClick={() => {toggleFollow(true)}}>Follow</button>
+                    <button className="button-small follow-users" onClick={() => {toggleFollow(true)}}>Follow</button>
                 )
             )}
         </div>
@@ -98,7 +98,7 @@ const UserList = ({users, followings, showUserProfile, setShowUserProfile}) => {
         <div>
             {showUserProfile ? (<User user={userData} />) : (
                 <div>
-                    <h2>User(s):</h2>
+                    <h1>User(s):</h1>
                     {users.map(user =>
                         <UserItem user={user} key={user.id} followings={followings} handleUserProfile={handleUserProfile} />
                     )}

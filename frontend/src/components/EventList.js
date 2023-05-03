@@ -57,7 +57,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
   
     return (
         <>
-        <h3>Creating a new event</h3>
+        <h2>Create a new event</h2>
         <form onSubmit={handleCreateEvent}>
         <div>
             title: <input value={title} onChange={handleTitleChange} required/>
@@ -107,7 +107,9 @@ const EventList = ({list, groupId}) => {
     return (
         <>
             <h2>Events</h2>
+            <div className="group-events">
             {events}
+            </div>
             <NewEvent groupId={groupId} handleNewEvent={handleNewEvent}/>
         </>
     )

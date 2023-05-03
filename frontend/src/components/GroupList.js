@@ -28,11 +28,11 @@ const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
             <div>
                 <div className="group-column">{group.description}</div>
                 {group.is_member ?
-                    (<div className="group-column group-activity-link" onClick={() => handleShowGroup(group.id)}>Go to</div>)
+                    (<div className="group-column group-activity-link button-small go-to" onClick={() => handleShowGroup(group.id)}>Go to</div>)
                     : group.is_requested ? 
-                    (<div className="group-column group-activity-link">Requested</div>) 
+                    (<div className="group-column group-activity-link button-small ">Requested</div>) 
                     : 
-                    (<div className="group-column group-activity-link" onClick={() => handleRequestJoin(group.id)}>Join</div>)
+                    (<div className="group-column group-activity-link button-small join" onClick={() => handleRequestJoin(group.id)}>Join</div>)
                     }
             </div>
         </div>
@@ -175,7 +175,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
                     (
                         <>
                         <div className="group-column">If you haven't find a group you can create our own!</div>
-                        <div className="group-column group-activity-link" onClick={handleCreateGroup}>Create a group</div>
+                        <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>Create a group</div>
                         </>
                 )}
                     </div>

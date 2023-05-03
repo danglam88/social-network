@@ -85,20 +85,20 @@ input[type="date"]:focus {
 }
 
 .file-input {
-  position: absolute;
+  position: fixed;
   top: 0;
-  left: 0;
+  left: 0; 
   opacity: 0;
 }
 
-.file-input-btn:hover + .file-input, .file-input-btn:focus + .file-input {
+.file-input-btn:hover, .file-input-btn:focus + {
   opacity: 1;
   cursor: pointer;
   border-color: #333;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.file-input-btn:active + .file-input {
+.file-input-btn:active {
   opacity: 1;
 }
 
@@ -144,6 +144,47 @@ input[type="date"]:focus {
   color: #92AFD7;
 }
 
+.radio input[type='radio'] {
+  display: none;
+}
+
+.radio label:before {
+  content: " ";
+  display: inline-block;
+  position: relative;
+  top: 5px;
+  margin: 0 5px 0 0;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 2px solid #FF2E63;
+  background-color: transparent;
+}
+
+.radio label {
+  position: relative;
+}
+
+.radio label input[type='radio']:checked + span {
+  border-radius: 4px;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 8px;
+  left: 3px;
+  display: block;
+  background-color: #FF2E63;
+}
+
+.radio-wrapper :first-child{
+  margin-top: 10px
+}
+
+.radio + .radio {
+  margin-top: -10px
+}
+
+
 /* forms */
 
 form {
@@ -152,8 +193,8 @@ form {
 
 label {
   display: inline-block;
-  margin-bottom: 10px; /* adjust as needed */
-  vertical-align: top; /* adjust as needed */
+  margin-bottom: 10px;
+  vertical-align: top;
 }
 
 button {
@@ -172,6 +213,26 @@ button:hover {
 }
 
 button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 46, 99, 0.4);
+}
+
+.button-small {
+  /* background-color: #FF2E63; */
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.button-small:hover {
+  background-color: #4C2C72;
+}
+
+.button-small:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(255, 46, 99, 0.4);
 }
@@ -236,7 +297,6 @@ button:focus {
   background-color: #DBBBF5;
   padding: 20px;
   font-size: 18px;
-  /* font-weight: bold; */
 }
 
 .Header div:first-child {
@@ -410,11 +470,34 @@ u {
   padding-top: 10px
 }
 
+/* Users */
+.follow-users {
+  background-color: #998650;
+}
+
+.unfowllow-users {
+  background-color: #FF2E63
+}
+
+.pending-users {
+  background-color: #4C2C72;
+  cursor: default !important;
+}
+
+span + .button-small {
+  margin-left: 10px;
+  margin-top: 10px;
+}
 
 
 /*
-  GroupList component temporary styles
+  Group List
 */
+
+.Mainpage h1{
+  margin-top: 10px;
+  margin-bottom: 0
+}
 .group-wrapper {
   min-width: 600px;
   padding-bottom: 30px;
@@ -428,9 +511,72 @@ u {
 }
 
 .group-activity-link {
+  text-align: center;
   width: 13%;
-  text-decoration-line: underline;
+  /* text-decoration-line: underline; */
 }
+
+.go-to {
+  background-color: #998650;
+}
+
+.join, .create{
+  background-color: #FF2E63
+}
+
+.group-desc {
+  font-style: italic;
+}
+
+.group-created-at, .group-members{
+  font-size: small;
+  font-style: italic;
+}
+
+.Mainpage ul{
+  padding: 0
+}
+
+ul.group-users-buttons {
+  display: flex;
+  list-style-type: none;
+  /* margin: 0; */
+  padding: 0
+}
+
+.group-users-buttons li{
+  margin-right: 10px
+}
+
+.group-events li {
+  list-style-type: none;
+}
+
+.group-events h3 {
+  margin: 0
+}
+
+.group-events > ul > li:nth-child(2){
+  font-style: italic;
+  font-size:small;
+}
+
+.event-info {
+  margin-top: 5px;
+}
+
+.event-info > li {
+  margin-right: 10px;
+}
+
+.group-events > ul:not(:last-child):nth-of-type(n+1) {
+  border-bottom: 1px solid #998650;
+}
+
+.group-events > ul:nth-child(2) {
+  margin-top: 20px;
+}
+
 
 /* Clear floats after the columns */
 .row:after {

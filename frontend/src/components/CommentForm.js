@@ -77,7 +77,7 @@ const CommentForm = ({postId, setComments}) => {
           />
         </div>
         <div>
-          <label htmlFor="picture">
+          <label htmlFor="picture" className="file-input-btn">
             Upload picture
           </label>
           <input
@@ -85,6 +85,7 @@ const CommentForm = ({postId, setComments}) => {
             id="picture"
             name="picture"
             onChange={handlePictureChange}
+            className="file-input"
           />
         </div>
         <div>

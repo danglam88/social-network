@@ -106,7 +106,7 @@ const GroupUsersSelect = ({buttonName, groupId}) => {
   if (users.length > 0) {
     return (
       <div>
-          <button onClick={showList}>{buttonName}</button>
+          <button className="button-small" onClick={showList}>{buttonName}</button>
           {isVisible ? (
           <form onSubmit={handleInviteUsers}>
           <ul>

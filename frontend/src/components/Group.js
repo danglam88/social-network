@@ -21,12 +21,16 @@ const Group = ({group, setGroupInfo}) => {
     return (  
         <>
         <h1>{group.name}</h1>
-        <ul>
-          <li>Description : {group.description}</li>
-          <li>Created at : {group.created_at}</li>
-          <li>Members : {membersCount}</li>
-          <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings= {() => {}} />
-          <GroupUsersSelect buttonName="Invite users" groupId={group.id}/>
+        <div className="group-desc">{group.description}</div>
+        <div className="group-created-at">Group creation: {group.created_at}</div>
+        <div className="group-members">Total members: {membersCount}</div>
+        <ul className="group-users-buttons">
+          <li>
+            <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings= {() => {}} />
+          </li>
+          <li>
+            <GroupUsersSelect buttonName="Invite users" groupId={group.id}/>
+          </li>
         </ul>
         <EventList list={group.events} groupId={group.id}/>
         <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />

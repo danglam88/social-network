@@ -30,26 +30,45 @@ const Event = ({event}) => {
 
     return (
         <ul>
-            <li>name :{event.name}</li>
-            <li>creator :{event.creator_id}</li>
-            <li>description :{event.description}</li>
-            <li>occur time :{event.occur_time}</li>
-            <input
-            type='radio'
-            id='is_going_1'
-            value='1'
-            onChange={() => handleChange(1, event.id)}
-            checked={isGoing === 1}
-          />
-          <label htmlFor='is_going_1'>I am in! ({votes.votedYes} members)</label>
-           <input
+            <li><h3>{event.name}, by Creator ID {event.creator_id}</h3></li>
+            <li>{event.description}</li>
+            <div className="event-info">
+              <li>Event time: {event.occur_time}</li>
+            </div>
+              <div className="radio-wrapper">
+                <div className="radio">
+                  <label>
+                    <input
+                    type='radio'
+                    id='is_going_1'
+                    value='1'
+                    onChange={() => handleChange(1, event.id)}
+                    checked={isGoing === 1}
+                    />
+                  I am in! ({votes.votedYes} members)
+                  <span></span></label>
+                </div>
+                <div className="radio">
+                  <label>
+                    <input
+                    type='radio'
+                    id='is_going_0'
+                    value='0'
+                    onChange={() => handleChange(0, event.id)}
+                    checked={isGoing === 0}
+                    />
+                  Not for me ({votes.votedNo} members)
+                  <span></span></label>
+              </div>
+            </div>
+           {/* <input
             type='radio'
             id='is_going_0'
             value='0'
             onChange={() => handleChange(0, event.id)}
             checked={isGoing === 0}
           />
-          <label htmlFor='is_going_0'>Not for me ({votes.votedNo} members)</label>
+          <label htmlFor='is_going_0'>Not for me ({votes.votedNo} members)</label> */}
         </ul>
     )
 }

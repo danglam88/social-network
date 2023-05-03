@@ -169,10 +169,11 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
             </div>
           )}
           <div>
-            <label htmlFor="picture" >
+            <label htmlFor="picture" className="file-input-btn">
               Upload picture
             </label>
             <input
+              className="file-input"
               type="file"
               id="picture"
               name="picture"

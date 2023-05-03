@@ -3,9 +3,20 @@ import Posts from "./Posts"
 import PostForm from "./PostForm"
 import FollowsWrapper from './FollowsWrapper'
 import GroupUsersSelect from "./GroupUsersSelect"
+import ChatWindow from './ChatWindow';
+import React, { useState } from "react";
 
 const Group = ({group, setGroupInfo}) => {
   const membersCount = group.members?.length === 0 ? 0 : group.members.length
+  const [showChatWindow, setShowChatWindow] = useState(false);
+
+  const openChatWindow = () => {
+    setShowChatWindow(true);
+  };
+
+  const closeChatWindow = () => {
+    setShowChatWindow(false);
+  };
 
     return (  
         <>
@@ -20,8 +31,24 @@ const Group = ({group, setGroupInfo}) => {
         <EventList list={group.events} groupId={group.id}/>
         <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
         <Posts posts={group.posts} type="group" />
+        <button onClick={openChatWindow}>Open Chat</button>
+      {showChatWindow && (
+         <div
+        className="chat-window-modal"
+        onClick={closeChatWindow}
+        onKeyDown={(e) => {
+          if (e.key === 'esc') {
+            closeChatWindow();
+          }
+        }}
+      tabIndex="0"
+      >
+    <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} onClose={closeChatWindow} />
+
+  </div>
+)}
         </>
-      )
+    );
 }
-    
-export default Group
+
+export default Group;

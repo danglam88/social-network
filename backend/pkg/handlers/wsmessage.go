@@ -198,13 +198,6 @@ func (c *Client) readMessages() {
 			continue
 		}
 
-		check, errmsg := ValidateField("Content", res.Message, 1, 1000)
-
-		if check {
-			log.Println(errmsg)
-			return
-		}
-
 		res.From = c.userId
 
 		res.UserName, err = DB.GetUserName(res.From)
@@ -220,6 +213,12 @@ func (c *Client) readMessages() {
 				return
 			}
 			if res.Type == MESSAGE_TYPE {
+				check, errmsg := ValidateField("Content", res.Message, 1, 1000)
+
+				if check {
+					log.Println(errmsg)
+					res.Message = "Message not allowed"
+				}
 
 				chatUsers, err := DB.GetUserIdsfromChatId(res.To)
 				if err != nil {

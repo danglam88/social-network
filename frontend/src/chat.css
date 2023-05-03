@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 
   }
   
@@ -53,3 +54,18 @@
     overflow-y: auto;
   }
   
+  .emoji-picker {
+    position: fixed;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 50px;
+    overflow-y: scroll;
+    z-index: 10;
+
+  }
+
+  .chatBox {
+    position: relative;
+  }

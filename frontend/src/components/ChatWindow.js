@@ -126,6 +126,7 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
     "🤡",
   ];
   
+  
 
   const toggleEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);

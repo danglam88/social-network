@@ -82,7 +82,11 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				To:       id,
 				Message:  fmt.Sprintf("%s wants to join your group %s", n.UserName, n.GroupName),
 			}
-			message, _ := json.Marshal(msg)
+			message, err := json.Marshal(msg)
+			if err != nil {
+				log.Println(err)
+				return
+			}
 
 			//wait 1 second before sending the next message to let the notification component load
 			time.Sleep(1 * time.Second)
@@ -100,7 +104,11 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				To:       id,
 				Message:  fmt.Sprintf("%s wants to follow you", follower),
 			}
-			message, _ := json.Marshal(msg)
+			message, err := json.Marshal(msg)
+			if err != nil {
+				log.Println(err)
+				return
+			}
 
 			//wait 1 second before sending the next message to let the notification component load
 			time.Sleep(1 * time.Second)
@@ -206,7 +214,11 @@ func (c *Client) readMessages() {
 
 		if res.From > 0 {
 			res.CreatedAt = DB.GetTime()
-			message, _ := json.Marshal(res)
+			message, err := json.Marshal(res)
+			if err != nil {
+				log.Println(err)
+				return
+			}
 			if res.Type == MESSAGE_TYPE {
 
 				chatUsers, err := DB.GetUserIdsfromChatId(res.To)
@@ -235,7 +247,11 @@ func (c *Client) readMessages() {
 			} else if res.Type == LOGIN_TYPE {
 				for wsclient := range c.manager.clients {
 					if wsclient.userId != res.From {
-						message, _ := json.Marshal(res)
+						message, err := json.Marshal(res)
+						if err != nil {
+							log.Println(err)
+							return
+						}
 						wsclient.eggress <- message
 					}
 				}
@@ -244,7 +260,11 @@ func (c *Client) readMessages() {
 				//notify the user that he has a new follower
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {
-						message, _ := json.Marshal(res)
+						message, err := json.Marshal(res)
+						if err != nil {
+							log.Println(err)
+							return
+						}
 						wsclient.eggress <- message
 					}
 				}
@@ -256,7 +276,11 @@ func (c *Client) readMessages() {
 
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {
-						message, _ := json.Marshal(res)
+						message, err := json.Marshal(res)
+						if err != nil {
+							log.Println(err)
+							return
+						}
 						wsclient.eggress <- message
 					}
 				}
@@ -277,7 +301,11 @@ func (c *Client) readMessages() {
 
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == creatorId {
-						message, _ := json.Marshal(res)
+						message, err := json.Marshal(res)
+						if err != nil {
+							log.Println(err)
+							return
+						}
 						wsclient.eggress <- message
 					}
 				}
@@ -299,7 +327,11 @@ func (c *Client) readMessages() {
 				for groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {
 						if wsclient.userId == groupUser && wsclient.userId != res.From {
-							message, _ := json.Marshal(res)
+							message, err := json.Marshal(res)
+							if err != nil {
+								log.Println(err)
+								return
+							}
 							wsclient.eggress <- message
 						}
 					}

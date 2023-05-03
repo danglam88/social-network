@@ -43,7 +43,6 @@
   }
   
   .chat-window-modal {
-    position: fixed;
     bottom: 70px;
     right: 330px;
     background-color: white;
@@ -52,6 +51,7 @@
     width: 500px;
     height: 300px;
     overflow-y: auto;
+    position: fixed;
   }
   
   .emoji-picker {
@@ -62,7 +62,7 @@
     border-radius: 5px;
     max-height: 50px;
     overflow-y: scroll;
-    z-index: 10;
+    z-index: 1000;
 
   }
 

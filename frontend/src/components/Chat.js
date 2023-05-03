@@ -4,6 +4,7 @@ import ChatWindow from "./ChatWindow";
 import "../chat.css";
 import ChatService from "../services/ChatService"
 
+
 const Chat = ({ userId }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chatListVisible, setChatListVisible] = useState(false);

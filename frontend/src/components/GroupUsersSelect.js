@@ -41,7 +41,7 @@ const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
 } 
 
 //Main component, user list for inviting to the group
-const GroupUsersSelect = ({buttonName, groupId}) => {
+const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
 
   const [isVisible, setIsVisible] = useState(false)
   const [users, setUsers] = useState([])
@@ -95,7 +95,7 @@ const GroupUsersSelect = ({buttonName, groupId}) => {
         const payload = {
           type: "invitenotification",
           to: userId,
-          message : parseInt(groupId)
+          message : groupName
         };
         WebSocketService.sendMessage(payload);
     })

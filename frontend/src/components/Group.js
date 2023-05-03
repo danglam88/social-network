@@ -20,6 +20,7 @@ const Group = ({group, setGroupInfo}) => {
 
     return (  
         <>
+
         <h1>{group.name}</h1>
         <div className="group-desc">{group.description}</div>
         <div className="group-created-at">Group creation: {group.created_at}</div>
@@ -29,7 +30,7 @@ const Group = ({group, setGroupInfo}) => {
             <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings= {() => {}} />
           </li>
           <li>
-            <GroupUsersSelect buttonName="Invite users" groupId={group.id}/>
+            <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name}/>
           </li>
         </ul>
         <EventList list={group.events} groupId={group.id}/>

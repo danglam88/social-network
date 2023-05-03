@@ -190,6 +190,13 @@ func (c *Client) readMessages() {
 			continue
 		}
 
+		check, errmsg := ValidateField("Content", res.Message, 1, 1000)
+
+		if check {
+			log.Println(errmsg)
+			return
+		}
+
 		res.From = c.userId
 
 		res.UserName, err = DB.GetUserName(res.From)

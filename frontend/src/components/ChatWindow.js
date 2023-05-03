@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import ChatService from "../services/ChatService";
 import debounce from "lodash/debounce";
-import "../chat.css";
 let recipientChatId;
 
 const sortMessagesByDate = messages => {
@@ -34,7 +33,6 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
   const chatContainerRef = useRef(null);
   const [scrollToBottom, setScrollToBottom] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [emojiPickerPosition, setEmojiPickerPosition] = useState({ top: 0, left: 0 });
   const emojis = [
     "😀",
     "😁",
@@ -124,19 +122,12 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
     "🤖",
     "🎃",
     "🤡",
+    "💩",
   ];
-  
   
 
   const toggleEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
-    if (!showEmojiPicker) {
-      const buttonRect = document.getElementById("emoji-button").getBoundingClientRect();
-      setEmojiPickerPosition({
-        top: buttonRect.top + 50,
-        left: buttonRect.left - 200,
-      });
-    }
   };
 
   const addEmoji = emoji => {
@@ -285,14 +276,14 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
       className="chatBox"
       style={{ flex: 1, display: "flex", flexDirection: "column" }}
       onClick={handleOutsideClick}
-      ref={chatContainerRef}
     >
       <h2>
         Chat Window{" "}
         <button onClick={onClose} style={{ marginLeft: "auto" }}>
-          Close
-        </button>
+  Close
+</button>
       </h2>
+
       <div
         ref={chatContainerRef}
         className="chat-container"
@@ -316,12 +307,8 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
           )
           .join("\n")}
       </div>
-  
-      <div
-        style={{
-          position: "relative",
-        }}
-      >
+
+      <div>
         <input
           type="text"
           value={typedMessage}
@@ -331,18 +318,14 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
           }}
         />
         <button onClick={sendMessage}>Send</button>
-        <button id="emoji-button" onClick={toggleEmojiPicker}>
-  {showEmojiPicker ? "Emojis 🔼" : "Emojis 🔽"}
-</button>
-        {showEmojiPicker && (
+        <button onClick={toggleEmojiPicker}>
+          {showEmojiPicker ? "Emojis 🔼" : "Emojis 🔽"}
+        </button>
+        {showEmojiPicker &&
           <div
-            className="emoji-picker"
-            style={{
-              top: emojiPickerPosition.top,
-              left: emojiPickerPosition.left,
-            }}
+          className="emoji-picker"
           >
-            {emojis.map((emoji, index) => (
+            {emojis.map((emoji, index) =>
               <span
                 key={index}
                 style={{
@@ -354,9 +337,8 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
               >
                 {emoji}
               </span>
-            ))}
-          </div>
-        )}
+            )}
+          </div>}
       </div>
     </div>
   );

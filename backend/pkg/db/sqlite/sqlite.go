@@ -859,6 +859,40 @@ func (db *Db) JoinToGroup(userId, groupId, isRequested, isApproved int) (err err
 	return err
 }
 
+func (db *Db) GetGroupInvitations(userId int) (groups []Group, err error) {
+	query := "select group_id, group_name from group_relation inner join user_group on user_group.id=group_relation.group_id where user_id=? and is_approved=0 and is_requested=0"
+	rows, err := db.connection.Query(query, userId)
+
+	if err != nil {
+		return groups, err
+	}
+
+	var group Group
+	for rows.Next() {
+		err := rows.Scan(&group.ID, &group.GroupName)
+		if err != nil {
+			return groups, err
+		}
+
+		groups = append(groups, group)
+	}
+
+	defer rows.Close()
+
+	return groups, err
+}
+
+func (db *Db) ReplyOnGroupInvitation(userId, groupId int, isAccepted bool) (err error) {
+
+	if isAccepted {
+		_, err = db.connection.Exec("update group_relation set is_approved=1 where user_id=? and group_id=?", userId, groupId)
+	} else {
+		_, err = db.connection.Exec("delete from group_relation where user_id=? and group_id=?", userId, groupId)
+	}
+
+	return err
+}
+
 func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) {
 
 	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?) ON CONFLICT(event_id, user_id) DO UPDATE SET is_approved = 1, is_going = ?;", userId, eventId, isApproved, isGoing, isGoing)

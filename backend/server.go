@@ -83,6 +83,11 @@ func main() {
 			Endpoint:    "/visible",
 			GetFunction: handlers.GetVisiblePosts,
 		},
+		{
+			Endpoint:     "/notification",
+			GetFunction:  handlers.GetNotifications,
+			PostFunction: handlers.ReplyNotifications,
+		},
 	}
 
 	handlers.Start(collection)

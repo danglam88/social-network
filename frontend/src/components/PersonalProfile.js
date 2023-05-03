@@ -2,6 +2,7 @@ import Posts from "./Posts";
 import PostForm from "./PostForm";
 import PersonalInfo from "./PersonalInfo";
 import FollowsWrapper from "./FollowsWrapper";
+import Notifications from "./Notifications";
 
 const PersonalProfile = ({user, posts, setPosts, follows, handleShowPendings}) => {
   return (
@@ -15,6 +16,7 @@ const PersonalProfile = ({user, posts, setPosts, follows, handleShowPendings}) =
           {follows.pendings && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pending(s):" handleShowPendings={handleShowPendings} />}
         </div>
       )}
+      <Notifications />
       <PostForm userId={user.id} setPosts={setPosts} />
       {posts && <Posts posts={posts} type="you" userId={user.id} />}
     </div>

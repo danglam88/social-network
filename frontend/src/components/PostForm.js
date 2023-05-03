@@ -5,24 +5,13 @@ import ValidateField from "../services/ValidationService";
 import groupService from "../services/GroupsService";
 
 //send in "groupId={nbr}" as groupId.
-const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts}) => {
+const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [privacy, setPrivacy] = useState("public");
   const [users, setUsers] = useState([]);
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [follows, setFollows] = useState(null);
-
-  const followUrl = "http://localhost:8080/follow?user_id=0";
-
-  useEffect(() => {
-    if (groupId === undefined) {
-      followsService.follows(followUrl).then((response) => {
-        setFollows(response.data);
-      });
-    }
-  }, [groupId]);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);

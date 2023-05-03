@@ -893,6 +893,54 @@ func (db *Db) ReplyOnGroupInvitation(userId, groupId int, isAccepted bool) (err 
 	return err
 }
 
+func (db *Db) GetGroupRequests(groupId int) (users []User, err error) {
+
+	query := "select user_id,firstname,lastname,nickname from user inner join group_relation on user.id=group_relation.user_id where group_id=? and is_approved=0 and is_requested=1"
+	rows, err := db.connection.Query(query, groupId)
+
+	if err != nil {
+		return users, err
+	}
+
+	var user User
+	for rows.Next() {
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.NickName)
+		if err != nil {
+			return users, err
+		}
+
+		users = append(users, user)
+	}
+
+	defer rows.Close()
+
+	return users, err
+}
+
+func (db *Db) GetCreatorGroups(creatorId int) (groups []Group, err error) {
+
+	query := "select id,group_name from user_group where creator_id=?"
+	rows, err := db.connection.Query(query, creatorId)
+
+	if err != nil {
+		return groups, err
+	}
+
+	var group Group
+	for rows.Next() {
+		err := rows.Scan(&group.ID, &group.GroupName)
+		if err != nil {
+			return groups, err
+		}
+
+		groups = append(groups, group)
+	}
+
+	defer rows.Close()
+
+	return groups, err
+}
+
 func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) {
 
 	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?) ON CONFLICT(event_id, user_id) DO UPDATE SET is_approved = 1, is_going = ?;", userId, eventId, isApproved, isGoing, isGoing)

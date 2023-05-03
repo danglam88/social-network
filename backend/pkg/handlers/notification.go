@@ -10,6 +10,7 @@ import (
 
 type Notifications struct {
 	GroupInvitations []db.Group `json:"group_invitations"`
+	GroupRequests    []db.Group `json:"group_requests"`
 }
 
 func GetNotifications(w http.ResponseWriter, r *http.Request) {
@@ -23,6 +24,16 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	userGroups, _ := DB.GetCreatorGroups(userId)
+
+	for _, group := range userGroups {
+		groupRequests, _ := DB.GetGroupRequests(group.ID)
+
+		group.Members = groupRequests
+
+		notifications.GroupRequests = append(notifications.GroupRequests, group)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -41,26 +52,40 @@ func ReplyNotifications(w http.ResponseWriter, r *http.Request) {
 
 	notificationType := r.FormValue("type")
 
+	groupId, err := strconv.Atoi(r.FormValue("group_id"))
+	if err != nil {
+		GetErrResponse(w, "Invalid group", http.StatusBadRequest)
+		return
+	}
+
 	isAccepted := r.FormValue("is_accepted") == "true"
 
 	switch notificationType {
 	case INVITENOTIFICATION_TYPE:
 		{
-			groupId, err := strconv.Atoi(r.FormValue("group_id"))
-			if err != nil {
-				GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
-				return
-			}
-
 			DB.ReplyOnGroupInvitation(userID, groupId, isAccepted)
-		}
-	case EVENTNOTIFICATION_TYPE:
-		{
-
 		}
 	case JOINREQNOTIFICATION_TYPE:
 		{
+			creatorId, err := DB.GetGroupCreatorId(groupId)
 
+			if err != nil {
+				GetErrResponse(w, "Invalid group", http.StatusBadRequest)
+				return
+			}
+
+			if creatorId != userID {
+				GetErrResponse(w, "Invalid group", http.StatusBadRequest)
+				return
+			}
+
+			userId, err := strconv.Atoi(r.FormValue("user_id"))
+			if err != nil {
+				GetErrResponse(w, "Invalid user", http.StatusBadRequest)
+				return
+			}
+
+			DB.ReplyOnGroupInvitation(userId, groupId, isAccepted)
 		}
 	}
 }

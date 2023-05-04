@@ -3,7 +3,7 @@ const Comment = ({ comment, userId }) => {
       <div className="comment-wrapper">
         {userId != comment.UserID ? <div className="wrote">{comment.UserName} wrote:</div> : <div className="wrote">you wrote:</div>}
         <div className="comment-content">{comment.Content}</div>
-        <div className="created-at">created at {comment.CreatedAt}</div>
+        <div className="created-at">created at {comment.CreatedAt.replace("T", " ").replace("Z", "")}</div>
         {comment.ImgUrl === "" ? null : (
           <div className="comment-image">
             <img

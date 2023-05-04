@@ -23,7 +23,7 @@ const PersonalInfo = ({user, type, handleUpdateFollows}) => {
           <div>Birth Date: {user.birth_date}</div>
           {profilePrivate ? <div>Private Profile {type === "own" && <button onClick={handleTogglePrivacy}>Change to Public</button>}</div> : <div>Public Profile {type === "own" && <button onClick={handleTogglePrivacy}>Change to Private</button>}</div>}
           <div>Email: {user.email}</div>
-          <div>Member Since: {user.created_at}</div>
+          <div>Member Since: {user.created_at.replace("T", " ").replace("Z", "")}</div>
           {user.avatar_url &&
             <div>
               Avatar:

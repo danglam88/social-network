@@ -24,7 +24,7 @@ const Post = ({post, type, userId}) => {
           <h3>{post.title}</h3>
         </div>
         <div>{post.content}</div>
-        <div className="created-at">created at {post.created_at}</div>
+        <div className="created-at">created at {post.created_at.replace("T", " ").replace("Z", "")}</div>
         {post.img_url === "" ? null : (
           <div className="post-image">
             <img

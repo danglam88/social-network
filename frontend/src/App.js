@@ -120,10 +120,21 @@ function App() {
   };
 
   const handleShowGroupsList = () => {
-    setPerProfileVisible(false);
-    setUsersListVisible(false);
-    setGroupsListVisible(true);
-    setIsGroupDetailPage(false);
+    handleShowPendings(user.id)
+      .then(() => {
+        groupService
+          .groups()
+          .then((response) => {
+            setGroups(response.data);
+
+            setPerProfileVisible(false);
+            setUsersListVisible(false);
+            setGroupsListVisible(true);
+            setIsGroupDetailPage(false);
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleShowPendings = async (userId) => {
@@ -204,7 +215,7 @@ function App() {
             </div>
             <div className="Mainpage">
               {perProfileVisible && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} />}
-              {usersListVisible && <UserList users={users} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
+              {usersListVisible && <UserList users={users} setUsers={setUsers} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
               {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>
             <Chat userId={user.id}/>

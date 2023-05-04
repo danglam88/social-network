@@ -4,7 +4,7 @@ import User from './User';
 import followsService from "../services/FollowsService";
 import WebSocketService from '../services/WebSocketService';
 
-const UserItem = ({user, followings, handleUserProfile}) => {
+const UserItem = ({user, setUsers, followings, handleUserProfile}) => {
     const [userProfileAccessible, setUserProfileAccessible] = useState(false)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
@@ -40,23 +40,31 @@ const UserItem = ({user, followings, handleUserProfile}) => {
     }
 
     const toggleFollow = (follow) => {
-        setCheckPending(false)
+        usersService
+            .users()
+            .then((response) => {
+                setUsers(response.data);
+            })
+            .then(() => {
+                setCheckPending(false)
 
-        if (!follow || !user.is_private) {
-            setUserProfileFollowed(!userProfileFollowed)
-            if (!follow && user.is_private) {
-                setUserProfileAccessible(false)
-            }
-        } else {
-            setUserProfilePending(true)
+                if (!follow || !user.is_private) {
+                    setUserProfileFollowed(!userProfileFollowed)
+                    if (!follow && user.is_private) {
+                        setUserProfileAccessible(false)
+                    }
+                } else {
+                    setUserProfilePending(true)
 
-            //send notification
-            const payload = {
-                type: "follownotification",
-                to: parseInt(user.id),
-            };
-            WebSocketService.sendMessage(payload);
-        }
+                    //send notification
+                    const payload = {
+                        type: "follownotification",
+                        to: parseInt(user.id),
+                    };
+                    WebSocketService.sendMessage(payload);
+                }
+            })
+            .catch((error) => console.log(error));
     }
 
     return (
@@ -80,7 +88,7 @@ const UserItem = ({user, followings, handleUserProfile}) => {
     )
 }
 
-const UserList = ({users, followings, showUserProfile, setShowUserProfile}) => {
+const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProfile}) => {
     const [userData, setUserData] = useState({})
 
     const handleUserProfile = (userId) => {
@@ -100,7 +108,7 @@ const UserList = ({users, followings, showUserProfile, setShowUserProfile}) => {
                 <div>
                     <h1>User(s):</h1>
                     {users.map(user =>
-                        <UserItem user={user} key={user.id} followings={followings} handleUserProfile={handleUserProfile} />
+                        <UserItem user={user} setUsers={setUsers} key={user.id} followings={followings} handleUserProfile={handleUserProfile} />
                     )}
                 </div>
             )}

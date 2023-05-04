@@ -3,6 +3,11 @@
     flex-direction: column;
     height: 100%;
     position: relative;
+    height: "150px";
+    overflow-y: "scroll";
+    border: "1px solid #ccc";
+    padding: "4px";
+    white-space: "pre-wrap";
 
   }
   
@@ -63,6 +68,9 @@
     max-height: 50px;
     overflow-y: scroll;
     z-index: 1000;
+    cursor: "pointer";
+    font-size: "20px";
+    padding: "4px";
 
   }
 

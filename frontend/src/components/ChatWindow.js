@@ -287,13 +287,6 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
       <div
         ref={chatContainerRef}
         className="chat-container"
-        style={{
-          height: "150px",
-          overflowY: "scroll",
-          border: "1px solid #ccc",
-          padding: "4px",
-          whiteSpace: "pre-wrap",
-        }}
       >
         <div style={{ minHeight: "1px" }}>
           <div ref={topRef} />
@@ -328,11 +321,6 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
             {emojis.map((emoji, index) =>
               <span
                 key={index}
-                style={{
-                  cursor: "pointer",
-                  fontSize: "20px",
-                  padding: "4px",
-                }}
                 onClick={() => addEmoji(emoji)}
               >
                 {emoji}

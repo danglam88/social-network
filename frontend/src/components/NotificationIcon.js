@@ -49,17 +49,19 @@ const NotificationIcon = () => {
       </div>
       {showList && (
         <ul className="notification-list">
-          {notifications.map((notification, index) => (
-            <li key={index}>
-              <span>{notification.message}</span>
-              <button
-                className="clear-notification"
-                onClick={() => handleClearNotification(index)}
-              >
-                Clear
-              </button>
-            </li>
-          ))}
+          {notifications.map((notification, index) => {
+            const notificationKey = "notification" + index;
+            return (
+              <li key={notificationKey}>
+                <span>{notification.message}</span>
+                <button
+                  className="clear-notification"
+                  onClick={() => handleClearNotification(index)}
+                >
+                  Clear
+                </button>
+              </li>
+            )})}
         </ul>
       )}
     </div>

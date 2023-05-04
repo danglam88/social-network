@@ -30,16 +30,17 @@ const Notifications = () => {
         <>
         <h3>Notifications</h3>
         <div>     
-            {notifications.group_invitations && notifications.group_invitations.map(notification => 
-                <Invitation group={notification} key={notification.id} handleRemoveGroup={() => handleRemoveGroup(notification.id, false, true)}/>   
-            )}
-            {notifications.group_requests && notifications.group_requests.map(notification => 
-                <Request group={notification} key={notification.id} handleRemoveGroup={() => handleRemoveGroup(notification.id, true, false)}/>   
-            )}
+            {notifications.group_invitations && notifications.group_invitations.map(notification => {
+                const inviteKey = "invite" + notification.id;
+                return <Invitation group={notification} key={inviteKey} handleRemoveGroup={() => handleRemoveGroup(notification.id, false, true)}/>
+            })}
+            {notifications.group_requests && notifications.group_requests.map(notification => {
+                const requestKey = "request" + notification.id;
+                return <Request group={notification} key={requestKey} handleRemoveGroup={() => handleRemoveGroup(notification.id, true, false)}/>
+            })}
         </div>
         </>
     )
-
 }
 
 const Invitation = ({group, handleRemoveGroup}) => {
@@ -68,7 +69,7 @@ const Invitation = ({group, handleRemoveGroup}) => {
 
     return (
         <>
-        <div>You have invitation to the group {group.name}</div>
+        <div>You have an invitation to join the group {group.name}</div>
         <button onClick={accept}>Accept</button>
         <button onClick={decline}>Decline</button>
         </>
@@ -95,17 +96,17 @@ const Request = ({group, handleRemoveGroup}) => {
     
     return (
         <>
-        <div>You have request to the group {group.name}</div>
+        <div>The group {group.name} has a joining request from</div>
 
         {group.members && group.members.map(user => {
+            const requestUserKey = "requestUser" + user.id;
             return (
-                <>
-                 <div>User {user.nick_name} ({user.first_name} {user.last_name})</div>
-                 <button onClick={() => sendReply(user.id, true)}>Accept</button>
-                 <button onClick={() => sendReply(user.id, false)}>Decline</button>
-                </>
-            )
-        })}
+                <div key={requestUserKey}>
+                    {user.nick_name ? <div>{user.nick_name}</div> : <div>{user.first_name} {user.last_name}</div>}
+                    <button onClick={() => sendReply(user.id, true)}>Accept</button>
+                    <button onClick={() => sendReply(user.id, false)}>Decline</button>
+                </div>
+            )})}
         </>
     )
 }

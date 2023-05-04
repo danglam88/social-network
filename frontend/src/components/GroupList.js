@@ -159,13 +159,14 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
 
     const groupsList = []
     {items.forEach((data) => {
-        groupsList.push(<ListItem group={data} key={data.id} handleSuccessJoinRequest={handleSuccessJoinRequest} handleGoToDetail={handleGoToDetail}/>)
+        const groupItemKey = "groupItem" + data.id;
+        groupsList.push(<ListItem group={data} key={groupItemKey} handleSuccessJoinRequest={handleSuccessJoinRequest} handleGoToDetail={handleGoToDetail}/>)
     })}
 
     if (items.length > 0) {
         return (
             <>
-            {isGroupDetailPage ? (<Group group={groupInfo} setGroupInfo={setGroupInfo} />) : (
+            {isGroupDetailPage ? (<Group group={groupInfo} key={groupInfo.id} setGroupInfo={setGroupInfo} />) : (
             <>
             <h1>Groups</h1>
                 <div>

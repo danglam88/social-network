@@ -41,9 +41,10 @@ const Follows = ({userId, follows, title, handleShowPendings}) => {
     return (
         <div>
             <h3>{title}</h3>
-            {follows && follows.map(follow =>
-                <Follow user_id={userId} follow={follow} key={follow.id} title={title} handleShowPendings={handleShowPendings} />
-            )}
+            {follows && follows.map(follow => {
+                const followKey = "follow" + follow.id;
+                return <Follow user_id={userId} follow={follow} key={followKey} title={title} handleShowPendings={handleShowPendings} />
+            })}
         </div>
     )
 }

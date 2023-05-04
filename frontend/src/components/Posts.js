@@ -49,9 +49,10 @@ const Posts = ({posts, type, userId}) => {
                 <h2>{type}'s created posts:</h2>
               )
             }
-            {posts && posts.map(post =>
-                <Post post={post} key={post.id} type={type} userId={userId} />
-            )}
+            {posts && posts.map(post => {
+                const postKey = "post" + post.id;
+                return <Post post={post} key={postKey} type={type} userId={userId} />
+            })}
         </div>
     )
 }

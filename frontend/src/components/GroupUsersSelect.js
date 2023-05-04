@@ -110,9 +110,10 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
           {isVisible ? (
           <form onSubmit={handleInviteUsers}>
           <ul>
-          {users.map(user =>
-              <SelectItem user={user} key={user.id} setInvitedUsers={setInvitedUsers} invitedUsers={invitedUsers}/>
-          )}
+          {users.map(user => {
+              const inviteUserKey = "inviteUser" + user.id;
+              return <SelectItem user={user} key={inviteUserKey} setInvitedUsers={setInvitedUsers} invitedUsers={invitedUsers}/>
+          })}
           </ul>
           <button type="submit">Invite</button>
           </form>) : (<></>)}

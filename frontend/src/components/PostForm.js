@@ -162,13 +162,14 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
                 multiple
                 onChange={handleUsersChange}
               >
-                {follows.followers.map((follow) => (
-                  <option key={follow.id} value={follow.id}>
+                {follows.followers.map((follow) => {
+                  const postFollowerKey = "postFollower" + follow.id;
+                  return <option key={postFollowerKey} value={follow.id}>
                     {follow.nick_name
                       ? follow.nick_name
                       : follow.first_name + " " + follow.last_name}
                   </option>
-                ))}
+                })}
               </select>
             </div>
           )}

@@ -4,7 +4,7 @@ import User from './User';
 import followsService from "../services/FollowsService";
 import WebSocketService from '../services/WebSocketService';
 
-const UserItem = ({user, setUsers, followings, handleUserProfile}) => {
+const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     const [userProfileAccessible, setUserProfileAccessible] = useState(false)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
@@ -44,6 +44,9 @@ const UserItem = ({user, setUsers, followings, handleUserProfile}) => {
             .users()
             .then((response) => {
                 setUsers(response.data);
+            })
+            .then(() => {
+                user = users.find(u => u.id === user.id)
             })
             .then(() => {
                 setCheckPending(false)
@@ -104,12 +107,13 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
 
     return (
         <div>
-            {showUserProfile ? (<User user={userData} />) : (
+            {showUserProfile ? (<User user={userData} key={userData.id} />) : (
                 <div>
                     <h1>User(s):</h1>
-                    {users.map(user =>
-                        <UserItem user={user} setUsers={setUsers} key={user.id} followings={followings} handleUserProfile={handleUserProfile} />
-                    )}
+                    {users.map(user => {
+                        const userItemKey = "userItem" + user.id;
+                        return <UserItem user={user} users={users} setUsers={setUsers} key={userItemKey} followings={followings} handleUserProfile={handleUserProfile} />
+                    })}
                 </div>
             )}
         </div>

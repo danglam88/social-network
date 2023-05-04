@@ -324,14 +324,20 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
           <div
           className="emoji-picker"
           >
-            {emojis.map((emoji, index) =>
-              <span
-                key={index}
+            {emojis.map((emoji, index) => {
+              const emojiKey = "emoji" + index;
+              return <span
+                key={emojiKey}
+                style={{
+                  cursor: "pointer",
+                  fontSize: "20px",
+                  padding: "4px",
+                }}
                 onClick={() => addEmoji(emoji)}
               >
                 {emoji}
               </span>
-            )}
+            })}
           </div>}
       </div>
     </div>

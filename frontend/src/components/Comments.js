@@ -23,9 +23,10 @@ const Comments = ({comments, userId}) => {
             {comments && (
               <>
                 <h3>Comments:</h3>
-                {comments.map((comment) => (
-                  <Comment comment={comment} key={comment.ID} userId={userId} />
-                ))}
+                {comments.map((comment) => {
+                  const commentKey = "comment" + comment.ID;
+                  <Comment comment={comment} key={commentKey} userId={userId} />
+                })}
               </>
             )}
           </div>

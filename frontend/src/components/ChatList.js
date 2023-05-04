@@ -21,24 +21,26 @@ const ChatList = ({ availableChats, selectedChat, onSelectChat, onToggleChatList
     <div className="chat-list-container">
       <h2>Available Chats</h2>
       <ul>
-        {availableChats.map((chat) => (
-          <li
-            key={chat.ChatID}
-            onClick={() => {
-              onSelectChat(chat);
-              onToggleChatList();
-            }}
-            style={{
-              cursor: "pointer",
-              fontWeight:
-                selectedChat && selectedChat.ChatID === chat.ChatID
-                  ? "bold"
-                  : "normal",
-            }}
-          >
-            {chat.DisplayName}
-          </li>
-        ))}
+        {availableChats.map((chat) => {
+          const chatKey = "chat" + chat.ChatID;
+          return (
+            <li
+              key={chatKey}
+              onClick={() => {
+                onSelectChat(chat);
+                onToggleChatList();
+              }}
+              style={{
+                cursor: "pointer",
+                fontWeight:
+                  selectedChat && selectedChat.ChatID === chat.ChatID
+                    ? "bold"
+                    : "normal",
+              }}
+            >
+              {chat.DisplayName}
+            </li>
+          )})}
       </ul>
     </div>
   );

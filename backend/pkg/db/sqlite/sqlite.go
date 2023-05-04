@@ -1505,3 +1505,39 @@ func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
 
 	return notifications, nil
 }
+
+func (db *Db) GetGroupInviteNotifications(userId int) ([]string, error) {
+	var groupswithinvites []string
+
+	rows, err := db.connection.Query(`
+		SELECT user_group.group_name
+		FROM user_group
+		WHERE user_group.id IN (
+			SELECT group_relation.group_id
+			FROM group_relation
+			WHERE group_relation.is_requested = 0 AND group_relation.is_approved = 0 AND group_relation.user_id = ?
+		)`, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var groupname string
+		err = rows.Scan(&groupname)
+		if err != nil {
+			return nil, err
+		}
+
+		groupswithinvites = append(groupswithinvites, groupname)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return groupswithinvites, nil
+}

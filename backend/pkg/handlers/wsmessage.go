@@ -56,7 +56,8 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 
 	client := NewClient(conn, m, id)
 	m.addClient(client)
-	//Send all the notifications to the client
+
+	//Group join requests
 	GroupNotifications, err := DB.GetGroupNotifications(id)
 	if err != nil {
 		log.Println(err)
@@ -69,9 +70,38 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	GroupInviteNotifications, err := DB.GetGroupInviteNotifications(id)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	//Start client
 	go client.readMessages()
 	go client.writeMessages()
+
+	if len(GroupInviteNotifications) > 0 {
+		for _, group := range GroupInviteNotifications {
+			msg := db.Message{
+				Type:     INVITENOTIFICATION_TYPE,
+				From:     0,
+				To:       id,
+				UserName: group,
+				Message:  fmt.Sprintf("You are invited to join group %s", group),
+			}
+			message, err := json.Marshal(msg)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+
+			//wait 1 second before sending the next message to let the notification component load
+			time.Sleep(1 * time.Second)
+
+			client.eggress <- message
+
+		}
+	}
 
 	if len(GroupNotifications) > 0 {
 		for _, n := range GroupNotifications {

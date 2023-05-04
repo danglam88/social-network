@@ -83,6 +83,7 @@ type Group struct {
 type Event struct {
 	ID          int       `json:"id"`
 	CreatorId   int       `json:"creator_id"`
+	CreatorName string    `json:"creator_name"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	OccurTime   time.Time `json:"occur_time"`
@@ -658,6 +659,13 @@ func (db *Db) GetEvents(groupId, userId int) (events []Event, err error) {
 		err := rows.Scan(&event.ID, &event.CreatorId, &event.Name, &event.Description, &event.OccurTime)
 		if err != nil {
 			return events, err
+		}
+
+		creator := db.GetUser(event.CreatorId)
+		if creator.NickName != "" {
+			event.CreatorName = creator.NickName
+		} else {
+			event.CreatorName = creator.FirstName + " " + creator.LastName
 		}
 
 		event.VotedYes, event.VotedNo, event.UserVote, err = db.GetVotes(event.ID, userId)

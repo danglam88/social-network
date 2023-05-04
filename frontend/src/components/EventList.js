@@ -27,17 +27,25 @@ const NewEvent = ({groupId, handleNewEvent}) => {
     const handleCreateEvent = (event) => {                                                                                         
       event.preventDefault()
 
-      let Message = ValidateField("Title", title, 1, 30);
-        if ( Message !== "") {
-            setErrorMessage(Message);
-            return;
+      let message = ValidateField("Title", title, 1, 30);
+        if ( message !== "") {
+            setErrorMessage(message);
+            return
         }
-        Message = ValidateField("Content", description, 1, 100);
-        if ( Message !== "") {
-            setErrorMessage("Description " + Message.slice(8));
-            return;
+
+        message = ValidateField("Content", description, 1, 100);
+        if ( message !== "") {
+            setErrorMessage("Description " + message.slice(8));
+            return
         }
-   
+
+        
+        message = occurDate
+        if (new Date(occurDate) <= new Date()) {
+            setErrorMessage("Wrong time");
+            return
+        }
+
       const data = {
           title: title,
           description: description,

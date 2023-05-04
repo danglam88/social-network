@@ -1,15 +1,14 @@
 .chat-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    position: relative;
-    height: "150px";
-    overflow-y: "scroll";
-    border: "1px solid #ccc";
-    padding: "4px";
-    white-space: "pre-wrap";
-
-  }
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  min-height: 150px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  padding: 4px;
+  white-space: pre-wrap;
+}
   
   .chat-bubble {
     width: 50px;

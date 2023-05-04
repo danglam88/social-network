@@ -33,6 +33,7 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
   const chatContainerRef = useRef(null);
   const [scrollToBottom, setScrollToBottom] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [error, setError] = useState(null);
   const emojis = [
     "😀",
     "😁",
@@ -145,8 +146,8 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
         );
         if (response.data.Status === "not allowed to send message to this user") {
           console.log(response.data.Status);
-          //close chat window
-          onClose();
+          setError(response.data.Status);
+
           return;
         }
         if (response.data.Error) {
@@ -271,6 +272,11 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
     e.stopPropagation();
   };
 
+  if (error) {
+    console.log("Error:", error)
+    return <div className="error">{error}</div>;
+  }
+
   return (
     <div
       className="chatBox"
@@ -288,9 +294,9 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
         ref={chatContainerRef}
         className="chat-container"
       >
-        <div style={{ minHeight: "1px" }}>
+        
           <div ref={topRef} />
-        </div>
+
         {chatMessages
           .map(
             msg =>

@@ -40,6 +40,24 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 
 	comment := r.FormValue("content")
 	postID, _ := strconv.Atoi(r.FormValue("post_id"))
+
+	groupID, creatorID, _ := DB.GetGroupIdAndCreatorIdFromPostId(postID)
+	creatorStruct := DB.GetUser(creatorID)
+	if groupID != 0 && !DB.IsMember(userId, groupID) {
+		w.WriteHeader(http.StatusOK)
+		response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a member of this group"}
+		res, _ := json.Marshal(response)
+		io.WriteString(w, string(res))
+		return
+
+	} else if !DB.IsFollower(userId, creatorID) && creatorStruct.IsPrivate == 1 && creatorID != userId {
+		w.WriteHeader(http.StatusOK)
+		response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a follower of this user"}
+		res, _ := json.Marshal(response)
+		io.WriteString(w, string(res))
+		return
+	}
+
 	imgUrl, imgErr := UploadFile(w, r)
 	if imgErr != nil {
 		GetErrResponse(w, "Invalid image", http.StatusBadRequest)

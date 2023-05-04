@@ -72,6 +72,9 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
       postsService.post(formData)
         .then((response) => {
+          if (response.data.Status === "error") {
+            setErrorMessage(response.data.Error);
+          } else {
           console.log("Post created:", response.data);
 
           if (!groupId) {
@@ -101,6 +104,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
               })
               .catch(error => console.log(error))
           }
+        }
         })
         .catch((error) => console.log(error));
     } catch (error) {

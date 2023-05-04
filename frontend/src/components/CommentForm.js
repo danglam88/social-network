@@ -44,6 +44,9 @@ const CommentForm = ({postId, setComments}) => {
 
       commentsService.comment(formData)
         .then((response) => {
+          if (response.data.Status === "error") {
+            setErrorMessage(response.data.Error);
+          } else {
           console.log("Comment created:", response.data);
 
           commentsService
@@ -56,6 +59,7 @@ const CommentForm = ({postId, setComments}) => {
               setErrorMessage("");
             })
             .catch((error) => console.log(error));
+          }
         })
         .catch((error) => console.log(error));
     } catch (error) {

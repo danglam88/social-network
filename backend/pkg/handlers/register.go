@@ -93,9 +93,9 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 	}
 
 	if DB.GetUserID(username) != -1 {
-		user_error = "User already exists"
+		user_error = "Nickname already exists"
 	}
-	if len(username) < 4 || len(username) > 14 || !ValidatePasswordUsername(username, false) {
+	if username != "" && len(username) < 4 || len(username) > 14 || !ValidatePasswordUsername(username, false) {
 		user_error = "Username must be 4 - 14 characters, and include no special characters"
 	}
 	if (len(firstName) <= 1) || (len(firstName) > 14) || !ValidatePasswordUsername(firstName, false) {

@@ -25,7 +25,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	userId := GetLoggedInUserID(w, r)
 	user := DB.GetUser(filterUser)
 
-	if user.IsPrivate == 0 || DB.IsFollower(userId, user) {
+	if user.IsPrivate == 0 || DB.IsFollower(userId, user.ID) {
 		w.WriteHeader(http.StatusOK)
 		res, _ := json.Marshal(user)
 		io.WriteString(w, string(res))

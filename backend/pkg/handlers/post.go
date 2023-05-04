@@ -129,6 +129,13 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 			GetErrResponse(w, "Invalid group id format", http.StatusBadRequest)
 			return
 		}
+		if groupID != 0 && !DB.IsMember(creatorID, groupID) {
+			w.WriteHeader(http.StatusOK)
+			response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a member of this group"}
+			res, _ := json.Marshal(response)
+			io.WriteString(w, string(res))
+			return
+		}
 	}
 
 	imgUrl, imgErr := UploadFile(w, r)

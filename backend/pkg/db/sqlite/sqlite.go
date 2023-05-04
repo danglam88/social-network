@@ -204,11 +204,11 @@ func (db *Db) Close() {
 	db.connection.Close()
 }
 
-func (db *Db) IsFollower(userId int, user User) bool {
+func (db *Db) IsFollower(followerId, followdId int) bool {
 	var isApproved int
 
 	query := "select is_approved from follow_relation where follower_id=? and followed_id=?"
-	row := db.connection.QueryRow(query, userId, user.ID)
+	row := db.connection.QueryRow(query, followerId, followdId)
 	err := row.Scan(&isApproved)
 	if err != nil {
 		return false
@@ -1267,7 +1267,7 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 	if id <= 0 {
 		if groupId == 0 {
 			user := db.GetUser(to)
-			if user.IsPrivate == 1 && !db.IsFollower(from, user) {
+			if user.IsPrivate == 1 && !db.IsFollower(from, user.ID) {
 				err := errors.New("not allowed to send message to this user")
 				return messages, id, err
 
@@ -1351,6 +1351,23 @@ func (db *Db) CreateComment(userId int, postID int, comment string, imgUrl strin
 
 	return err
 }*/
+
+func (db *Db) GetGroupIdAndCreatorIdFromPostId(postId int) (groupId int, creatorId int, err error) {
+	err = db.connection.QueryRow("SELECT group_id, creator_id FROM post WHERE id=?", postId).Scan(&groupId, &creatorId)
+	if err != nil {
+		return groupId, creatorId, err
+	}
+	return groupId, creatorId, err
+}
+
+func (db *Db) IsMember(userId, groupID int) bool {
+	var id int
+	err := db.connection.QueryRow("SELECT id FROM group_relation WHERE group_id=? AND user_id=?", groupID, userId).Scan(&id)
+	if err != nil {
+		return false
+	}
+	return true
+}
 
 func (db *Db) GetGroupUserIds(groupId int) (userIds []int, err error) {
 

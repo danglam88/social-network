@@ -5,7 +5,9 @@ const Follow = ({user_id, follow, title, handleShowPendings}) => {
     const [pendingResolved, setPendingResolved] = useState(false)
 
     const resolvePending = (accept) => {
-        followsService.pending({user_id, follow, accept})
+        const follow_id = follow.id
+
+        followsService.pending({user_id, follow_id, accept})
             .then(response => {
                 if (response.data.Status === "ok") {
                     setPendingResolved(true)

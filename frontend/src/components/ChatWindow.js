@@ -23,7 +23,10 @@ const sortMessagesByDate = messages => {
   return sortedMessages;
 };
 
-const ChatWindow = ({ chat, onClose, chatId }) => {
+const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl }) => {
+  console.log(avatarUrl);
+  console.log(chat.AvatarUrl);
+
   const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
@@ -207,7 +210,6 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
 
   const sendMessage = () => {
     if (typedMessage.trim() !== "") {
-      console.log("Sending message:", typedMessage, "to chat:", chat.ChatID, "ChatWindow.js 199")
       ChatService.sendMessage(recipientChatId, typedMessage);
       setTypedMessage("");
       setScrollToBottom(true);
@@ -283,8 +285,17 @@ const ChatWindow = ({ chat, onClose, chatId }) => {
       style={{ flex: 1, display: "flex", flexDirection: "column" }}
       onClick={handleOutsideClick}
     >
-      <h2>
-        Chat Window{" "}
+<h2>
+<img
+        src={`http://localhost:8080${avatarUrl || chat.AvatarUrl}`}
+        style={{
+          width: "32px",
+          height: "32px",
+          borderRadius: "50%",
+          marginRight: "8px",
+        }}
+      />
+        Chat with {username ? username : chat.DisplayName} 
         <button onClick={onClose} style={{ marginLeft: "auto" }}>
   Close
 </button>

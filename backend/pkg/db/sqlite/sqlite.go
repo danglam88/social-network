@@ -24,25 +24,27 @@ type Db struct {
 }
 
 type Post struct {
-	ID          int       `json:"id"`
-	CreatorID   int       `json:"creator_id"`
-	CreatorName string    `json:"creator_name"`
-	GroupID     int       `json:"group_id"`
-	Visibility  int       `json:"visibility"`
-	Title       string    `json:"title"`
-	Content     string    `json:"content"`
-	CreatedAt   time.Time `json:"created_at"`
-	ImgUrl      string    `json:"img_url"`
+	ID            int       `json:"id"`
+	CreatorID     int       `json:"creator_id"`
+	CreatorName   string    `json:"creator_name"`
+	CreatorAvatar string    `json:"creator_avatar"`
+	GroupID       int       `json:"group_id"`
+	Visibility    int       `json:"visibility"`
+	Title         string    `json:"title"`
+	Content       string    `json:"content"`
+	CreatedAt     time.Time `json:"created_at"`
+	ImgUrl        string    `json:"img_url"`
 }
 
 type Comment struct {
-	ID        int
-	UserID    int
-	UserName  string
-	PostID    int
-	Content   string
-	CreatedAt time.Time
-	ImgUrl    string
+	ID         int
+	UserID     int
+	UserName   string
+	UserAvatar string
+	PostID     int
+	Content    string
+	CreatedAt  time.Time
+	ImgUrl     string
 }
 
 type User struct {
@@ -466,6 +468,8 @@ func (db *Db) GetPosts(userfilter, groupfilter int) (posts []Post, err error) {
 			return posts, err
 		}
 		post.CreatorName = username
+		userAvatar := db.GetUserAvatar(post.CreatorID)
+		post.CreatorAvatar = userAvatar
 		posts = append(posts, post)
 	}
 	defer rows.Close()
@@ -521,6 +525,7 @@ func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 			//todo error
 			fmt.Println(err)
 		}
+		comment.UserAvatar = db.GetUserAvatar(comment.UserID)
 		comments = append(comments, comment)
 	}
 	defer rows.Close()
@@ -550,6 +555,17 @@ func (db *Db) GetEmail(mail string) string {
 		return ""
 	}
 	return expected_user.Email
+}
+
+func (db *Db) GetUserAvatar(CreatorID int) string {
+	var avatar string
+
+	row := db.connection.QueryRow("select avatar_url from user where id = ?", CreatorID)
+	err := row.Scan(&avatar)
+	if err != nil {
+		return ""
+	}
+	return avatar
 }
 
 func (db *Db) EmailExists(mail string) bool {

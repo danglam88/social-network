@@ -16,7 +16,6 @@ func CommentGet(w http.ResponseWriter, r *http.Request) {
 	if id, isExist := params["post_id"]; isExist {
 		postId, err = strconv.Atoi(id[0])
 	}
-
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
@@ -50,7 +49,7 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, string(res))
 		return
 
-	} else if !DB.IsFollower(userId, creatorID) && creatorStruct.IsPrivate == 1 && creatorID != userId {
+	} else if groupID == 0 && !DB.IsFollower(userId, creatorID) && creatorStruct.IsPrivate == 1 && creatorID != userId {
 		w.WriteHeader(http.StatusOK)
 		response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a follower of this user"}
 		res, _ := json.Marshal(response)

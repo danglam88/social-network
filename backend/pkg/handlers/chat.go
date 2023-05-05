@@ -62,7 +62,11 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		response := ResponseError{Status: err.Error()}
-		res, _ := json.Marshal(response)
+		res, err := json.Marshal(response)
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		io.WriteString(w, string(res))
 		return
 

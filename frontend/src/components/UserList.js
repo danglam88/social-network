@@ -9,15 +9,17 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
+    const [updatedUser, setUpdatedUser] = useState(user)
+    const [followValue, setFollowValue] = useState(false)
 
     useEffect(() => {
-        if (!user.is_private) {
+        if (!updatedUser.is_private) {
             setUserProfileAccessible(true)
         }
 
         if (followings !== null) {
             followings.forEach(following => {
-                if (following.id === user.id) {
+                if (following.id === updatedUser.id) {
                     setUserProfileAccessible(true)
                     setUserProfileFollowed(true)
                 }
@@ -26,11 +28,35 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     }, [])
 
     useEffect(() => {
-        followsService.follow({user, check_pending})
+        const user_id = updatedUser.id
+
+        followsService.follow({user_id, check_pending})
             .then(response => {
                 if (response.data.Error === "Pending") {
                     setUserProfilePending(true)
                 }
+            })
+            .then(() => {
+                if (!check_pending) {
+                    if (!followValue || !updatedUser.is_private) {
+                        setUserProfileFollowed(!userProfileFollowed)
+                        if (!followValue && updatedUser.is_private) {
+                            setUserProfileAccessible(false)
+                        }
+                    } else {
+                        setUserProfilePending(true)
+
+                        //send notification
+                        const payload = {
+                            type: "follownotification",
+                            to: parseInt(updatedUser.id),
+                        };
+                        WebSocketService.sendMessage(payload);
+                    }
+                }
+            })
+            .then(() => {
+                setCheckPending(true)
             })
             .catch(error => console.log(error))
     }, [check_pending])
@@ -40,42 +66,28 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     }
 
     const toggleFollow = (follow) => {
+        setFollowValue(follow)
+
         usersService
             .users()
             .then((response) => {
                 setUsers(response.data);
             })
             .then(() => {
-                user = users.find(u => u.id === user.id)
+                setUpdatedUser(users.find(u => u.id === updatedUser.id))
             })
             .then(() => {
                 setCheckPending(false)
-
-                if (!follow || !user.is_private) {
-                    setUserProfileFollowed(!userProfileFollowed)
-                    if (!follow && user.is_private) {
-                        setUserProfileAccessible(false)
-                    }
-                } else {
-                    setUserProfilePending(true)
-
-                    //send notification
-                    const payload = {
-                        type: "follownotification",
-                        to: parseInt(user.id),
-                    };
-                    WebSocketService.sendMessage(payload);
-                }
             })
             .catch((error) => console.log(error));
     }
 
     return (
         <div>
-            {user.nick_name ? (
-                <span onClick={() => {userProfileAccessible && handleShowUserProfile(user.id)}}>{user.nick_name}</span>
+            {updatedUser.nick_name ? (
+                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}>{updatedUser.nick_name}</span>
             ) : (
-                <span onClick={() => {userProfileAccessible && handleShowUserProfile(user.id)}}>{user.first_name} {user.last_name}</span>
+                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}>{updatedUser.first_name} {updatedUser.last_name}</span>
             )}
 
             {userProfilePending ? (

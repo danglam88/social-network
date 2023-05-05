@@ -539,6 +539,10 @@ span + .button-small {
   background-color: #FF2E63
 }
 
+.requested {
+  background-color: #4C2C72
+}
+
 .group-desc {
   font-style: italic;
 }

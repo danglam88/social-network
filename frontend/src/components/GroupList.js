@@ -30,7 +30,7 @@ const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
                 {group.is_member ?
                     (<div className="group-column group-activity-link button-small go-to" onClick={() => handleShowGroup(group.id)}>Go to</div>)
                     : group.is_requested ? 
-                    (<div className="group-column group-activity-link button-small ">Requested</div>) 
+                    (<div className="group-column group-activity-link button-small requested">Requested</div>) 
                     : 
                     (<div className="group-column group-activity-link button-small join" onClick={() => handleRequestJoin(group.id)}>Join</div>)
                     }

@@ -27,6 +27,7 @@ const comments = async (commentUrl) => {
 }
 
 const comment = async (data) => {
+  console.log(data, "commentservice 30")
     const request = await axios.post(commentUrl, data, postConfig)
     return request
 }

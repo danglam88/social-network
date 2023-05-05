@@ -4,6 +4,7 @@ import CommentForm from './CommentForm.js'
 import commentsService from '../services/CommentsService'
 
 const Post = ({post, type, userId}) => {
+  console.log("Post:", post)
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -14,7 +15,6 @@ const Post = ({post, type, userId}) => {
       })
       .catch((error) => console.log(error));
   }, []);
-  console.log("Post: ", post, "type: ", type, "userId: ", userId)
 
   return (
       <div className="post-wrapper">

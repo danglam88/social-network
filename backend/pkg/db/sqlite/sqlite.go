@@ -525,6 +525,7 @@ func (db *Db) GetCommentsByPost(postId int) (comments []Comment, err error) {
 			//todo error
 			fmt.Println(err)
 		}
+		comment.UserAvatar = db.GetUserAvatar(comment.UserID)
 		comments = append(comments, comment)
 	}
 	defer rows.Close()

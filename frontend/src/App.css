@@ -84,12 +84,13 @@ input[type="date"]:focus {
   text-align: center;
 }
 
-/*.file-input {
+.file-input {
   position: fixed;
   top: 0;
   left: 0; 
   opacity: 0;
-}*/
+  pointer-events: none;
+}
 
 .file-input-btn:hover, .file-input-btn:focus + {
   opacity: 1;

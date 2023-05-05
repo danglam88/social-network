@@ -1,34 +1,40 @@
-import React, { useState } from "react";
-import commentsService from '../services/CommentsService'
+import React, { useState, useEffect } from "react";
+import commentsService from "../services/CommentsService";
 import ValidateField from "../services/ValidationService";
 
-const CommentForm = ({postId, setComments}) => {
+const CommentForm = ({ postId, setComments }) => {
   const [content, setContent] = useState("");
-  const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleContentChange = (event) => {
     setContent(event.target.value);
   };
 
-  const handlePictureChange = (event) => {
-    setPicture(event.target.files[0]);
+  let [picture, setCommentPicture] = useState(null);
+
+  const handleCommentPictureChange = (event) => {
+    setCommentPicture(event.target.files[0]);
   };
+
+  useEffect(() => {
+    // Add your logic here
+  }, [picture]);
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Validation
     let Message = ValidateField("Content", content, 1, 1000);
-    if ( Message !== "") {
+    if (Message !== "") {
       setErrorMessage(Message);
       return;
     }
 
-    if ( picture !== null && picture !== undefined) {
+    if (picture !== null && picture !== undefined) {
       Message = ValidateField("Picture", picture);
-      if ( Message !== "") {
-        setPicture(null);
+      if (Message !== "") {
+        setCommentPicture(null);
         setErrorMessage(Message);
         return;
       }
@@ -36,29 +42,30 @@ const CommentForm = ({postId, setComments}) => {
 
     try {
       const formData = new FormData();
+
       formData.append("post_id", postId);
       formData.append("content", content);
       if (picture) {
         formData.append("picture", picture);
       }
 
-      commentsService.comment(formData)
+
+      commentsService
+        .comment(formData)
         .then((response) => {
           if (response.data.Status === "error") {
             setErrorMessage(response.data.Error);
           } else {
-          console.log("Comment created:", response.data);
+            commentsService
+              .comments("http://localhost:8080/comment?post_id=" + postId)
+              .then((response) => {
+                setComments(response.data);
 
-          commentsService
-            .comments("http://localhost:8080/comment?post_id=" + postId)
-            .then((response) => {
-              setComments(response.data);
-
-              setContent("");
-              setPicture(null);
-              setErrorMessage("");
-            })
-            .catch((error) => console.log(error));
+                setContent("");
+                setCommentPicture(null);
+                setErrorMessage("");
+              })
+              .catch((error) => console.log(error));
           }
         })
         .catch((error) => console.log(error));
@@ -81,16 +88,16 @@ const CommentForm = ({postId, setComments}) => {
           />
         </div>
         <div>
-          <label htmlFor="picture" className="file-input-btn">
-            Upload picture
-          </label>
-          <input
-            type="file"
-            id="picture"
-            name="picture"
-            onChange={handlePictureChange}
-            className="file-input"
-          />
+          <label htmlFor={`comment${postId}`} className="file-input-btn">
+              Upload pictures!
+            </label>
+            <input
+              className="file-input"
+              type="file"
+              id={`comment${postId}`}
+              name="commentPicture"
+              onChange={handleCommentPictureChange}
+            />
         </div>
         <div>
           <button type="submit">Reply</button>

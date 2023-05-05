@@ -5,6 +5,10 @@ import ValidateField from "../services/ValidationService";
 const CommentForm = ({ postId, setComments }) => {
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const uploadDiv = document.getElementById(`upload-comment${postId}`)
+  if (uploadDiv) {
+    uploadDiv.className = "upload"
+  }
 
   const handleContentChange = (event) => {
     setContent(event.target.value);
@@ -14,6 +18,9 @@ const CommentForm = ({ postId, setComments }) => {
 
   const handleCommentPictureChange = (event) => {
     setCommentPicture(event.target.files[0]);
+    if (event.target.files[0] != null) {
+      uploadDiv.innerHTML = `${event.target.files[0].name} attached!`
+    }
   };
 
   useEffect(() => {
@@ -23,6 +30,7 @@ const CommentForm = ({ postId, setComments }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    uploadDiv.innerHTML = ""
 
     // Validation
     let Message = ValidateField("Content", content, 1, 1000);
@@ -89,7 +97,7 @@ const CommentForm = ({ postId, setComments }) => {
         </div>
         <div>
           <label htmlFor={`comment${postId}`} className="file-input-btn">
-              Upload pictures!
+              Upload picture
             </label>
             <input
               className="file-input"
@@ -98,6 +106,7 @@ const CommentForm = ({ postId, setComments }) => {
               name="commentPicture"
               onChange={handleCommentPictureChange}
             />
+            <div id={`upload-comment${postId}`}></div>
         </div>
         <div>
           <button type="submit">Reply</button>

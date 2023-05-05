@@ -1,5 +1,4 @@
 const Comment = ({ comment, userId }) => {
-    console.log("1 comment", comment, "userid ", userId)
     return (
       <div className="comment-wrapper">
         <img className="avatar-symbol" src={`http://localhost:8080${comment.UserAvatar}`} alt=""/>

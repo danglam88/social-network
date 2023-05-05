@@ -179,7 +179,11 @@ input[type="date"]:focus {
 
 .radio-wrapper :first-child{
   margin-top: 10px;
-  border: 1px solid red
+}
+
+.event-passed {
+  font-size: small;
+  font-style: italic;
 }
 
 .radio + .radio {
@@ -484,6 +488,12 @@ u {
   margin-top: 15px;
   border-top: 2px solid #FF2E63;
   padding-top: 10px
+}
+
+.upload {
+  font-size: small;
+  font-style: italic;
+  margin-bottom: 10px;
 }
 
 /* Users */

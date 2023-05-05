@@ -1,4 +1,4 @@
 .DS_Store
 db/.DS_Store
-backend/upload/*
+
 backend/pkg/db/socialnetwork.db

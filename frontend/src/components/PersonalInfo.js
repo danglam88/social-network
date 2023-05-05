@@ -27,7 +27,7 @@ const PersonalInfo = ({user, type, handleUpdateFollows}) => {
           {user.avatar_url &&
             <div>
               Avatar:
-              <img
+              <img className="personal-avatar"
                 src={`http://localhost:8080${user.avatar_url}`}
                 alt="Avatar Image"
               />

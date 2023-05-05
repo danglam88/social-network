@@ -14,7 +14,11 @@ const Chat = ({ userId }) => {
     if (!chatListVisible) {
       try {
       ChatService.fetchChats().then((response) => {
-        setAvailableChats(response.data);
+        if (response && response.data) {
+          setAvailableChats(response.data);
+        } else {
+          setAvailableChats([]);
+        }
       });
       } catch (error) {
         console.log(error);

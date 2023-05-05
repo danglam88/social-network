@@ -10,6 +10,8 @@ const User = ({ user }) => {
   const [posts, setPosts] = useState([]);
   const [follows, setFollows] = useState(null);
   const [showChatWindow, setShowChatWindow] = useState(false);
+  const [chatuserName, setUserName] = useState('')
+  const [avatar, setAvatar] = useState('')
 
   useEffect(() => {
     postsService
@@ -25,6 +27,9 @@ const User = ({ user }) => {
         setFollows(response.data);
       })
       .catch((error) => console.log(error));
+      setUserName(userName);
+      setAvatar(user.avatar_url);
+      console.log(user);
   }, []);
 
   const openChatWindow = () => {
@@ -36,6 +41,7 @@ const User = ({ user }) => {
   };
 
   const userName = user.nick_name ? user.nick_name : `${user.first_name} ${user.last_name}`;
+  
 
   return (
     <div>
@@ -74,7 +80,7 @@ const User = ({ user }) => {
     }}
     tabIndex="0"
   >
-    <ChatWindow chat={{ GroupID: 0, ChatID: user.id }} onClose={closeChatWindow} />
+    <ChatWindow chat={{ GroupID: 0, ChatID: user.id }} username={chatuserName} onClose={closeChatWindow} avatarUrl={avatar} />
 
   </div>
 )}

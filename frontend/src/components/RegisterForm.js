@@ -8,7 +8,7 @@ const RegisterForm = () => {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [dateOfBirth, setDateOfBirth] = useState('')
-    const [avatar, setAvatar] = useState('') //optional
+    const [picture, setAvatar] = useState('') //optional
     const [nickname, setNickname] = useState('') //optional
     const [aboutMe, setAboutMe] = useState('') //optional
 
@@ -76,7 +76,7 @@ const RegisterForm = () => {
                     <label>Date of Birth</label>
                 </div>
                 <div className="input-container">
-                    <input type="text" name="avatar" value={avatar} onChange={handleAvatarChange} placeholder=" " />
+                    <input type="file" name="picture" value={picture} onChange={handleAvatarChange} placeholder=" " />
                     <label>Avatar URL</label>
                 </div>
                 <div className="input-container">

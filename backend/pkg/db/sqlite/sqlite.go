@@ -538,7 +538,6 @@ func (db *Db) GetUserID(username string) int {
 		//fmt.Fprintln(os.Stderr, err)
 		return -1
 	}
-
 	return userId
 }
 
@@ -561,7 +560,11 @@ func (db *Db) EmailExists(mail string) bool {
 	if err != nil {
 		return false
 	}
-	return count > 0
+	if count > 0 {
+		return true
+	} else {
+		return false
+	}
 }
 
 func (db *Db) CreateUser(username, password, email, firstName, lastName, birth, about, avatar string, prev int) string {

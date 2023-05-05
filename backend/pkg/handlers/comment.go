@@ -58,7 +58,7 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	imgUrl, imgErr := UploadFile(w, r)
+	imgUrl, imgErr := UploadFile(w, r, false)
 	if imgErr != nil {
 		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
 		return

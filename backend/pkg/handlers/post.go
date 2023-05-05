@@ -15,6 +15,7 @@ import (
 )
 
 const MAX_SIZE = 50000000
+const MAX_SIZE_AVATAR = 5000000
 
 func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
 	var err error
@@ -138,7 +139,7 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	imgUrl, imgErr := UploadFile(w, r)
+	imgUrl, imgErr := UploadFile(w, r, false)
 	if imgErr != nil {
 		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
 		return
@@ -224,7 +225,7 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 }
 
 // Function to upload a file
-func UploadFile(w http.ResponseWriter, r *http.Request) (imgUrl string, err error) {
+func UploadFile(w http.ResponseWriter, r *http.Request, isAvatar bool) (imgUrl string, err error) {
 	file, handler, err := r.FormFile("picture")
 	if err == http.ErrMissingFile {
 		return imgUrl, nil
@@ -236,7 +237,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) (imgUrl string, err erro
 	//fmt.Printf("Uploaded File: %+v\n", handler.Filename)
 	//fmt.Printf("File Size: %+v\n", handler.Size)
 	//fmt.Printf("MIME Header: %+v\n", handler.Header)
-	if handler.Size > MAX_SIZE {
+	if (isAvatar && handler.Size > MAX_SIZE_AVATAR) || (!isAvatar && handler.Size > MAX_SIZE) {
 		return imgUrl, errors.New("max size is 20Mb")
 	}
 	// Detect content type of file

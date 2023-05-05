@@ -11,7 +11,7 @@ const postConfig = {
   mode: 'no-cors',
   headers : {
     "Authorization": `Bearer ${clientToken}`,
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'multipart/form-data'
   }
 };
 
@@ -31,6 +31,7 @@ const register = async formData => {
   const data = {}
 
   for (const [key, value] of formData.entries()) {
+    console.log(key, value)
     data[key] = value
   }
 
@@ -49,7 +50,7 @@ const register = async formData => {
     })
     .catch(error => {
       const resultWrapper = createOrUpdateResultWrapper()
-      if (error.response.data[0].Data) {
+      if (error.response && error.response.data[0].Data) {
         error.response.data[0].Data.forEach(error => {
           const errorDiv = document.createElement('div')
           errorDiv.textContent = error.Message
@@ -58,7 +59,9 @@ const register = async formData => {
       } else {
         resultWrapper.textContent = error.message
       }
-      form.appendChild(resultWrapper)
+      if (form) {
+        form.appendChild(resultWrapper)
+      }
     })
 }
 

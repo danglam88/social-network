@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -24,7 +25,7 @@ type ValidationJson struct {
 }
 
 func RegisterPost(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
+	if err := r.ParseMultipartForm(MAX_SIZE); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -35,13 +36,17 @@ func RegisterPost(w http.ResponseWriter, r *http.Request) {
 	firstName := r.FormValue("firstName")
 	lastName := r.FormValue("lastName")
 	birth := r.FormValue("dateOfBirth")
-	avatar := r.FormValue("avatar")
 	username := r.FormValue("nickname")
 	about := r.FormValue("aboutMe")
+	ImgUrl, imgErr := UploadFile(w, r, true)
+	if imgErr != nil {
+		fmt.Println(imgErr)
+	}
+	if ImgUrl == "" {
+		ImgUrl = SetRandomAvatar()
+	}
 
-	// fmt.Println(email, password, repassword, firstName, lastName, birth, avatar, username, about)
-
-	json, status := validateForm(email, password, repassword, firstName, lastName, birth, avatar, username, about)
+	json, status := validateForm(email, password, repassword, firstName, lastName, birth, ImgUrl, username, about)
 	// fmt.Println(string(json))
 	w.WriteHeader(status)
 	io.WriteString(w, string(json))
@@ -74,16 +79,14 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 	registered_error := ""
 
 	if DB.GetUserID(username) == -1 && ValidatePasswordUsername(username, false) &&
-
 		ValidatePasswordUsername(password, true) && !DB.EmailExists(email) &&
-		len(username) > 3 && len(username) < 15 &&
-		DB.GetEmail(email) != email &&
 		password == repassword && len(password) > 7 && len(password) < 21 &&
-		ValidateMail(email) && len(firstName) > 2 && len(firstName) < 14 &&
+		ValidateMail(email) && len(firstName) >= 2 && len(firstName) < 14 &&
 		ValidatePasswordUsername(firstName, false) &&
-		len(lastName) > 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) &&
+		len(lastName) >= 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) &&
 		isValidDateOfBirth(birth) && validateAboutMe(about) == "" {
 		passwordH, _ := HashPassword(password)
+
 		//ADD USER TO DB
 		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, avatar, 1) == "200 OK" {
 			// APPENDING NEW USER TO JSON FILE
@@ -179,6 +182,8 @@ func ValidatePasswordUsername(pwd string, stat bool) bool {
 		if !A || !a || !numb {
 			validate = false
 		}
+	} else if len(pwd) == 0 {
+		validate = true
 	}
 	return validate
 }
@@ -245,4 +250,11 @@ func validateAboutMe(aboutMe string) string {
 	}
 
 	return ""
+}
+
+func SetRandomAvatar() string {
+	//pick a random avatar from upload directory
+	avatars := []string{"fox.jpeg", "racoon.jpeg", "monkey.jpeg", "polar_bear.jpeg", "red_panda.jpeg", "tiger.jpeg"}
+	ImgUrl := "/upload/" + avatars[rand.Intn(len(avatars))]
+	return ImgUrl
 }

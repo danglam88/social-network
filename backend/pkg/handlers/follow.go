@@ -5,19 +5,18 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	db "socialnetwork/backend/pkg/db/sqlite"
 	"strconv"
 )
 
 type PendingFollow struct {
-	User         db.User `json:"user"`
-	CheckPending bool    `json:"check_pending"`
+	UserId       int  `json:"user_id"`
+	CheckPending bool `json:"check_pending"`
 }
 
 type PendingResolve struct {
-	UserId   int     `json:"user_id"`
-	Follower db.User `json:"follow"`
-	Accepted bool    `json:"accept"`
+	UserId     int  `json:"user_id"`
+	FollowerId int  `json:"follow_id"`
+	Accepted   bool `json:"accept"`
 }
 
 func GetFollows(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +66,9 @@ func ResolvePending(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = DB.ResolvePending(pendingResolve.UserId, pendingResolve.Follower, pendingResolve.Accepted)
+	followerUser := DB.GetUser(pendingResolve.FollowerId)
+
+	err = DB.ResolvePending(pendingResolve.UserId, followerUser, pendingResolve.Accepted)
 	if err != nil {
 		GetErrResponse(w, "Error while resolving pending", http.StatusInternalServerError)
 		return
@@ -96,9 +97,10 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := GetLoggedInUserID(w, r)
+	followedUser := DB.GetUser(pendingFollow.UserId)
 
 	if !pendingFollow.CheckPending {
-		err = DB.ToggleFollow(userId, pendingFollow.User)
+		err = DB.ToggleFollow(userId, followedUser)
 		if err != nil {
 			GetErrResponse(w, "Error while toggling follow", http.StatusInternalServerError)
 			return
@@ -109,7 +111,7 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 		res, _ := json.Marshal(response)
 		io.WriteString(w, string(res))
 	} else {
-		isPending, err := DB.CheckPending(userId, pendingFollow.User)
+		isPending, err := DB.CheckPending(userId, followedUser)
 		if err != nil {
 			GetErrResponse(w, "Error while checking pending", http.StatusInternalServerError)
 			return

@@ -19,7 +19,7 @@ const Post = ({post, type, userId}) => {
   return (
       <div className="post-wrapper">
         <div className="wrote">
-        <img className="avatar-symbol" src={`http://localhost:8080${post.creator_avatar}`} alt=""/>
+          <img className="avatar-symbol" src={`http://localhost:8080${post.creator_avatar}`} alt=""/>
           {type === "you" || type !== "group" ? <span>{type} posted:</span> : userId != post.creator_id ? <span>{post.creator_name} posted:</span> : <span>you posted:</span>}
         </div>
         <div>

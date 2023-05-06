@@ -38,7 +38,7 @@ const register = async formData => {
   axios
     .post(registerUrl, data, postConfig)
     .then(response => {
-        if (response.status == 200){
+        if (response.status == 200) {
             const resultWrapper = createOrUpdateResultWrapper()
             resultWrapper.textContent = 'Registered with success!'
             form.appendChild(resultWrapper)

@@ -28,17 +28,20 @@ const Notifications = () => {
 
     return (
         <>
-        <h3>Notifications</h3>
-        <div>     
-            {notifications.group_invitations && notifications.group_invitations.map(notification => {
-                const inviteKey = "invite" + notification.id;
-                return <Invitation group={notification} key={inviteKey} handleRemoveGroup={() => handleRemoveGroup(notification.id, false, true)}/>
-            })}
-            {notifications.group_requests && notifications.group_requests.map(notification => {
-                const requestKey = "request" + notification.id;
-                return <Request group={notification} key={requestKey} handleRemoveGroup={() => handleRemoveGroup(notification.id, true, false)}/>
-            })}
-        </div>
+        {(notifications.group_invitations || notifications.group_requests) &&
+        <div>
+            <h3>Notification(s):</h3>
+            <div>     
+                {notifications.group_invitations && notifications.group_invitations.map(notification => {
+                    const inviteKey = "invite" + notification.id;
+                    return <Invitation group={notification} key={inviteKey} handleRemoveGroup={() => handleRemoveGroup(notification.id, false, true)}/>
+                })}
+                {notifications.group_requests && notifications.group_requests.map(notification => {
+                    const requestKey = "request" + notification.id;
+                    return <Request group={notification} key={requestKey} handleRemoveGroup={() => handleRemoveGroup(notification.id, true, false)}/>
+                })}
+            </div>
+        </div>}
         </>
     )
 }

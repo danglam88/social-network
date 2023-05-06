@@ -24,9 +24,6 @@ const sortMessagesByDate = messages => {
 };
 
 const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl }) => {
-  console.log(avatarUrl);
-  console.log(chat.AvatarUrl);
-
   const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);

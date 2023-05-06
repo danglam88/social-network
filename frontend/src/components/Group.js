@@ -1,10 +1,10 @@
+import React, { useState } from "react"
 import EventList from "./EventList"
 import Posts from "./Posts"
 import PostForm from "./PostForm"
 import FollowsWrapper from './FollowsWrapper'
 import GroupUsersSelect from "./GroupUsersSelect"
-import ChatWindow from './ChatWindow';
-import React, { useState } from "react";
+import ChatWindow from './ChatWindow'
 
 const Group = ({group, setGroupInfo}) => {
   const membersCount = group.members?.length === 0 ? 0 : group.members.length
@@ -23,14 +23,14 @@ const Group = ({group, setGroupInfo}) => {
 
         <h1>{group.name}</h1>
         <div className="group-desc">{group.description}</div>
-        <div className="group-created-at">Group creation: {group.created_at}</div>
+        <div className="group-created-at">Group creation: {group.created_at.replace("T", " ").replace("Z", "")}</div>
         <div className="group-members">Total members: {membersCount}</div>
         <ul className="group-users-buttons">
           <li>
             <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings= {() => {}} />
           </li>
           <li>
-            <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name}/>
+            <GroupUsersSelect buttonName="Invite user(s):" groupId={group.id} groupName={group.name}/>
           </li>
         </ul>
         <EventList list={group.events} groupId={group.id}/>

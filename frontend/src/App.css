@@ -623,3 +623,7 @@ ul.group-users-buttons {
     transform: rotate(360deg);
   }
 }
+
+.header span:hover, .user-item span:hover, .icon:hover {
+  cursor: pointer;
+}

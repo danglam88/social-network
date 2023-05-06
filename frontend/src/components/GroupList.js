@@ -81,14 +81,16 @@ const NewGroup = ({handleNewGroup}) => {
   
     return (
         <>
-        <h3>Creating a new group</h3>
+        <h3>Create a new group</h3>
         <form onSubmit={handleCreateGroup}>
         <div>
-            title: <input value={title} onChange={handleTitleChange}/>
+            Title: <input value={title} onChange={handleTitleChange}/>
         </div>
+        <br />
         <div>
-            description: <textarea value={description} onChange={handleDescriptionChange}/>
-        </div>   
+            Description: <textarea value={description} onChange={handleDescriptionChange}/>
+        </div>
+        <br />   
         <div>
             <button type="submit">Create group</button>
         </div>
@@ -168,7 +170,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
             <>
             {isGroupDetailPage ? (<Group group={groupInfo} key={groupInfo.id} setGroupInfo={setGroupInfo} />) : (
             <>
-            <h1>Groups</h1>
+            <h1>Group(s):</h1>
                 <div>
                     {groupsList}
                     <div className="group-wrapper">

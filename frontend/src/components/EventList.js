@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import Event from "./Event"
 import groupService from "../services/GroupsService"
@@ -68,14 +68,17 @@ const NewEvent = ({groupId, handleNewEvent}) => {
         <h2>Create a new event</h2>
         <form onSubmit={handleCreateEvent}>
         <div>
-            title: <input value={title} onChange={handleTitleChange} required/>
+            Title: <input value={title} onChange={handleTitleChange} required/>
         </div>
+        <br />
         <div>
-            description: <textarea value={description} onChange={handleDescriptionChange} required/>
-        </div>   
-        <div>
-            occur date <input type="datetime-local" name="dateOfBirth" value={occurDate} onChange={handleOccurDateChange} placeholder=" " required />
+            Description: <textarea value={description} onChange={handleDescriptionChange} required/>
         </div>
+        <br />   
+        <div>
+            Occur date: <input type="datetime-local" name="dateOfBirth" value={occurDate} onChange={handleOccurDateChange} placeholder=" " required />
+        </div>
+        <br />
         <div>
             <button type="submit">Create event</button>
         </div>
@@ -114,7 +117,7 @@ const EventList = ({list, groupId}) => {
    
     return (
         <>
-            <h2>Events</h2>
+            <h2>Event(s):</h2>
             <div className="group-events">
             {events}
             </div>

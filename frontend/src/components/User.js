@@ -49,7 +49,7 @@ const User = ({ user }) => {
       <PersonalInfo user={user} type="user" handleUpdateFollows={() => {}} />
       <div>
         {follows && (
-          <div>
+          <div className="follow">
             {follows.followers && (
               <FollowsWrapper
                 follows={follows.followers}
@@ -68,6 +68,7 @@ const User = ({ user }) => {
         )}
       </div>
       {posts && <Posts posts={posts} type={userName} />}
+      <br />
       <button onClick={openChatWindow}>Open Chat</button>
       {showChatWindow && (
   <div

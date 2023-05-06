@@ -83,7 +83,7 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     }
 
     return (
-        <div>
+        <div className="user-item">
             {updatedUser.nick_name ? (
                 <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}>{updatedUser.nick_name}</span>
             ) : (
@@ -91,7 +91,7 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
             )}
 
             {userProfilePending ? (
-                <span className='button-small pending-users'>Pending</span>
+                <button className='button-small pending-users'>Pending</button>
             ) : (
                 userProfileFollowed ? (
                     <button className="button-small unfollow-users" onClick={() => {toggleFollow(false)}}>Unfollow</button>

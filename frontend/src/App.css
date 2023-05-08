@@ -224,7 +224,6 @@ button:focus {
 }
 
 .button-small {
-  /* background-color: #FF2E63; */
   color: white;
   border: none;
   padding: 4px 8px;
@@ -570,7 +569,6 @@ span + .button-small {
 ul.group-users-buttons {
   display: flex;
   list-style-type: none;
-  /* margin: 0; */
   padding: 0
 }
 
@@ -626,4 +624,61 @@ ul.group-users-buttons {
 
 .header span:hover, .user-item span:hover, .icon:hover {
   cursor: pointer;
+}
+
+/* Chat */
+
+.chat-bubble {
+  width: 50px;
+  height: 50px;
+  background-color: #DBBBF5;
+  color: white;
+  display: flex;
+  bottom: 20px;
+  right: 20px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+
+}
+
+.chat-list-container h2 {
+  margin: 0;
+  background-color: #4C2C72;
+  color: white;
+  text-align: center;
+  border: white;
+}
+
+.chat-list {
+  position: fixed;
+  bottom: 104px;
+  right: 20px;
+  background-color: #DBBBF5;
+  border-radius: 5px;
+  width: 150px;
+  height: 200px;
+  overflow: hidden;
+  padding: 0
+}
+
+.chat-list-container li:hover {
+  background-color: #92AFD7;
+  color: white;
+}
+
+.chat-list-container li {
+  border-bottom: 1px #4C2C72 solid;
+  text-indent: 5px;
+}
+
+.chat-list-container ul {
+  line-height: 2;
+  list-style-type: none;
+  padding: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  text-decoration: none;
 }

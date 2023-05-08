@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func CommentGet(w http.ResponseWriter, r *http.Request) {
@@ -20,6 +21,9 @@ func CommentGet(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
 		comments, _ := DB.GetCommentsByPost(postId)
+		for i := range comments {
+			comments[i].Content = strings.ReplaceAll(comments[i].Content, "\r\n", "<br>")
+		}
 
 		w.WriteHeader(http.StatusAccepted)
 		res, _ := json.Marshal(comments)

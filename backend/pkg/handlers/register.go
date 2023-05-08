@@ -144,7 +144,7 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 		user = append(user, DataValidation{Field: "last name", Message: lastName_error})
 	}
 	if !isValidDateOfBirth(birth) {
-		birth_error := "You should have at least 5 years old"
+		birth_error := "You should be at least 5 years old"
 		user = append(user, DataValidation{Field: "birth", Message: birth_error})
 	}
 	about_err := validateAboutMe(about)

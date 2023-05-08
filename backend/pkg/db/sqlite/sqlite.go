@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"sort"
+	"strings"
 	"syscall"
 	"time"
 
@@ -644,6 +645,9 @@ func (db *Db) GetGroup(id, userId int) (group Group, err error) {
 	if err != nil {
 		fmt.Println(err)
 		return group, err
+	}
+	for i := range posts {
+		posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
 	}
 
 	//sort posts reversed

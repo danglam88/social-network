@@ -1,9 +1,15 @@
-export const TextRegex = /^[\x20-\x7E]+$/;
+export const TextRegex = /^[\x20-\x7E\n\t]+$/;
 export const TagRegex = /<[^>]*>/g;
 export const ImageRegex = /(jpe?g|png|gif|svg)/;
 export const MaxSize = 50000000;
 
 function ValidateField(validateFieldName, content, minlength = 1, maxlength = 3000) {
+    if (validateFieldName === "Title" || validateFieldName === "Content") {
+      let ckeckEmptyField = content.replace(/\s/g, '');
+      if (ckeckEmptyField.length === 0) {
+        return validateFieldName+" can not consist of only spaces";
+      }
+    }
     
     if ((validateFieldName === "Title" || validateFieldName === "Content") && content.length < minlength) {
       return validateFieldName+" is required";

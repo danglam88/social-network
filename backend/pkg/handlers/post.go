@@ -40,6 +40,9 @@ func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
 		return
 	}
+	for i := range posts {
+		posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
+	}
 	//sort posts reversed
 	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
 		posts[i], posts[j] = posts[j], posts[i]
@@ -78,6 +81,9 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
 		return
+	}
+	for i := range posts {
+		posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
 	}
 	//sort posts reversed
 	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
@@ -208,16 +214,15 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 			errorCheck = true
 		}
 	}
-
-	regex := regexp.MustCompile(`^[\p{L}\p{N}\p{P}\p{S}\p{Z}\p{Sm}\p{Sc}\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}]+$`)
-	if !errorCheck && !regex.MatchString(field) {
-		errorMessage = fieldName + " can only contain letters, numbers, special characters, and emojis"
-		errorCheck = true
-	}
-
 	regexTag := regexp.MustCompile("<[^>]*>")
 	if !errorCheck && regexTag.MatchString(field) {
 		errorMessage = fieldName + " can not contain html tags"
+		errorCheck = true
+	}
+
+	regex := regexp.MustCompile(`^[\p{L}\p{N}\p{P}\p{S}\p{Z}\p{Sm}\p{Sc}\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\r\n]+$`)
+	if !errorCheck && !regex.MatchString(field) {
+		errorMessage = fieldName + " can only contain letters, numbers, special characters, and emojis"
 		errorCheck = true
 	}
 

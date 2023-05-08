@@ -5,7 +5,7 @@ const Comment = ({ comment, userId }) => {
           <img className="avatar-symbol" src={`http://localhost:8080${comment.UserAvatar}`} alt=""/>
           {userId != comment.UserID ? <span>{comment.UserName} wrote:</span> : <span>you wrote:</span>}
         </div>
-        <div className="comment-content">{comment.Content}</div>
+        <div className="comment-content" dangerouslySetInnerHTML={{ __html: comment.Content }}></div>
         <div className="created-at">created at {comment.CreatedAt.replace("T", " ").replace("Z", "")}</div>
         {comment.ImgUrl === "" ? null : (
           <div className="comment-image">

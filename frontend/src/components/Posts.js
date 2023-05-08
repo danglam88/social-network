@@ -4,7 +4,7 @@ import CommentForm from './CommentForm.js'
 import commentsService from '../services/CommentsService'
 
 const Post = ({post, type, userId}) => {
-  console.log("Post:", post)
+  console.log(post, type, userId)
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -14,18 +14,18 @@ const Post = ({post, type, userId}) => {
         setComments(response.data);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [post.id]);
 
   return (
       <div className="post-wrapper">
         <div className="wrote">
           <img className="avatar-symbol" src={`http://localhost:8080${post.creator_avatar}`} alt=""/>
-          {type === "you" || type !== "group" ? <span>{type} posted:</span> : userId != post.creator_id ? <span>{post.creator_name} posted:</span> : <span>you posted:</span>}
+          {type === "you" || type !== "group" ? <span>{type} posted:</span> : userId !== post.creator_id ? <span>{post.creator_name} posted:</span> : <span>you posted:</span>}
         </div>
         <div>
           <h3>{post.title}</h3>
         </div>
-        <div>{post.content}</div>
+        <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
         <div className="created-at">created at {post.created_at.replace("T", " ").replace("Z", "")}</div>
         {post.img_url === "" ? null : (
           <div className="post-image">

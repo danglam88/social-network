@@ -88,6 +88,15 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
   }
 
   const handleSuccessInvitation = () => {
+    usersService.groupUsers(groupId)
+      .then(response => {
+        if (response.data) {
+          setUsers(response.data)
+        } else {
+          setUsers([])
+        }
+      })
+      .catch(error => console.log(error))
 
     invitedUsers.forEach(userId => {
 
@@ -103,11 +112,12 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
     setInvitedUsers([])
   }
 
-  if (users.length > 0) {
-    return (
+  return (
       <div>
+        {users && users.length > 0 &&
+        <div>
           <button className="button-small" onClick={showList}>{buttonName}</button>
-          {isVisible ? (
+          {isVisible &&
           <form onSubmit={handleInviteUsers}>
             <br />
             {users.map(user => {
@@ -116,9 +126,10 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
             })}
             <br />
             <button type="submit">Invite</button>
-          </form>) : (<></>)}
+          </form>}
+        </div>}
       </div>
-  )}
+  )
 }
     
 export default GroupUsersSelect

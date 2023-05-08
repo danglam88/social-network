@@ -5,32 +5,27 @@ import ValidateField from "../services/ValidationService";
 const CommentForm = ({ postId, setComments }) => {
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const uploadDiv = document.getElementById(`upload-comment${postId}`)
+  const [picture, setCommentPicture] = useState(null);
+
+  const uploadDiv = document.getElementById(`upload-comment${postId}`);
   if (uploadDiv) {
-    uploadDiv.className = "upload"
+    uploadDiv.className = "upload";
   }
 
   const handleContentChange = (event) => {
     setContent(event.target.value);
   };
 
-  let [picture, setCommentPicture] = useState(null);
-
   const handleCommentPictureChange = (event) => {
     setCommentPicture(event.target.files[0]);
     if (event.target.files[0] != null) {
-      uploadDiv.innerHTML = `${event.target.files[0].name} attached!`
+      uploadDiv.innerHTML = `${event.target.files[0].name} attached!`;
     }
   };
 
-  useEffect(() => {
-    // Add your logic here
-  }, [picture]);
-  
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    uploadDiv.innerHTML = ""
+    uploadDiv.innerHTML = "";
 
     // Validation
     let Message = ValidateField("Content", content, 1, 1000);

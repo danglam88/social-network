@@ -13,6 +13,11 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const uploadDiv = document.getElementById("upload-post");
+  if (uploadDiv) {
+    uploadDiv.className = "upload";
+  }
+
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
@@ -33,10 +38,14 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   const handlePictureChange = (event) => {
     setPicture(event.target.files[0]);
+    if (event.target.files[0] != null) {
+      uploadDiv.innerHTML = `${event.target.files[0].name} attached!`;
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    uploadDiv.innerHTML = "";
 
     // Validation
     let Message = ValidateField("Title", title, 1, 30);
@@ -184,6 +193,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
               name="picture"
               onChange={handlePictureChange}
             />
+            <div id="upload-post"></div>
           </div>
           <div>
             <button type="submit">Publish</button>

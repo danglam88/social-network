@@ -36,6 +36,7 @@ func RegisterPost(w http.ResponseWriter, r *http.Request) {
 	firstName := r.FormValue("firstName")
 	lastName := r.FormValue("lastName")
 	birth := r.FormValue("dateOfBirth")
+	privacyName := r.FormValue("privacy")
 	username := r.FormValue("nickname")
 	about := r.FormValue("aboutMe")
 	ImgUrl, imgErr := UploadFile(w, r, true)
@@ -45,8 +46,12 @@ func RegisterPost(w http.ResponseWriter, r *http.Request) {
 	if ImgUrl == "" {
 		ImgUrl = SetRandomAvatar()
 	}
+	privacy := 0
+	if privacyName == "private" {
+		privacy = 1
+	}
 
-	json, status := validateForm(email, password, repassword, firstName, lastName, birth, ImgUrl, username, about)
+	json, status := validateForm(email, password, repassword, firstName, lastName, birth, ImgUrl, username, about, privacy)
 	// fmt.Println(string(json))
 	w.WriteHeader(status)
 	io.WriteString(w, string(json))
@@ -69,7 +74,7 @@ func addUsertoJson(user []DataValidation, status int) []byte {
 }
 
 // Calling HandleRegistration function whenever there is a request to the URL
-func validateForm(email, password, repassword, firstName, lastName, birth, avatar, username, about string) ([]byte, int) {
+func validateForm(email, password, repassword, firstName, lastName, birth, avatar, username, about string, privacy int) ([]byte, int) {
 	var user []DataValidation
 	user_error := ""
 	email_error := ""
@@ -88,7 +93,7 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 		passwordH, _ := HashPassword(password)
 
 		//ADD USER TO DB
-		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, avatar, 1) == "200 OK" {
+		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, avatar, privacy) == "200 OK" {
 			// APPENDING NEW USER TO JSON FILE
 			user = append(user, DataValidation{})
 			return addUsertoJson(user, 200), http.StatusOK

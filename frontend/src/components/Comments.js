@@ -3,7 +3,7 @@ const Comment = ({ comment, userId }) => {
       <div className="comment-wrapper">
         <div className="wrote">
           <img className="avatar-symbol" src={`http://localhost:8080${comment.UserAvatar}`} alt=""/>
-          {userId != comment.UserID ? <span>{comment.UserName} wrote:</span> : <span>you wrote:</span>}
+          {userId !== comment.UserID ? <span>{comment.UserName} wrote:</span> : <span>you wrote:</span>}
         </div>
         <div className="comment-content" dangerouslySetInnerHTML={{ __html: comment.Content }}></div>
         <div className="created-at">created at {comment.CreatedAt.replace("T", " ").replace("Z", "")}</div>

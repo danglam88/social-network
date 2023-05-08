@@ -1,4 +1,5 @@
 import axios from 'axios'
+import loginService from './LoginService'
 
 const registerUrl = 'http://localhost:8080/register'
 
@@ -27,6 +28,7 @@ const createOrUpdateResultWrapper = () => {
 }
 
 const register = async formData => {
+  //console.log(formData)
   const form = document.getElementById('div-form')
   const data = {}
 
@@ -38,10 +40,20 @@ const register = async formData => {
   axios
     .post(registerUrl, data, postConfig)
     .then(response => {
-        if (response.status == 200) {
+        if (response.status === 200) {
+          //console.log(formData)
+          if(formData.isAutoLogin) {
+            const loginData = {
+              email: formData.email,
+              password: formData.password
+            }
+            loginService.login(loginData)
+          }else{
+
             const resultWrapper = createOrUpdateResultWrapper()
             resultWrapper.textContent = 'Registered with success!'
             form.appendChild(resultWrapper)
+          }
         } else {
             const resultWrapper = createOrUpdateResultWrapper()
             resultWrapper.textContent = `Registration failed with status ${response.status}.`

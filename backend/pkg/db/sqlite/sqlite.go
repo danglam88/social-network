@@ -587,7 +587,7 @@ func (db *Db) EmailExists(mail string) bool {
 
 func (db *Db) CreateUser(username, password, email, firstName, lastName, birth, about, avatar string, prev int) string {
 	// insert into user table
-	_, err := db.connection.Exec("insert into user(email,passwrd,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me) values(?,?,?,?,?,?,?,?,?,?)", email, password, firstName, lastName, birth, 0, time.Now().Local().Format(time_format), avatar, username, about)
+	_, err := db.connection.Exec("insert into user(email,passwrd,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me) values(?,?,?,?,?,?,?,?,?,?)", email, password, firstName, lastName, birth, prev, time.Now().Local().Format(time_format), avatar, username, about)
 	if err != nil {
 		log.Fatal(err)
 	}

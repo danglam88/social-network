@@ -8,9 +8,11 @@ const RegisterForm = () => {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [dateOfBirth, setDateOfBirth] = useState('')
+    const [isPrivate, setPrivacy] = useState('public')
     const [picture, setAvatar] = useState('') //optional
     const [nickname, setNickname] = useState('') //optional
     const [aboutMe, setAboutMe] = useState('') //optional
+    const [isAutoLogin, setAutoLogin] = useState('false')
 
         const handleEmailChange = (event) => {
             setEmail(event.target.value)
@@ -30,6 +32,9 @@ const RegisterForm = () => {
         const handleDateOfBirthChange = (event) => {
             setDateOfBirth(event.target.value)
         }
+        const handlePrivacyChange = (event) => {
+            setPrivacy(event.target.value)
+        }
         const handleAvatarChange = (event) => {
             setAvatar(event.target.value)
         }
@@ -39,9 +44,13 @@ const RegisterForm = () => {
         const handleAboutMeChange = (event) => {
             setAboutMe(event.target.value)
         }
+        const handleAutoLoginChange = (event) => {
+            setAutoLogin(event.target.value)
+        }
 
         const handleRegister = (event) => {
             event.preventDefault()
+            console.log("Registering...", email, password, password2, firstName, lastName, dateOfBirth, isPrivate, picture, nickname, aboutMe, isAutoLogin)
             const formData = new FormData(event.target);
 
             registerService.register(formData)
@@ -76,6 +85,12 @@ const RegisterForm = () => {
                     <label>Date of Birth</label>
                 </div>
                 <div className="input-container">
+                    <select id="privacy" name="privacy" value={isPrivate} onChange={handlePrivacyChange}>
+                        <option value="public">Public Account</option>
+                        <option value="private">Private Account</option>
+                    </select>
+                </div>
+                <div className="input-container">
                     <input type="file" name="picture" value={picture} onChange={handleAvatarChange} placeholder=" " />
                     <label>Avatar URL</label>
                 </div>
@@ -86,6 +101,10 @@ const RegisterForm = () => {
                 <div className="input-container">
                     <input type="text" name="aboutMe" value={aboutMe} onChange={handleAboutMeChange} placeholder=" " />
                     <label>About Me</label>
+                </div>
+                <div className="input-container">
+                    <input type="checkbox" value={isAutoLogin} onChange={handleAutoLoginChange}/>
+                    <label>Log in automatically after registration</label>
                 </div>
                 <div>
                     <button type="submit">Register</button>

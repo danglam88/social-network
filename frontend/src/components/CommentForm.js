@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import commentsService from "../services/CommentsService";
 import ValidateField from "../services/ValidationService";
 

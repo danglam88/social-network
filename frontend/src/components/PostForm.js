@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import followsService from "../services/FollowsService";
+import React, { useState } from "react";
 import postsService from "../services/PostsService";
 import ValidateField from "../services/ValidationService";
 import groupService from "../services/GroupsService";

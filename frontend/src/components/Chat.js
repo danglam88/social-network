@@ -36,7 +36,7 @@ const Chat = ({ userId }) => {
   };
 
   return (
-    <div className="chat-container">
+    <>
       <div className="chat-bubble" onClick={toggleChatList}>
         💬
       </div>
@@ -62,7 +62,7 @@ const Chat = ({ userId }) => {
           <ChatWindow chat={selectedChat} chatId={getOtherUserId(selectedChat)} onClose={closeChatWindow} />
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -55,7 +55,7 @@ const Group = ({group, setGroupInfo}) => {
           }}
           tabIndex="0"
         >
-          <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} onClose={closeChatWindow} />
+          <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} onClose={closeChatWindow} username={group.name} avatarUrl={group.avatar_url}/>
         </div>
         )}
       </>

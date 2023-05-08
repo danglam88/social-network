@@ -91,7 +91,7 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
             )}
 
             {userProfilePending ? (
-                <button className='button-small pending-users'>Pending</button>
+                <button className="button-small pending-users">Pending</button>
             ) : (
                 userProfileFollowed ? (
                     <button className="button-small unfollow-users" onClick={() => {toggleFollow(false)}}>Unfollow</button>

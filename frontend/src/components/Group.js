@@ -23,7 +23,7 @@ const Group = ({group, setGroupInfo}) => {
         <h1>{group.name}</h1>
         <div className="group-desc">{group.description}</div>
         <div className="group-created-at">Group creation: {group.created_at.replace("T", " ").replace("Z", "")}</div>
-        <div className="group-members">Total members: {membersCount}</div>
+        <div className="group-members">Total member(s): {membersCount}</div>
         {group.avatar_url &&
             <div>
               Avatar:
@@ -34,7 +34,7 @@ const Group = ({group, setGroupInfo}) => {
             </div>}
         <ul className="group-users-buttons">
           <li>
-            <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings= {() => {}} />
+            <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings={() => {}} />
           </li>
           <li>
             <GroupUsersSelect buttonName="Invite user(s):" groupId={group.id} groupName={group.name}/>

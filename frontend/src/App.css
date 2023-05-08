@@ -550,8 +550,7 @@ span + .button-small {
 }
 
 .requested {
-  background-color: #4C2C72;
-  cursor: default !important;
+  background-color: #4C2C72
 }
 
 .group-desc {

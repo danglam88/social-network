@@ -80,6 +80,7 @@ type Group struct {
 	Members     []User    `json:"members"`
 	IsMember    bool      `json:"is_member"`
 	IsRequested bool      `json:"is_requested"`
+	IsInvited   bool      `json:"is_invited"`
 	Posts       []Post    `json:"posts"`
 	Events      []Event   `json:"events"`
 }
@@ -743,12 +744,12 @@ func (db *Db) GetVotes(eventId, userId int) (votedYes, votedNo, userVote int, er
 
 func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
 
-	rows, err := db.connection.Query("select id,creator_id,group_name,descript,created_at from user_group")
+	rows, err := db.connection.Query("select id,creator_id,group_name,descript,created_at,avatar_url from user_group")
 	if err != nil {
 		return groups, err
 	}
 
-	userGroups, userRequests, err := db.GetUserGroups(userId)
+	userGroups, userRequests, userInvites, err := db.GetUserGroups(userId)
 
 	if err != nil {
 		return groups, err
@@ -756,7 +757,7 @@ func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
 
 	var group Group
 	for rows.Next() {
-		err := rows.Scan(&group.ID, &group.CreatorId, &group.GroupName, &group.Description, &group.CreatedAt)
+		err := rows.Scan(&group.ID, &group.CreatorId, &group.GroupName, &group.Description, &group.CreatedAt, &group.AvatarUrl)
 		if err != nil {
 			return groups, err
 		}
@@ -766,6 +767,7 @@ func (db *Db) GetAllGroups(userId int) (groups []Group, err error) {
 		group.Members = members
 		group.IsMember = userGroups[group.ID]
 		group.IsRequested = userRequests[group.ID]
+		group.IsInvited = userInvites[group.ID]
 
 		groups = append(groups, group)
 	}
@@ -787,7 +789,6 @@ func (db *Db) GetGroupMembers(groupId int) (members []User) {
 		err := rows.Scan(&userId)
 		if err != nil {
 			fmt.Println(err)
-
 		}
 		userIds = append(userIds, userId)
 	}
@@ -980,16 +981,17 @@ func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) 
 	return err
 }
 
-func (db *Db) GetUserGroups(userId int) (groups map[int]bool, requests map[int]bool, err error) {
+func (db *Db) GetUserGroups(userId int) (groups, requests, invites map[int]bool, err error) {
 
 	groups = make(map[int]bool)
 	requests = make(map[int]bool)
+	invites = make(map[int]bool)
 
 	query := "select group_id,is_requested,is_approved from group_relation where user_id=?"
 	rows, err := db.connection.Query(query, userId)
 
 	if err != nil {
-		return groups, requests, err
+		return groups, requests, invites, err
 	}
 
 	var groupId int
@@ -999,21 +1001,31 @@ func (db *Db) GetUserGroups(userId int) (groups map[int]bool, requests map[int]b
 	for rows.Next() {
 		err := rows.Scan(&groupId, &isRequested, &isApproved)
 		if err != nil {
-			return groups, requests, err
+			return groups, requests, invites, err
+		}
+
+		if (isRequested == 0) && (isApproved == 0) {
+			invites[groupId] = true
+			requests[groupId] = false
+			groups[groupId] = false
 		}
 
 		if (isRequested == 1) && (isApproved == 0) {
+			invites[groupId] = false
 			requests[groupId] = true
+			groups[groupId] = false
 		}
 
 		if isApproved == 1 {
+			invites[groupId] = false
+			requests[groupId] = false
 			groups[groupId] = true
 		}
 	}
 
 	defer rows.Close()
 
-	return groups, requests, err
+	return groups, requests, invites, err
 }
 
 func (db *Db) GetUser(id int) User {

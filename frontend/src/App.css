@@ -553,6 +553,11 @@ span + .button-small {
   background-color: #4C2C72
 }
 
+.invited {
+  background-color: #4C2C72;
+  cursor: default !important;
+}
+
 .group-desc {
   font-style: italic;
 }

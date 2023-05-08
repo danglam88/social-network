@@ -37,7 +37,7 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 	} else {
 		groups, err := DB.GetAllGroups(userId)
 		if err != nil {
-			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			GetErrResponse(w, "Unable to get groups", http.StatusInternalServerError)
 		}
 
 		w.WriteHeader(http.StatusOK)

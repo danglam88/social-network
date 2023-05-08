@@ -19,12 +19,19 @@ const Group = ({group, setGroupInfo}) => {
   };
 
     return (  
-        <>
-
+      <>
         <h1>{group.name}</h1>
         <div className="group-desc">{group.description}</div>
         <div className="group-created-at">Group creation: {group.created_at.replace("T", " ").replace("Z", "")}</div>
         <div className="group-members">Total members: {membersCount}</div>
+        {group.avatar_url &&
+            <div>
+              Avatar:
+              <img className="personal-avatar"
+                src={`http://localhost:8080${group.avatar_url}`}
+                alt="Avatar Image"
+              />
+            </div>}
         <ul className="group-users-buttons">
           <li>
             <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings= {() => {}} />
@@ -37,23 +44,22 @@ const Group = ({group, setGroupInfo}) => {
         <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
         <Posts posts={group.posts} type="group" />
         <button onClick={openChatWindow}>Open Chat</button>
-      {showChatWindow && (
-         <div
-        className="chat-window-modal"
-        onClick={closeChatWindow}
-        onKeyDown={(e) => {
-          if (e.key === 'esc') {
-            closeChatWindow();
-          }
-        }}
-      tabIndex="0"
-      >
-    <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} onClose={closeChatWindow} />
-
-  </div>
-)}
-        </>
-    );
+        {showChatWindow && (
+        <div
+          className="chat-window-modal"
+          onClick={closeChatWindow}
+          onKeyDown={(e) => {
+            if (e.key === 'esc') {
+              closeChatWindow();
+            }
+          }}
+          tabIndex="0"
+        >
+          <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} onClose={closeChatWindow} />
+        </div>
+        )}
+      </>
+  );
 }
 
 export default Group;

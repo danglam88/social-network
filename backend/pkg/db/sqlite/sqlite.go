@@ -76,6 +76,7 @@ type Group struct {
 	GroupName   string    `json:"name"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
+	AvatarUrl   string    `json:"avatar_url"`
 	Members     []User    `json:"members"`
 	IsMember    bool      `json:"is_member"`
 	IsRequested bool      `json:"is_requested"`
@@ -631,8 +632,8 @@ func (db *Db) GetUserName(id int) (string, error) {
 
 func (db *Db) GetGroup(id, userId int) (group Group, err error) {
 
-	row := db.connection.QueryRow("select id,creator_id,group_name,descript,created_at from user_group where id = ?", id)
-	err = row.Scan(&group.ID, &group.CreatorId, &group.GroupName, &group.Description, &group.CreatedAt)
+	row := db.connection.QueryRow("select id,creator_id,group_name,descript,created_at,avatar_url from user_group where id = ?", id)
+	err = row.Scan(&group.ID, &group.CreatorId, &group.GroupName, &group.Description, &group.CreatedAt, &group.AvatarUrl)
 	if err != nil {
 		fmt.Println(err)
 		return group, err
@@ -828,6 +829,7 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 		if chats[i].GroupID != 0 {
 			wholeGroup, _ := db.GetGroup(chats[i].GroupID, userId)
 			chats[i].DisplayName = wholeGroup.GroupName
+			chats[i].AvatarUrl = wholeGroup.AvatarUrl
 		} else if chats[i].UserOne == userId {
 			chats[i].DisplayName, _ = db.GetUserName(chats[i].UserTwo)
 			chats[i].AvatarUrl = db.GetUser(chats[i].UserTwo).AvatarUrl
@@ -852,7 +854,7 @@ func (db *Db) GetLastMessage(chatId int) time.Time {
 
 func (db *Db) CreateGroup(creatorId int, title, description string) (groupId int64, err error) {
 
-	res, err := db.connection.Exec("insert into user_group(creator_id,group_name,descript,created_at) values(?,?,?,?)", creatorId, title, description, time.Now().Local().Format(time_format))
+	res, err := db.connection.Exec("insert into user_group(creator_id,group_name,descript,created_at,avatar_url) values(?,?,?,?,?)", creatorId, title, description, time.Now().Local().Format(time_format), "/upload/group.png")
 	if err != nil {
 		return groupId, err
 	}

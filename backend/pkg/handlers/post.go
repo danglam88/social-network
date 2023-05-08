@@ -243,7 +243,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request, isAvatar bool) (imgUrl s
 	//fmt.Printf("File Size: %+v\n", handler.Size)
 	//fmt.Printf("MIME Header: %+v\n", handler.Header)
 	if (isAvatar && handler.Size > MAX_SIZE_AVATAR) || (!isAvatar && handler.Size > MAX_SIZE) {
-		return imgUrl, errors.New("max size is 20Mb")
+		return imgUrl, errors.New("max size is 50Mb")
 	}
 	// Detect content type of file
 	headerFiletype := handler.Header.Get("Content-Type")

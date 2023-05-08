@@ -68,6 +68,7 @@ func GroupAdd(w http.ResponseWriter, r *http.Request) {
 		CreatorId:   userID,
 		GroupName:   title,
 		Description: description,
+		AvatarUrl:   "/upload/group.png",
 		ID:          int(groupId),
 		IsMember:    true,
 	}

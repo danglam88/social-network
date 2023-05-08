@@ -20,12 +20,13 @@ const CommentForm = ({ postId, setComments }) => {
     setCommentPicture(event.target.files[0]);
     if (event.target.files[0] != null) {
       uploadDiv.innerHTML = `${event.target.files[0].name} attached!`;
+    } else {
+      uploadDiv.innerHTML = "";
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    uploadDiv.innerHTML = "";
 
     // Validation
     let Message = ValidateField("Content", content, 1, 1000);
@@ -67,6 +68,7 @@ const CommentForm = ({ postId, setComments }) => {
                 setContent("");
                 setCommentPicture(null);
                 setErrorMessage("");
+                uploadDiv.innerHTML = "";
               })
               .catch((error) => console.log(error));
           }

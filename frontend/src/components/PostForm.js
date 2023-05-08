@@ -40,12 +40,13 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
     setPicture(event.target.files[0]);
     if (event.target.files[0] != null) {
       uploadDiv.innerHTML = `${event.target.files[0].name} attached!`;
+    } else {
+      uploadDiv.innerHTML = "";
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    uploadDiv.innerHTML = "";
 
     // Validation
     let Message = ValidateField("Title", title, 1, 30);
@@ -98,6 +99,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
                 setUsers([]);
                 setPicture(null);
                 setErrorMessage("");
+                uploadDiv.innerHTML = "";
               })
               .catch((error) => console.log(error));
           } else {
@@ -110,6 +112,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
                 setContent("");
                 setPicture(null);
                 setErrorMessage("");
+                uploadDiv.innerHTML = "";
               })
               .catch(error => console.log(error))
           }

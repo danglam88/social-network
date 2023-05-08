@@ -38,7 +38,7 @@ const Event = ({ event }) => {
       </li>
       <li>{event.description}</li>
       <div className="event-info">
-        <li>Event time: {event.occur_time}</li>
+        <li>Event time: {event.occur_time.replace("T", " ").replace("Z", "")}</li>
       </div>
 
       {isInPast ? (

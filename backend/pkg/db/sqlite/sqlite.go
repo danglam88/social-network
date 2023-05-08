@@ -971,7 +971,6 @@ func (db *Db) GetCreatorGroups(creatorId int) (groups []Group, err error) {
 func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) {
 
 	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?) ON CONFLICT(event_id, user_id) DO UPDATE SET is_approved = 1, is_going = ?;", userId, eventId, isApproved, isGoing, isGoing)
-	fmt.Print("err", err)
 	return err
 }
 

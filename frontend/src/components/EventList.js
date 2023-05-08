@@ -42,7 +42,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
         
         message = occurDate
         if (new Date(occurDate) <= new Date()) {
-            setErrorMessage("Wrong time");
+            setErrorMessage("Time must be in the future");
             return
         }
 
@@ -58,6 +58,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
             setTitle("")
             setDescription("")
             setOccurDate("")
+            setErrorMessage("")
             handleNewEvent(groupId, response.data)
         })
         .catch(error => console.log(error))

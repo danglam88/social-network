@@ -120,8 +120,13 @@ func GroupJoin(w http.ResponseWriter, r *http.Request) {
 func EventAdd(w http.ResponseWriter, r *http.Request) {
 
 	userID := GetLoggedInUserID(w, r)
+	userName, err := DB.GetUserName(userID)
+	if err != nil {
+		GetErrResponse(w, "Invalid user id", http.StatusInternalServerError)
+		return
+	}
 
-	err := r.ParseForm()
+	err = r.ParseForm()
 	if err != nil {
 		GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
 		return
@@ -157,6 +162,7 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 	event := db.Event{
 		ID:          int(eventId),
 		CreatorId:   userID,
+		CreatorName: userName,
 		Name:        title,
 		Description: description,
 		OccurTime:   occurTime,

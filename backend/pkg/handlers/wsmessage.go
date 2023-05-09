@@ -379,13 +379,7 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-				fmt.Println(groupUsers, group)
-
 				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName
-
-				fmt.Println(res.Message)
-
-				fmt.Println(res.From)
 
 				for _, groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {

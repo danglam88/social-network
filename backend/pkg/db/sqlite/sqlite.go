@@ -1558,8 +1558,9 @@ func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, er
         JOIN event_relation er ON e.id = er.event_id
         WHERE ((gr.user_id = ? AND gr.is_approved = 1) OR e.creator_id = ?)
         AND er.is_approved = 0
+		AND er.user_id = ?
         GROUP BY e.id;
-    `, userId, userId)
+    `, userId, userId, userId)
 
 	if err != nil {
 		return nil, err

@@ -882,8 +882,6 @@ func (db *Db) CreateEvent(creatorId, groupId int, title, description string, occ
 		return eventId, err
 	}
 
-	err = db.JoinToGroup(creatorId, int(groupId), 0, 1)
-
 	return eventId, err
 }
 
@@ -1540,6 +1538,42 @@ func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
 	}
 
 	return notifications, nil
+}
+
+type EventNotification struct {
+	EventName string
+	GroupName string
+}
+
+func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, error) {
+	var eventNotifications []EventNotification
+
+	rows, err := db.connection.Query(`
+        SELECT e.title AS EventName, g.group_name AS GroupName
+        FROM event e
+        JOIN user_group g ON e.group_id = g.id
+        JOIN group_relation gr ON g.id = gr.group_id
+        JOIN event_relation er ON e.id = er.event_id
+        WHERE ((gr.user_id = ? AND gr.is_approved = 1) OR e.creator_id = ?)
+        AND er.is_approved = 0
+        GROUP BY e.id;
+    `, userId, userId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var eventNotification EventNotification
+		err := rows.Scan(&eventNotification.EventName, &eventNotification.GroupName)
+		if err != nil {
+			return nil, err
+		}
+		eventNotifications = append(eventNotifications, eventNotification)
+	}
+
+	return eventNotifications, nil
 }
 
 func (db *Db) GetGroupInviteNotifications(userId int) ([]string, error) {

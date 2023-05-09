@@ -76,9 +76,37 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	EventNotifications, err := DB.GetEventCreationNotifications(id)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	//Start client
 	go client.readMessages()
 	go client.writeMessages()
+
+	if len(EventNotifications) > 0 {
+		for _, event := range EventNotifications {
+			msg := db.Message{
+				Type:    EVENTNOTIFICATION_TYPE,
+				From:    0,
+				To:      id,
+				Message: fmt.Sprintf("Event %s has been created in %s", event.EventName, event.GroupName),
+			}
+			message, err := json.Marshal(msg)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+
+			//wait 1 second before sending the next message to let the notification component load
+			time.Sleep(1 * time.Second)
+
+			client.eggress <- message
+
+		}
+	}
 
 	if len(GroupInviteNotifications) > 0 {
 		for _, group := range GroupInviteNotifications {
@@ -351,9 +379,15 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
+				fmt.Println(groupUsers, group)
+
 				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName
 
-				for groupUser := range groupUsers {
+				fmt.Println(res.Message)
+
+				fmt.Println(res.From)
+
+				for _, groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {
 						if wsclient.userId == groupUser && wsclient.userId != res.From {
 							message, err := json.Marshal(res)

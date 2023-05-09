@@ -53,6 +53,7 @@ const joinEvent = async data => {
 
 const createEvent = async data => {
   const request = await axios.post(eventUrl, data, postConfig)
+  console.log(data)
   return request
 }
 

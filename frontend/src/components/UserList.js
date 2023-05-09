@@ -34,6 +34,7 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
             .then(response => {
                 if (response.data.Error === "Pending") {
                     setUserProfilePending(true)
+                    console.log("pending check")
                 }
             })
             .then(() => {

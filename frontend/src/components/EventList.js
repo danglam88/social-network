@@ -106,7 +106,7 @@ const EventList = ({list, groupId}) => {
             };
             WebSocketService.sendMessage(payload);
 
-            const newList = eventList.concat(newEvent)
+            const newList = eventList ? [...eventList, newEvent] : [newEvent]
             setList(newList)
     }
 

@@ -63,7 +63,11 @@ func ReplyNotifications(w http.ResponseWriter, r *http.Request) {
 	switch notificationType {
 	case INVITENOTIFICATION_TYPE:
 		{
-			DB.ReplyOnGroupInvitation(userID, groupId, isAccepted)
+			err = DB.ReplyOnGroupInvitation(userID, groupId, isAccepted)
+			if err != nil {
+				GetErrResponse(w, "Failed to reply on group notification", http.StatusInternalServerError)
+				return
+			}
 		}
 	case JOINREQNOTIFICATION_TYPE:
 		{
@@ -85,7 +89,11 @@ func ReplyNotifications(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			DB.ReplyOnGroupInvitation(userId, groupId, isAccepted)
+			err = DB.ReplyOnGroupInvitation(userId, groupId, isAccepted)
+			if err != nil {
+				GetErrResponse(w, "Failed to reply on group notification", http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 }

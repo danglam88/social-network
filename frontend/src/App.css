@@ -551,11 +551,12 @@ span + .button-small {
 }
 
 .join, .create{
-  background-color: #FF2E63
+  background-color: #FF2E63;
 }
 
 .requested {
-  background-color: #4C2C72
+  background-color: #4C2C72;
+  cursor: default !important;
 }
 
 .invited {

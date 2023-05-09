@@ -915,6 +915,50 @@ func (db *Db) GetGroupInvitations(userId int) (groups []Group, err error) {
 	return groups, err
 }
 
+func (db *Db) JoinToEventsInGroup(userId, groupId int) (err error) {
+	var isApproved int
+
+	query := "select is_approved from group_relation where user_id=? and group_id=?"
+	row := db.connection.QueryRow(query, userId, groupId)
+	err = row.Scan(&isApproved)
+	if err != nil {
+		fmt.Println("Scan is_approved error: ", err.Error())
+		return err
+	}
+
+	if isApproved == 1 {
+		query = "select id from event where group_id=?"
+		rows, err := db.connection.Query(query, groupId)
+
+		if err != nil {
+			fmt.Println("Get events in group error: ", err.Error())
+			return err
+		}
+
+		var eventId int
+		var eventIds []int
+		for rows.Next() {
+			err := rows.Scan(&eventId)
+			if err != nil {
+				fmt.Println("Scan event id error: ", err.Error())
+				return err
+			}
+			eventIds = append(eventIds, eventId)
+		}
+		defer rows.Close()
+
+		for _, eventId := range eventIds {
+			err := db.JoinToEvent(userId, eventId, 0, 0)
+			if err != nil {
+				fmt.Println("Join to event error: ", err.Error())
+				return err
+			}
+		}
+	}
+
+	return err
+}
+
 func (db *Db) ReplyOnGroupInvitation(userId, groupId int, isAccepted bool) (err error) {
 
 	if isAccepted {
@@ -975,9 +1019,9 @@ func (db *Db) GetCreatorGroups(creatorId int) (groups []Group, err error) {
 }
 
 func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) {
-	fmt.Println("JoinToEvent", userId, eventId, isApproved, isGoing)
 
 	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?) ON CONFLICT(event_id, user_id) DO UPDATE SET is_approved = 1, is_going = ?;", userId, eventId, isApproved, isGoing, isGoing)
+
 	return err
 }
 
@@ -1399,10 +1443,7 @@ func (db *Db) GetGroupIdAndCreatorIdFromPostId(postId int) (groupId int, creator
 func (db *Db) IsMember(userId, groupID int) bool {
 	var id int
 	err := db.connection.QueryRow("SELECT id FROM group_relation WHERE group_id=? AND user_id=?", groupID, userId).Scan(&id)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 func (db *Db) GetGroupUserIds(groupId int) (userIds []int, err error) {

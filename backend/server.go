@@ -54,6 +54,10 @@ func main() {
 			PostFunction: handlers.EventJoin,
 		},
 		{
+			Endpoint:     "/event_update",
+			PostFunction: handlers.EventUpdate,
+		},
+		{
 			Endpoint:    "/history",
 			GetFunction: handlers.GetHistory,
 		},

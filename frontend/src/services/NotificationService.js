@@ -24,7 +24,6 @@ const postConfig = {
   }
 };
 
-
 const NotificationService = {
   initialize: (url) => {
     webSocketService.connect(url);

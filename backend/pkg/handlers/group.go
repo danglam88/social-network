@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
@@ -157,10 +156,7 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	fmt.Println("groupUsers", groupUsers)
-
 	for _, groupUser := range groupUsers {
-		fmt.Println("groupUser", groupUser)
 		DB.JoinToEvent(groupUser, int(eventId), 0, 0)
 	}
 
@@ -224,4 +220,65 @@ func EventJoin(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	res, _ := json.Marshal(event)
 	io.WriteString(w, string(res))
+}
+
+func EventUpdate(w http.ResponseWriter, r *http.Request) {
+	userID := GetLoggedInUserID(w, r)
+
+	err := r.ParseForm()
+	if err != nil {
+		GetErrResponse(w, "Parsing form failed", http.StatusBadRequest)
+		return
+	}
+
+	notificationType := r.FormValue("type")
+
+	groupId, err := strconv.Atoi(r.FormValue("group_id"))
+	if err != nil {
+		GetErrResponse(w, "Invalid group", http.StatusBadRequest)
+		return
+	}
+
+	isAccepted := r.FormValue("is_accepted") == "true"
+
+	switch notificationType {
+	case INVITENOTIFICATION_TYPE:
+		{
+			if isAccepted {
+				err = DB.JoinToEventsInGroup(userID, groupId)
+				if err != nil {
+					GetErrResponse(w, "Failed to join to group events", http.StatusInternalServerError)
+					return
+				}
+			}
+		}
+	case JOINREQNOTIFICATION_TYPE:
+		{
+			creatorId, err := DB.GetGroupCreatorId(groupId)
+
+			if err != nil {
+				GetErrResponse(w, "Invalid group", http.StatusBadRequest)
+				return
+			}
+
+			if creatorId != userID {
+				GetErrResponse(w, "Invalid group", http.StatusBadRequest)
+				return
+			}
+
+			userId, err := strconv.Atoi(r.FormValue("user_id"))
+			if err != nil {
+				GetErrResponse(w, "Invalid user", http.StatusBadRequest)
+				return
+			}
+
+			if isAccepted {
+				err = DB.JoinToEventsInGroup(userId, groupId)
+				if err != nil {
+					GetErrResponse(w, "Failed to join to group events", http.StatusInternalServerError)
+					return
+				}
+			}
+		}
+	}
 }

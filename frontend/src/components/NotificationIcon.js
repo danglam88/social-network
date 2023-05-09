@@ -15,7 +15,7 @@ const NotificationIcon = () => {
       ) {
         setNotifications((prevNotifications) => {
           if (!prevNotifications.some((n) => n.message === message.message)) {
-            return [...prevNotifications, message];
+            return [...prevNotifications, message].reverse();
           } else {
             return prevNotifications;
           }

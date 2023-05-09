@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import NotificationService from "../services/NotificationService"
+import eventsService from "../services/EventsService"
 
 const Notifications = () => {
     useEffect(() => {
@@ -51,10 +52,18 @@ const Invitation = ({group, handleRemoveGroup}) => {
             group_id: group.id,
             is_accepted : isAccepted
         }
-     
+
         NotificationService.reply(data)
           .then(response => {
             handleRemoveGroup(group.id)
+
+            if (isAccepted) {
+                eventsService.event(data)
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => console.log(error))
+            }
           })
           .catch(error => console.log(error))
         
@@ -85,10 +94,18 @@ const Request = ({group, handleRemoveGroup}) => {
             user_id : userId,
             is_accepted : isAccepted
         }
-     
+
         NotificationService.reply(data)
           .then(response => {
             handleRemoveGroup(group.id)
+
+            if (isAccepted) {
+                eventsService.event(data)
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => console.log(error))
+            }
           })
           .catch(error => console.log(error))
         

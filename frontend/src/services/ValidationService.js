@@ -10,7 +10,7 @@ function ValidateField(validateFieldName, content, minlength = 1, maxlength = 30
         return validateFieldName+" can not consist of only spaces or newlines";
       }
     }
-    
+
     if ((validateFieldName === "Title" || validateFieldName === "Content") && content.length < minlength) {
       return validateFieldName+" is required";
     }

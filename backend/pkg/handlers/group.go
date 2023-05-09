@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
@@ -151,12 +152,15 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	groupUsers, err := DB.GetGroupUserIds(groupId)
+	groupUsers, err := DB.GetGroupUserIds(int(groupId))
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	for groupUser := range groupUsers {
+	fmt.Println("groupUsers", groupUsers)
+
+	for _, groupUser := range groupUsers {
+		fmt.Println("groupUser", groupUser)
 		DB.JoinToEvent(groupUser, int(eventId), 0, 0)
 	}
 

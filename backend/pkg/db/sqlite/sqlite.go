@@ -888,6 +888,7 @@ func (db *Db) CreateEvent(creatorId, groupId int, title, description string, occ
 func (db *Db) JoinToGroup(userId, groupId, isRequested, isApproved int) (err error) {
 
 	_, err = db.connection.Exec("insert into group_relation(user_id,group_id,is_requested,is_approved) values(?,?,?,?)", userId, groupId, isRequested, isApproved)
+
 	return err
 }
 
@@ -974,6 +975,7 @@ func (db *Db) GetCreatorGroups(creatorId int) (groups []Group, err error) {
 }
 
 func (db *Db) JoinToEvent(userId, eventId, isApproved, isGoing int) (err error) {
+	fmt.Println("JoinToEvent", userId, eventId, isApproved, isGoing)
 
 	_, err = db.connection.Exec("insert into event_relation(user_id,event_id,is_approved, is_going) values(?,?,?,?) ON CONFLICT(event_id, user_id) DO UPDATE SET is_approved = 1, is_going = ?;", userId, eventId, isApproved, isGoing, isGoing)
 	return err

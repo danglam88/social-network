@@ -32,7 +32,6 @@ const getGroups = async data => {
 }
 
 const getGroup = async groupId => {
-  console.log(groupId)
   const request = await axios.get(groupUrl + "?id=" + groupId, config)
   return request
 }

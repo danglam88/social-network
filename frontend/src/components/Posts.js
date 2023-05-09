@@ -4,7 +4,6 @@ import CommentForm from './CommentForm.js'
 import commentsService from '../services/CommentsService'
 
 const Post = ({post, type, userId}) => {
-  console.log(post, type, userId)
   const [comments, setComments] = useState([]);
 
   useEffect(() => {

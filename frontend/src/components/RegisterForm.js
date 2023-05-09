@@ -54,7 +54,6 @@ const RegisterForm = () => {
             const formData = new FormData(event.target);
 
             registerService.register(formData)
-
         }
 
         return (
@@ -103,7 +102,7 @@ const RegisterForm = () => {
                     <label>About Me</label>
                 </div>
                 <div className="input-container">
-                    <input type="checkbox" value={isAutoLogin} onChange={handleAutoLoginChange}/>
+                    <input type="checkbox" value={isAutoLogin} onChange={handleAutoLoginChange} />
                     <label>Log in automatically after registration</label>
                 </div>
                 <div>

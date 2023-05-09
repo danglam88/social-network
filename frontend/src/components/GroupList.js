@@ -179,7 +179,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
                     {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
                     (
                         <>
-                        <div className="group-column">If you haven't find a group you can create our own!</div>
+                        <div className="group-column">If you haven't found a group, you can create our own!</div>
                         <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>Create a group</div>
                         </>
                 )}

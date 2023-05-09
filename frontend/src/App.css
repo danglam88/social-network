@@ -322,8 +322,8 @@ u {
   margin: 0;
 }
 
-.login-error{
-
+.login-error {
+  
 }
 
 .notification-icon {
@@ -449,6 +449,11 @@ u {
 .post-comment-form textarea {
   resize: none;
   min-height: 100px;
+}
+
+.group-wrapper textarea, .event-desc textarea {
+  resize: none;
+  min-height: 30px;
 }
 
 /* Created posts */

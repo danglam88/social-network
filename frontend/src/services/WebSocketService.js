@@ -16,7 +16,7 @@ const WebSocketService = {
       socket = new WebSocket(`${url}?Authorization=Bearer%20${clientToken}`);
 
       socket.addEventListener("open", () => {
-        console.log("WebSocket connected to:", url);
+        console.log("WebSocket connected to: ", url);
         if (callback) {
           callback();
         }

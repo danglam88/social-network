@@ -72,7 +72,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
             Title: <input value={title} onChange={handleTitleChange} required/>
         </div>
         <br />
-        <div>
+        <div className="event-desc">
             Description: <textarea value={description} onChange={handleDescriptionChange} required/>
         </div>
         <br />   

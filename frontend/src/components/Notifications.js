@@ -4,7 +4,6 @@ import NotificationService from "../services/NotificationService"
 const Notifications = () => {
     useEffect(() => {
         NotificationService.getAll().then(response => {
-            console.log(response.data)
             setNotifications(response.data)
         })
         .catch(error => console.log(error))

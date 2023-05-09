@@ -7,7 +7,7 @@ function ValidateField(validateFieldName, content, minlength = 1, maxlength = 30
     if (validateFieldName === "Title" || validateFieldName === "Content") {
       let ckeckEmptyField = content.replace(/\s/g, '');
       if (ckeckEmptyField.length === 0) {
-        return validateFieldName+" can not consist of only spaces";
+        return validateFieldName+" can not consist of only spaces or newlines";
       }
     }
     
@@ -27,7 +27,7 @@ function ValidateField(validateFieldName, content, minlength = 1, maxlength = 30
       var words = content.split(' ');
       for (var i = 0; i < words.length; i++) {
         if (words[i].length > 30) {
-          return "Words must be less than 30 characters";
+          return "Words must be less than 30 characters each";
         }
       }
     }

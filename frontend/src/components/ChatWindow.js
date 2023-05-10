@@ -297,21 +297,27 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
         className="chat-container"
       >
         
-          <div ref={topRef} />
+        <div ref={topRef} />
 
         {chatMessages.map(msg => (
           <div key={msg.created_at+msg.id+msg.message} className={msg.from ===  userId ? "right-message" : "left-message"}>
-            <span style={{ fontWeight: "bold"}}>{msg.username +" "} 
+            {msg.from !==  userId ? (
+              <span>
+                <span style={{fontWeight: "bold"}}>{msg.username+" "}</span>
+                <span style={{fontSize: "12px", color: "grey", marginRight: "10px"}}>
+                  {msg.created_at.replace("T", " ").replace("Z", "")}
                 </span>
-            <span style={{fontSize: "12px", color: "grey", marginRight: "10px"}}>
-              {msg.created_at
-                .replace("T", " ")
-                .replace("Z", "")} 
-                </span> 
-                <br/>
-                <span className="chat-message-displayed" style={{fontSize: "20px"}}>
-                {msg.message}
+              </span>
+            ) : (
+              <span>
+                <span style={{fontSize: "12px", color: "grey", marginRight: "10px"}}>
+                  {msg.created_at.replace("T", " ").replace("Z", "")}
                 </span>
+                <span style={{fontWeight: "bold"}}>{msg.username}</span>
+              </span>
+            )}
+            <br />
+            <span className="chat-message-displayed" style={{fontSize: "20px"}}>{msg.message}</span>
           </div>
           ))}
       </div>

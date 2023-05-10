@@ -18,26 +18,28 @@ func CommentGet(w http.ResponseWriter, r *http.Request) {
 	if id, isExist := params["post_id"]; isExist {
 		postId, err = strconv.Atoi(id[0])
 	}
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-	} else {
-		comments, err := DB.GetCommentsByPost(postId)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		for i := range comments {
-			comments[i].Content = strings.ReplaceAll(comments[i].Content, "\r\n", "<br>")
-		}
 
-		w.WriteHeader(http.StatusAccepted)
-		res, err := json.Marshal(comments)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		io.WriteString(w, string(res))
+	if err != nil {
+		GetErrResponse(w, "Invalid id", http.StatusBadRequest)
+		return
 	}
+
+	comments, err := DB.GetCommentsByPost(postId)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	for i := range comments {
+		comments[i].Content = strings.ReplaceAll(comments[i].Content, "\r\n", "<br>")
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+	res, err := json.Marshal(comments)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	io.WriteString(w, string(res))
 }
 
 func CommentAdd(w http.ResponseWriter, r *http.Request) {
@@ -108,7 +110,4 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	io.WriteString(w, string(res))
-
 }
-
-//creator_id,post_id,content,created_at,img_url

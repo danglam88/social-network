@@ -42,7 +42,10 @@ const ChatService = {
     return request;
   },
 
-  
+  checkChat: async (checkChatUrl) => {
+    const request = await axios.get(checkChatUrl, config);
+    return request;
+  },
 
   fetchChatHistory: async (groupId, to, page = 1) => {
     const request = await axios.get(`http://localhost:8080/history?group_id=${groupId}&to=${to}&page=${page}`, config);

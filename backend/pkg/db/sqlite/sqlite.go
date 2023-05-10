@@ -1267,12 +1267,13 @@ func (db *Db) addChat(groupId, from, to int) (chatId int, err error) {
 	return chatId, err
 }
 
-func (db *Db) getChat(groupId, from, to int) (chatId int, err error) {
+func (db *Db) GetChat(groupId, from, to int) (chatId int, err error) {
+
 	query := "select id from private_chat where "
 	var options []interface{}
 
 	if groupId == 0 {
-		query += "first_userid = ? and second_userid = ? or first_userid = ? and second_userid = ? "
+		query += "(first_userid = ? and second_userid = ?) or (first_userid = ? and second_userid = ?)"
 		options = []interface{}{from, to, to, from}
 	} else {
 		query += "group_id = ?"
@@ -1282,8 +1283,12 @@ func (db *Db) getChat(groupId, from, to int) (chatId int, err error) {
 	row := db.connection.QueryRow(query, options...)
 	err = row.Scan(&chatId)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+		}
 		return chatId, err
 	}
+
 	return chatId, err
 }
 
@@ -1354,7 +1359,7 @@ func (db *Db) getChat(groupId, from, to int) (chatId int, err error) {
 func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatId int, created bool, err error) {
 	var id int
 
-	id, err = db.getChat(groupId, from, to)
+	id, err = db.GetChat(groupId, from, to)
 
 	//todo err check
 	if id <= 0 {
@@ -1363,7 +1368,6 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 			if user.IsPrivate == 1 && !db.IsFollower(from, user.ID) {
 				err := errors.New("not allowed to send message to this user")
 				return messages, id, created, err
-
 			}
 		}
 

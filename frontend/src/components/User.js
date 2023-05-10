@@ -3,15 +3,15 @@ import PersonalInfo from './PersonalInfo';
 import Posts from './Posts';
 import postsService from '../services/PostsService';
 import followsService from '../services/FollowsService';
+import ChatService from '../services/ChatService';
 import FollowsWrapper from './FollowsWrapper';
 import ChatWindow from './ChatWindow';
 
 const User = ({ user }) => {
   const [posts, setPosts] = useState([]);
   const [follows, setFollows] = useState(null);
+  const [chatButton, setChatButton] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
-  const [chatuserName, setUserName] = useState('')
-  const [avatar, setAvatar] = useState('')
 
   useEffect(() => {
     postsService
@@ -27,17 +27,20 @@ const User = ({ user }) => {
         setFollows(response.data);
       })
       .catch((error) => console.log(error));
-      setUserName(userName);
-      setAvatar(user.avatar_url);
-      console.log(user);
+
+    ChatService
+      .checkChat('http://localhost:8080/checkchat?user_id=' + user.id)
+      .then((response) => {
+        if (response.data.Error === "Chat not found") {
+          setChatButton(true);
+        }
+      })
+      .catch((error) => console.log(error));
   }, []);
 
-  const openChatWindow = () => {
+  const addChatToChatList = () => {
+    setChatButton(false);
     setShowChatWindow(true);
-  };
-
-  const closeChatWindow = () => {
-    setShowChatWindow(false);
   };
 
   const userName = user.nick_name ? user.nick_name : `${user.first_name} ${user.last_name}`;
@@ -79,22 +82,15 @@ const User = ({ user }) => {
       </div>
       {posts && <Posts posts={posts} type={userName} />}
       <br />
-      <button onClick={openChatWindow}>Open Chat</button>
-      {showChatWindow && (
-  <div
-    className="chat-window-modal"
-    onClick={closeChatWindow}
-    onKeyDown={(e) => {
-      if (e.key === 'esc') {
-        closeChatWindow();
-      }
-    }}
-    tabIndex="0"
-  >
-    <ChatWindow chat={{ GroupID: 0, ChatID: user.id }} username={chatuserName} onClose={closeChatWindow} avatarUrl={avatar} />
-
-  </div>
-)}
+      {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
+        showChatWindow ? (
+          <div>
+            <div>{userName} is available to chat from chat list</div>
+            <ChatWindow chat={{ GroupID: 0, ChatID: user.id }} />
+          </div>
+        ) : (
+          <div>{userName} is available to chat from chat list</div>
+        )}
     </div>
   );
 };

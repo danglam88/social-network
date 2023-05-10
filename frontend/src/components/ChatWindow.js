@@ -282,14 +282,9 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
     return <div className="error">{error}</div>;
   }
 
-  if (newChatCreated) {
-    console.log("Chat created");
-    return (
-      <div className="createdMessage">Chat added to chatlist</div>
-    );
-  }
-
   return (
+  <div>
+    {!newChatCreated ? (
     <div className="chatBox" style={{ flex: 1, display: "flex", flexDirection: "column" }} onClick={handleOutsideClick}>
       <h2>
         <img src={`http://localhost:8080${avatarUrl || chat.AvatarUrl}`} className='avatar-symbol'/>
@@ -350,7 +345,8 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
           </div>}
           <button onClick={sendMessage}>Send</button>
       </div>
-    </div>
+    </div>) : null}
+  </div>
   );
 };
 

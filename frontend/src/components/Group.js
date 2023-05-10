@@ -1,21 +1,31 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import EventList from "./EventList"
 import Posts from "./Posts"
 import PostForm from "./PostForm"
 import FollowsWrapper from './FollowsWrapper'
 import GroupUsersSelect from "./GroupUsersSelect"
 import ChatWindow from './ChatWindow'
+import ChatService from '../services/ChatService'
 
 const Group = ({group, setGroupInfo, handleGoToDetail}) => {
-  const membersCount = group.members?.length === 0 ? 0 : group.members.length
+  const membersCount = group.members?.length === 0 ? 0 : group.members.length;
+  const [chatButton, setChatButton] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
 
-  const openChatWindow = () => {
-    setShowChatWindow(true);
-  };
+  useEffect(() => {
+    ChatService
+      .checkChat('http://localhost:8080/checkchat?group_id=' + group.id)
+      .then((response) => {
+        if (response.data.Error === "Chat not found") {
+          setChatButton(true);
+        }
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
-  const closeChatWindow = () => {
-    setShowChatWindow(false);
+  const addChatToChatList = () => {
+    setChatButton(false);
+    setShowChatWindow(true);
   };
 
     return (  
@@ -32,30 +42,26 @@ const Group = ({group, setGroupInfo, handleGoToDetail}) => {
               />
             </div>}
         <ul className="group-users-buttons">
+          {group.members &&
           <li>
             <FollowsWrapper userId={group.id} follows={group.members} title="Members:" handleShowPendings={handleGoToDetail} />
-          </li>
+          </li>}
           <li>
             <GroupUsersSelect buttonName="Invite users:" groupId={group.id} groupName={group.name}/>
           </li>
         </ul>
-        <EventList list={group.events} groupId={group.id}/>
+        {group.events && <EventList list={group.events} groupId={group.id}/>}
         <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
-        <Posts posts={group.posts} type="group" />
-        <button onClick={openChatWindow}>Open Chat</button>
-        {showChatWindow && (
-        <div
-          className="chat-window-modal"
-          onClick={closeChatWindow}
-          onKeyDown={(e) => {
-            if (e.key === 'esc') {
-              closeChatWindow();
-            }
-          }}
-          tabIndex="0"
-        >
-          <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} onClose={closeChatWindow} username={group.name} avatarUrl={group.avatar_url}/>
-        </div>
+        {group.posts && <Posts posts={group.posts} type="group" />}
+        <br />
+        {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
+        showChatWindow ? (
+          <div>
+            <div>{group.name} is available to chat from chat list</div>
+            <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} />
+          </div>
+        ) : (
+          <div>{group.name} is available to chat from chat list</div>
         )}
       </>
   );

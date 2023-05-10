@@ -105,3 +105,43 @@ func GetAllChat(w http.ResponseWriter, r *http.Request) {
 	}
 	io.WriteString(w, string(res))
 }
+
+func CheckChat(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	params := r.URL.Query()
+
+	filterUser := 0
+	filterGroup := 0
+
+	if userId, isExist := params["user_id"]; isExist {
+		filterUser, err = strconv.Atoi(userId[0])
+	}
+
+	if groupId, isExist := params["group_id"]; isExist {
+		filterGroup, err = strconv.Atoi(groupId[0])
+	}
+
+	if err != nil {
+		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
+		return
+	}
+
+	userId := GetLoggedInUserID(w, r)
+
+	chatId, err := DB.GetChat(filterGroup, userId, filterUser)
+	if err != nil {
+		GetErrResponse(w, "Error while getting chat", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := ResponseError{Status: RESPONSE_OK}
+	if chatId <= 0 {
+		response.Error = "Chat not found"
+	} else {
+		response.Error = "Chat found"
+	}
+	res, _ := json.Marshal(response)
+	io.WriteString(w, string(res))
+}

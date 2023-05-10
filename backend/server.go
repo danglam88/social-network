@@ -71,6 +71,10 @@ func main() {
 			GetFunction: handlers.GetAllChat,
 		},
 		{
+			Endpoint:    "/checkchat",
+			GetFunction: handlers.CheckChat,
+		},
+		{
 			Endpoint:     "/loggedin",
 			PostFunction: handlers.LoggedIn,
 		},

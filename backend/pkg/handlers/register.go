@@ -90,7 +90,7 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 		ValidatePasswordUsername(firstName, false) &&
 		len(lastName) >= 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) &&
 		isValidDateOfBirth(birth) && validateAboutMe(about) == "" {
-		password, err := HashPassword(password)
+		passwordH, err := HashPassword(password)
 		if err != nil {
 			fmt.Println(err)
 		}

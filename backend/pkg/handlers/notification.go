@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	db "socialnetwork/backend/pkg/db/sqlite"
+	db "socialnetwork/pkg/db/sqlite"
 	"strconv"
 )
 

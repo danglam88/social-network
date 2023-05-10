@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	db "socialnetwork/backend/pkg/db/sqlite"
+	db "socialnetwork/pkg/db/sqlite"
 	"sync"
 	"time"
 

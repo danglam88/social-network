@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	db "socialnetwork/backend/pkg/db/sqlite"
+	db "socialnetwork/pkg/db/sqlite"
 )
 
 const RESPONSE_OK = "ok"

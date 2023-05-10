@@ -142,6 +142,10 @@ func CheckChat(w http.ResponseWriter, r *http.Request) {
 	} else {
 		response.Error = "Chat found"
 	}
-	res, _ := json.Marshal(response)
+	res, err := json.Marshal(response)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	io.WriteString(w, string(res))
 }

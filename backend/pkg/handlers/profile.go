@@ -12,7 +12,11 @@ func PersonalProfile(w http.ResponseWriter, r *http.Request) {
 
 	// Send a response
 	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(user)
+	res, err := json.Marshal(user)
+	if err != nil {
+		GetErrResponse(w, "Unable to marshal user", http.StatusInternalServerError)
+		return
+	}
 	io.WriteString(w, string(res))
 }
 
@@ -26,6 +30,10 @@ func TogglePrivacy(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := ResponseError{Status: RESPONSE_OK}
-	res, _ := json.Marshal(response)
+	res, err := json.Marshal(response)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	io.WriteString(w, string(res))
 }

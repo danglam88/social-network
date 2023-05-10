@@ -90,7 +90,10 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 		ValidatePasswordUsername(firstName, false) &&
 		len(lastName) >= 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) &&
 		isValidDateOfBirth(birth) && validateAboutMe(about) == "" {
-		passwordH, _ := HashPassword(password)
+		password, err := HashPassword(password)
+		if err != nil {
+			fmt.Println(err)
+		}
 
 		//ADD USER TO DB
 		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, avatar, privacy) == "200 OK" {

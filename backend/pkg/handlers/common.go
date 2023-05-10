@@ -93,7 +93,10 @@ func GetErrResponse(w http.ResponseWriter, errorMess string, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	response := ResponseError{Status: RESPONSE_ERR, Error: errorMess}
-	res, _ := json.Marshal(response)
+	res, err := json.Marshal(response)
+	if err != nil {
+		log.Fatal(err)
+	}
 	io.WriteString(w, string(res))
 }
 

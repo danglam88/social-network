@@ -832,14 +832,23 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 	//add displayname to the chats visual use
 	for i := range chats {
 		if chats[i].GroupID != 0 {
-			wholeGroup, _ := db.GetGroup(chats[i].GroupID, userId)
+			wholeGroup, err := db.GetGroup(chats[i].GroupID, userId)
+			if err != nil {
+				return chats, err
+			}
 			chats[i].DisplayName = wholeGroup.GroupName
 			chats[i].AvatarUrl = wholeGroup.AvatarUrl
 		} else if chats[i].UserOne == userId {
-			chats[i].DisplayName, _ = db.GetUserName(chats[i].UserTwo)
+			chats[i].DisplayName, err = db.GetUserName(chats[i].UserTwo)
+			if err != nil {
+				return chats, err
+			}
 			chats[i].AvatarUrl = db.GetUser(chats[i].UserTwo).AvatarUrl
 		} else {
-			chats[i].DisplayName, _ = db.GetUserName(chats[i].UserOne)
+			chats[i].DisplayName, err = db.GetUserName(chats[i].UserOne)
+			if err != nil {
+				return chats, err
+			}
 			chats[i].AvatarUrl = db.GetUser(chats[i].UserOne).AvatarUrl
 		}
 	}

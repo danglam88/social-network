@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -20,13 +21,21 @@ func CommentGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
-		comments, _ := DB.GetCommentsByPost(postId)
+		comments, err := DB.GetCommentsByPost(postId)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 		for i := range comments {
 			comments[i].Content = strings.ReplaceAll(comments[i].Content, "\r\n", "<br>")
 		}
 
 		w.WriteHeader(http.StatusAccepted)
-		res, _ := json.Marshal(comments)
+		res, err := json.Marshal(comments)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 		io.WriteString(w, string(res))
 	}
 }
@@ -42,21 +51,38 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	comment := r.FormValue("content")
-	postID, _ := strconv.Atoi(r.FormValue("post_id"))
+	postID, err := strconv.Atoi(r.FormValue("post_id"))
+	if err != nil {
+		GetErrResponse(w, "Invalid post id", http.StatusBadRequest)
+		return
+	}
 
-	groupID, creatorID, _ := DB.GetGroupIdAndCreatorIdFromPostId(postID)
+	groupID, creatorID, err := DB.GetGroupIdAndCreatorIdFromPostId(postID)
+	if err != nil {
+		GetErrResponse(w, "Invalid post id", http.StatusBadRequest)
+		return
+	}
 	creatorStruct := DB.GetUser(creatorID)
 	if groupID != 0 && !DB.IsMember(userId, groupID) {
 		w.WriteHeader(http.StatusOK)
 		response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a member of this group"}
-		res, _ := json.Marshal(response)
+		res, err := json.Marshal(response)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
 		io.WriteString(w, string(res))
 		return
 
 	} else if groupID == 0 && !DB.IsFollower(userId, creatorID) && creatorStruct.IsPrivate == 1 && creatorID != userId {
 		w.WriteHeader(http.StatusOK)
 		response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a follower of this user"}
-		res, _ := json.Marshal(response)
+		res, err := json.Marshal(response)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 		io.WriteString(w, string(res))
 		return
 	}
@@ -76,7 +102,11 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 
 	commentDB := DB.CreateComment(userId, postID, comment, imgUrl)
 
-	res, _ := json.Marshal(commentDB)
+	res, err := json.Marshal(commentDB)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	io.WriteString(w, string(res))
 
 }

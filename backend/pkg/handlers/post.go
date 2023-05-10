@@ -49,7 +49,11 @@ func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	res, _ := json.Marshal(posts)
+	res, err := json.Marshal(posts)
+	if err != nil {
+		GetErrResponse(w, "Unable to marshal posts", http.StatusInternalServerError)
+	}
+
 	io.WriteString(w, string(res))
 }
 
@@ -91,7 +95,10 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	res, _ := json.Marshal(posts)
+	res, err := json.Marshal(posts)
+	if err != nil {
+		GetErrResponse(w, "Unable to marshal posts", http.StatusInternalServerError)
+	}
 	io.WriteString(w, string(res))
 }
 
@@ -139,7 +146,11 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		if groupID != 0 && !DB.IsMember(creatorID, groupID) {
 			w.WriteHeader(http.StatusOK)
 			response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a member of this group"}
-			res, _ := json.Marshal(response)
+			res, err := json.Marshal(response)
+			if err != nil {
+				GetErrResponse(w, "Unable to marshal response", http.StatusInternalServerError)
+			}
+
 			io.WriteString(w, string(res))
 			return
 		}
@@ -183,7 +194,10 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := ResponseError{Status: RESPONSE_OK}
-	res, _ := json.Marshal(response)
+	res, err := json.Marshal(response)
+	if err != nil {
+		GetErrResponse(w, "Unable to marshal response", http.StatusInternalServerError)
+	}
 	io.WriteString(w, string(res))
 }
 

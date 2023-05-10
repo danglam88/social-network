@@ -28,10 +28,17 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 
 	if filterId > 0 {
 		//todo error + 404
-		group, _ := DB.GetGroup(filterId, userId)
+		group, err := DB.GetGroup(filterId, userId)
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		}
 
 		w.WriteHeader(http.StatusOK)
-		res, _ := json.Marshal(group)
+		res, err := json.Marshal(group)
+		if err != nil {
+			GetErrResponse(w, "Unable to marshal group", http.StatusInternalServerError)
+		}
+
 		io.WriteString(w, string(res))
 
 	} else {
@@ -41,7 +48,10 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		res, _ := json.Marshal(groups)
+		res, err := json.Marshal(groups)
+		if err != nil {
+			GetErrResponse(w, "Unable to marshal groups", http.StatusInternalServerError)
+		}
 		io.WriteString(w, string(res))
 	}
 }
@@ -74,7 +84,11 @@ func GroupAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(group)
+	res, err := json.Marshal(group)
+	if err != nil {
+		GetErrResponse(w, "Unable to marshal group", http.StatusInternalServerError)
+	}
+
 	io.WriteString(w, string(res))
 }
 
@@ -143,7 +157,11 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 	description := r.FormValue("description")
 	occurTimeStr := r.FormValue("occur_date")
 
-	occurTime, _ := time.Parse("2006-01-02T15:04", occurTimeStr)
+	occurTime, err := time.Parse("2006-01-02T15:04", occurTimeStr)
+	if err != nil {
+		GetErrResponse(w, "Invalid date", http.StatusBadRequest)
+		return
+	}
 
 	eventId, err := DB.CreateEvent(userID, int(groupId), title, description, occurTime)
 
@@ -173,7 +191,11 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(event)
+	res, err := json.Marshal(event)
+	if err != nil {
+		GetErrResponse(w, "Unable to marshal event", http.StatusInternalServerError)
+	}
+
 	io.WriteString(w, string(res))
 }
 
@@ -218,7 +240,11 @@ func EventJoin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(event)
+	res, err := json.Marshal(event)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
+
 	io.WriteString(w, string(res))
 }
 

@@ -27,12 +27,20 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	if user.IsPrivate == 0 || DB.IsFollower(userId, user.ID) {
 		w.WriteHeader(http.StatusOK)
-		res, _ := json.Marshal(user)
+		res, err := json.Marshal(user)
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		io.WriteString(w, string(res))
 	} else {
 		w.WriteHeader(http.StatusOK)
 		response := ResponseError{Status: RESPONSE_ERR}
-		res, _ := json.Marshal(response)
+		res, err := json.Marshal(response)
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		io.WriteString(w, string(res))
 	}
 }

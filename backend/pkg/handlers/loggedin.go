@@ -27,6 +27,10 @@ func LoggedIn(w http.ResponseWriter, r *http.Request) {
 		response.Username = ""
 	}
 
-	res, _ := json.Marshal(response)
+	res, err := json.Marshal(response)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	io.WriteString(w, string(res))
 }

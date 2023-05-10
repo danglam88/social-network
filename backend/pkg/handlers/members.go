@@ -31,7 +31,11 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusAccepted)
-		res, _ := json.Marshal(users)
+		res, err := json.Marshal(users)
+		if err != nil {
+			GetErrResponse(w, "Unable to marshal users", http.StatusInternalServerError)
+		}
+
 		io.WriteString(w, string(res))
 
 	} else {
@@ -42,7 +46,10 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusAccepted)
-		res, _ := json.Marshal(users)
+		res, err := json.Marshal(users)
+		if err != nil {
+			GetErrResponse(w, "Unable to marshal users", http.StatusInternalServerError)
+		}
 		io.WriteString(w, string(res))
 	}
 }

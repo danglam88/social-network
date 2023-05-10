@@ -46,7 +46,12 @@ func GetFollows(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	res, _ := json.Marshal(follows)
+	res, err := json.Marshal(follows)
+	if err != nil {
+		GetErrResponse(w, "Error while marshaling follows", http.StatusInternalServerError)
+		return
+	}
+
 	io.WriteString(w, string(res))
 }
 
@@ -76,7 +81,11 @@ func ResolvePending(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := ResponseError{Status: RESPONSE_OK}
-	res, _ := json.Marshal(response)
+	res, err := json.Marshal(response)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	io.WriteString(w, string(res))
 }
 
@@ -117,7 +126,12 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusOK)
 		response := ResponseError{Status: RESPONSE_OK, Error: "No checking pending"}
-		res, _ := json.Marshal(response)
+		res, err := json.Marshal(response)
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		io.WriteString(w, string(res))
 	} else {
 		isPending, err := DB.CheckPending(userId, followedUser)
@@ -133,7 +147,11 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 		} else {
 			response.Error = "No pending"
 		}
-		res, _ := json.Marshal(response)
+		res, err := json.Marshal(response)
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		io.WriteString(w, string(res))
 	}
 }

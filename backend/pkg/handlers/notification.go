@@ -26,10 +26,18 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	userGroups, _ := DB.GetCreatorGroups(userId)
+	userGroups, err := DB.GetCreatorGroups(userId)
+
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+	}
 
 	for _, group := range userGroups {
-		groupRequests, _ := DB.GetGroupRequests(group.ID)
+		groupRequests, err := DB.GetGroupRequests(group.ID)
+
+		if err != nil {
+			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		}
 
 		group.Members = groupRequests
 
@@ -37,7 +45,11 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(notifications)
+	res, err := json.Marshal(notifications)
+	if err != nil {
+		GetErrResponse(w, "Unable to marshal notifications", http.StatusInternalServerError)
+	}
+
 	io.WriteString(w, string(res))
 }
 

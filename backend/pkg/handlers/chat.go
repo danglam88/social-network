@@ -87,28 +87,21 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, string(res))
 }
 
-/*func GetUsers(w http.ResponseWriter, r *http.Request) {
-	username := IsUser(w, r)
-	userId := DB.GetUserID(username)
-
-	users, _ := DB.GetUsers(userId)
-
-	for i, user := range users {
-		(users[i]).Status = UserLoggedIn(user.UserName)
-	}
-
-	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(users)
-	io.WriteString(w, string(res))
-}*/
-
 func GetAllChat(w http.ResponseWriter, r *http.Request) {
 	username := IsUser(w, r)
 	userId := DB.GetUserID(username)
 
-	chats, _ := DB.GetAllChats(userId)
+	chats, err := DB.GetAllChats(userId)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
-	res, _ := json.Marshal(chats)
+	res, err := json.Marshal(chats)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	io.WriteString(w, string(res))
 }

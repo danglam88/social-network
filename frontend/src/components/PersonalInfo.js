@@ -18,6 +18,7 @@ const PersonalInfo = ({user, type, handleUpdateFollows}) => {
 
     return (
         <div className="personal-info">
+          {user.nick_name && <div>Nick Name: {user.nick_name}</div>}
           <div>First Name: {user.first_name}</div>
           <div>Last Name: {user.last_name}</div>
           <div>Birth Date: {user.birth_date}</div>
@@ -26,13 +27,12 @@ const PersonalInfo = ({user, type, handleUpdateFollows}) => {
           <div>Member Since: {user.created_at.replace("T", " ").replace("Z", "")}</div>
           {user.avatar_url &&
             <div>
-              Avatar:
               <img className="personal-avatar"
                 src={`http://localhost:8080${user.avatar_url}`}
                 alt="Avatar Image"
               />
             </div>}
-          {user.nick_name && <div>Nick Name: {user.nick_name}</div>}
+          
           {user.about_me && <div>About Me: {user.about_me}</div>}
         </div>
     )

@@ -104,7 +104,7 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 		user_error = "Nickname already exists"
 	}
 	if username != "" && len(username) < 4 || len(username) > 14 || !ValidatePasswordUsername(username, false) {
-		user_error = "Username must be 4 - 14 characters, and include no special characters"
+		user_error = "Nickname must be 4 - 14 characters, and include no special characters"
 	}
 	if (len(firstName) <= 1) || (len(firstName) > 14) || !ValidatePasswordUsername(firstName, false) {
 		firstName_error = "First name must be 2 - 14 characters, and include no special characters"

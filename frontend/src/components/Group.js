@@ -26,7 +26,6 @@ const Group = ({group, setGroupInfo, handleGoToDetail}) => {
         <div className="group-members">Total members: {membersCount}</div>
         {group.avatar_url &&
             <div>
-              Avatar:
               <img className="personal-avatar"
                 src={`http://localhost:8080${group.avatar_url}`}
                 alt="Avatar Image"

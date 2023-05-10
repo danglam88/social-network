@@ -59,7 +59,7 @@ const Chat = ({ userId }) => {
           }}
           tabIndex="0"
         >
-          <ChatWindow chat={selectedChat} chatId={getOtherUserId(selectedChat)} onClose={closeChatWindow} />
+          <ChatWindow chat={selectedChat} chatId={getOtherUserId(selectedChat)} onClose={closeChatWindow} userId={userId} />
         </div>
       )}
     </>

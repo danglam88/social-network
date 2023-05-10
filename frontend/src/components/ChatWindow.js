@@ -23,7 +23,7 @@ const sortMessagesByDate = messages => {
   return sortedMessages;
 };
 
-const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl }) => {
+const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
@@ -277,25 +277,11 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl }) => {
   }
 
   return (
-    <div
-      className="chatBox"
-      style={{ flex: 1, display: "flex", flexDirection: "column" }}
-      onClick={handleOutsideClick}
-    >
-<h2>
-<img
-        src={`http://localhost:8080${avatarUrl || chat.AvatarUrl}`}
-        style={{
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
-          marginRight: "8px",
-        }}
-      />
-        Chat with {username ? username : chat.DisplayName} 
-        <button onClick={onClose} style={{ marginLeft: "auto" }}>
-  Close
-</button>
+    <div className="chatBox" style={{ flex: 1, display: "flex", flexDirection: "column" }} onClick={handleOutsideClick}>
+      <h2>
+        <img src={`http://localhost:8080${avatarUrl || chat.AvatarUrl}`} className='avatar-symbol'/>
+        {username ? username : chat.DisplayName} 
+        <button onClick={onClose}>Close</button>
       </h2>
 
       <div
@@ -305,17 +291,24 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl }) => {
         
           <div ref={topRef} />
 
-        {chatMessages
-          .map(
-            msg =>
-              `${msg.created_at
+        {chatMessages.map(msg => (
+          <div key={msg.created_at+msg.id+msg.message} className={msg.from ===  userId ? "right-message" : "left-message"}>
+            <span style={{ fontWeight: "bold"}}>{msg.username +" "} 
+                </span>
+            <span style={{fontSize: "12px", color: "grey", marginRight: "10px"}}>
+              {msg.created_at
                 .replace("T", " ")
-                .replace("Z", "")} - ${msg.username}: ${msg.message}`
-          )
-          .join("\n")}
+                .replace("Z", "")} 
+                </span> 
+                <br/>
+                <span className="chat-message-displayed" style={{fontSize: "20px"}}>
+                {msg.message}
+                </span>
+          </div>
+          ))}
       </div>
 
-      <div>
+      <div className="chat-input-user">
         <input
           type="text"
           value={typedMessage}
@@ -324,7 +317,7 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl }) => {
             if (e.key === "Enter") sendMessage();
           }}
         />
-        <button onClick={sendMessage}>Send</button>
+        
         <button onClick={toggleEmojiPicker}>
           {showEmojiPicker ? "Emojis 🔼" : "Emojis 🔽"}
         </button>
@@ -336,17 +329,13 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl }) => {
               const emojiKey = "emoji" + index;
               return <span
                 key={emojiKey}
-                style={{
-                  cursor: "pointer",
-                  fontSize: "20px",
-                  padding: "4px",
-                }}
                 onClick={() => addEmoji(emoji)}
               >
                 {emoji}
               </span>
             })}
           </div>}
+          <button onClick={sendMessage}>Send</button>
       </div>
     </div>
   );

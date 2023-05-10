@@ -1342,7 +1342,7 @@ func (db *Db) getChat(groupId, from, to int) (chatId int, err error) {
 	return messages, err
 }*/
 
-func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatId int, err error) {
+func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatId int, created bool, err error) {
 	var id int
 
 	id, err = db.getChat(groupId, from, to)
@@ -1353,12 +1353,16 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 			user := db.GetUser(to)
 			if user.IsPrivate == 1 && !db.IsFollower(from, user.ID) {
 				err := errors.New("not allowed to send message to this user")
-				return messages, id, err
+				return messages, id, created, err
 
 			}
 		}
 
 		id, err = db.addChat(groupId, from, to)
+		if err != nil {
+			return messages, id, created, err
+		}
+		created = true
 	}
 
 	// Log the SQL query and parameters
@@ -1366,7 +1370,7 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 
 	rows, err := db.connection.Query(query, id, 10, (page-1)*10)
 	if err != nil {
-		return messages, id, err
+		return messages, id, created, err
 	}
 
 	var message Message
@@ -1377,14 +1381,14 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 		err := rows.Scan(&message.From, &message.Message, &message.CreatedAt)
 		if err != nil {
 			fmt.Printf("Error in row scan: %v\n", err) // Debug log statement
-			return messages, id, err
+			return messages, id, created, err
 		}
 
 		if users[message.From] == "" {
 			users[message.From], err = db.GetUserName(message.From)
 			if err != nil {
 				fmt.Printf("Error in getting username: %v\n", err) // Debug log statement
-				return messages, id, err
+				return messages, id, created, err
 			}
 		}
 
@@ -1393,7 +1397,7 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 	}
 	defer rows.Close()
 
-	return messages, id, err
+	return messages, id, created, err
 }
 
 // in use

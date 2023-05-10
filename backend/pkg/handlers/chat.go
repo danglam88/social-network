@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	db "socialnetwork/backend/pkg/db/sqlite"
@@ -52,9 +51,7 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, "page is mandatory", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("chat.go 55", to, groupId, user_id)
-	history, chatId, err := DB.GetHistory(groupId, user_id, to, page)
-	fmt.Println(to, chatId, "history 57")
+	history, chatId, created, err := DB.GetHistory(groupId, user_id, to, page)
 	if err != nil {
 		if err.Error() != "not allowed to send message to this user" {
 			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
@@ -76,10 +73,11 @@ func GetHistory(w http.ResponseWriter, r *http.Request) {
 
 	type Response struct {
 		ChatId  int          `json:"chat_id"`
+		Created bool         `json:"created"`
 		History []db.Message `json:"history"`
 	}
 
-	res, err := json.Marshal(Response{ChatId: chatId, History: history})
+	res, err := json.Marshal(Response{ChatId: chatId, Created: created, History: history})
 
 	if err != nil {
 		GetErrResponse(w, err.Error(), http.StatusInternalServerError)

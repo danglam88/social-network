@@ -3,6 +3,7 @@ import ChatService from "../services/ChatService";
 import debounce from "lodash/debounce";
 let recipientChatId;
 
+
 const sortMessagesByDate = messages => {
   if (!messages) return [];
   if (messages.length === 0) return [];
@@ -125,6 +126,8 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
     "🤡",
     "💩",
   ];
+  const [newChatCreated, setNewChatCreated] = useState(false);
+
   
 
   const toggleEmojiPicker = () => {
@@ -154,10 +157,13 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
           console.error(response.data.Error);
           return;
         }
+        if (response.data.created === true) {
+          console.log("New chat created");
+          setNewChatCreated(true);
+        }
+        
         if (!response.data.history) {
-          console.log(
-            "No chat history found, set recipient id to response.chat_id" + response.data.chat_id
-          );
+          console.log("No chat history found, new chat created");
           recipientChatId = response.data.chat_id;
           return;
         }
@@ -274,6 +280,13 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
   if (error) {
     console.log("Error:", error)
     return <div className="error">{error}</div>;
+  }
+
+  if (newChatCreated) {
+    console.log("Chat created");
+    return (
+      <div className="createdMessage">Chat added to chatlist</div>
+    );
   }
 
   return (

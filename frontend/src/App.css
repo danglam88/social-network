@@ -141,10 +141,6 @@ input[type="date"]:focus {
   color: #92AFD7;
 }
 
-.input-container input:focus + label {
-  color: #92AFD7;
-}
-
 .radio input[type='radio'] {
   display: none;
 }
@@ -190,6 +186,21 @@ input[type="date"]:focus {
   margin-top: -10px
 }
 
+.autologin-choice {
+  padding: 5px;
+  background-color: none;
+  border: 1px solid #998650;
+  border-radius: 4px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  font-size: 15px;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.autologin-choice.autologin-true {
+  background-color: #DBBBF5;
+}
 
 /* forms */
 

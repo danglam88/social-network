@@ -125,7 +125,7 @@ const RegisterForm = () => {
                 </div>
                 <div className="input-container">
                     <input type="file" name="picture" value={picture} onChange={handleAvatarChange} placeholder=" " />
-                    <label>Avatar URL</label>
+                    <label>Avatar</label>
                 </div>
                 <div className="input-container">
                     <input type="text" name="nickname" value={nickname} onChange={handleNicknameChange} placeholder=" " />
@@ -142,8 +142,7 @@ const RegisterForm = () => {
                     </select>
                 </div>
                 <div className="input-container">
-                    <input type="checkbox" checked={isAutoLogin} onChange={handleAutoLoginChange} />
-                    <label>Log in automatically after registration</label>
+                    <div className={`autologin-choice ${isAutoLogin ? 'autologin-true' :''}`} onClick={handleAutoLoginChange}>Log in automatically after registration</div>
                 </div>
                 <div>
                     <button type="submit">Register</button>
@@ -155,14 +154,3 @@ const RegisterForm = () => {
 }
 
 export default RegisterForm
-
-/*const createOrUpdateResultWrapper = () => {
-    let resultWrapper = document.getElementById('result-wrapper')
-    if (!resultWrapper) {
-      resultWrapper = document.createElement('div')
-      resultWrapper.id = 'result-wrapper'
-    } else {
-      resultWrapper.innerHTML = ''
-    }
-    return resultWrapper
-  }*/

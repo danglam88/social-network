@@ -122,7 +122,7 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
         <div>
             {showUserProfile ? (<User user={userData} key={userData.id} />) : (
                 <div>
-                    <h1>User(s):</h1>
+                    <h1>Users:</h1>
                     {users.map(user => {
                         const userItemKey = "userItem" + user.id;
                         return <UserItem user={user} users={users} setUsers={setUsers} key={userItemKey} followings={followings} handleUserProfile={handleUserProfile} />

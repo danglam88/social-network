@@ -118,7 +118,7 @@ const EventList = ({list, groupId}) => {
    
     return (
         <>
-            <h2>Event(s):</h2>
+            <h2>Events:</h2>
             <div className="group-events">
             {events}
             </div>

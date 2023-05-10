@@ -6,7 +6,7 @@ import FollowsWrapper from './FollowsWrapper'
 import GroupUsersSelect from "./GroupUsersSelect"
 import ChatWindow from './ChatWindow'
 
-const Group = ({group, setGroupInfo}) => {
+const Group = ({group, setGroupInfo, handleGoToDetail}) => {
   const membersCount = group.members?.length === 0 ? 0 : group.members.length
   const [showChatWindow, setShowChatWindow] = useState(false);
 
@@ -23,7 +23,7 @@ const Group = ({group, setGroupInfo}) => {
         <h1>{group.name}</h1>
         <div className="group-desc">{group.description}</div>
         <div className="group-created-at">Group creation: {group.created_at.replace("T", " ").replace("Z", "")}</div>
-        <div className="group-members">Total member(s): {membersCount}</div>
+        <div className="group-members">Total members: {membersCount}</div>
         {group.avatar_url &&
             <div>
               Avatar:
@@ -34,10 +34,10 @@ const Group = ({group, setGroupInfo}) => {
             </div>}
         <ul className="group-users-buttons">
           <li>
-            <FollowsWrapper follows={group.members} title="Member(s):" handleShowPendings={() => {}} />
+            <FollowsWrapper userId={group.id} follows={group.members} title="Members:" handleShowPendings={handleGoToDetail} />
           </li>
           <li>
-            <GroupUsersSelect buttonName="Invite user(s):" groupId={group.id} groupName={group.name}/>
+            <GroupUsersSelect buttonName="Invite users:" groupId={group.id} groupName={group.name}/>
           </li>
         </ul>
         <EventList list={group.events} groupId={group.id}/>

@@ -97,6 +97,7 @@ const Request = ({group, handleRemoveGroup}) => {
 
         NotificationService.reply(data)
           .then(response => {
+            console.log(response)
             handleRemoveGroup(group.id)
 
             if (isAccepted) {

@@ -22,13 +22,13 @@ const Follow = ({user_id, follow, title, handleShowPendings}) => {
             {!pendingResolved &&
             <div>
                 {follow.nick_name ? (
-                    <div>{follow.nick_name} {title === "Pending(s):" &&
+                    <div>{follow.nick_name} {title === "Pendings:" &&
                     <span>
                         <button onClick={() => {resolvePending(true)}}>Accept</button>
                         <button onClick={() => {resolvePending(false)}}>Reject</button>
                     </span>}</div>
                 ) : (
-                    <div>{follow.first_name} {follow.last_name} {title === "Pending(s):" &&
+                    <div>{follow.first_name} {follow.last_name} {title === "Pendings:" &&
                     <span>
                         <button onClick={() => {resolvePending(true)}}>Accept</button>
                         <button onClick={() => {resolvePending(false)}}>Reject</button>

@@ -41,27 +41,37 @@ const User = ({ user }) => {
   };
 
   const userName = user.nick_name ? user.nick_name : `${user.first_name} ${user.last_name}`;
-  
+
+  const handleUpdateFollows = async (userId) => {
+    await followsService
+      .follows("http://localhost:8080/follow?user_id=" + userId)
+      .then((response) => {
+        setFollows(response.data);
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <div>
       <h2>{userName}'s profile</h2>
-      <PersonalInfo user={user} type="user" handleUpdateFollows={() => {}} />
+      <PersonalInfo user={user} type="user" handleUpdateFollows={handleUpdateFollows} />
       <div>
         {follows && (
           <div className="follow">
             {follows.followers && (
               <FollowsWrapper
+                userId={user.id}
                 follows={follows.followers}
-                title="Follower(s):"
-                handleShowPendings={() => {}}
+                title="Followers:"
+                handleShowPendings={handleUpdateFollows}
               />
             )}
             {follows.followings && (
               <FollowsWrapper
+                userId={user.id}
                 follows={follows.followings}
-                title="Following(s):"
-                handleShowPendings={() => {}}
+                title="Followings:"
+                handleShowPendings={handleUpdateFollows}
               />
             )}
           </div>

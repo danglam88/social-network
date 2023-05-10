@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import usersService from '../services/UsersService';
 import User from './User';
 import followsService from "../services/FollowsService";
-import WebSocketService from '../services/WebSocketService';
 
 const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     const [userProfileAccessible, setUserProfileAccessible] = useState(false)
@@ -34,7 +33,6 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
             .then(response => {
                 if (response.data.Error === "Pending") {
                     setUserProfilePending(true)
-                    console.log("pending check")
                 }
             })
             .then(() => {

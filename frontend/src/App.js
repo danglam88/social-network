@@ -43,6 +43,7 @@ function App() {
   const [groups, setGroups] = useState([]);
   const [groupsListVisible, setGroupsListVisible] = useState(false);
   const [isGroupDetailPage, setIsGroupDetailPage] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     axios
@@ -62,6 +63,8 @@ function App() {
           NotificationService.initialize("ws://localhost:8080/ws");
 
           handleShowPendings(response.data.id);
+
+          handleShowNotifications();
 
           postsService
             .posts("http://localhost:8080/post?creator_id=" + response.data.id)
@@ -95,6 +98,8 @@ function App() {
         setUser(response.data);
 
         handleShowPendings(response.data.id);
+
+        handleShowNotifications();
 
         postsService
           .posts("http://localhost:8080/post?creator_id=" + response.data.id)
@@ -153,6 +158,14 @@ function App() {
         setFollows(response.data);
       })
       .catch((error) => console.log(error));
+  };
+
+  const handleShowNotifications = async () => {
+    await NotificationService.getAll()
+      .then(response => {
+        setNotifications(response.data)
+      })
+      .catch(error => console.log(error))
   };
 
   const handleLogout = (event) => {
@@ -223,7 +236,7 @@ function App() {
               </div>
             </div>
             <div className="Mainpage">
-              {perProfileVisible && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} />}
+              {perProfileVisible && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} notifications={notifications} setNotifications={setNotifications} />}
               {usersListVisible && <UserList users={users} setUsers={setUsers} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
               {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>

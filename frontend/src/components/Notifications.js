@@ -2,15 +2,7 @@ import React, { useState, useEffect } from 'react'
 import NotificationService from "../services/NotificationService"
 import eventsService from "../services/EventsService"
 
-const Notifications = () => {
-    useEffect(() => {
-        NotificationService.getAll().then(response => {
-            setNotifications(response.data)
-        })
-        .catch(error => console.log(error))
-    }, [])
-
-    const [notifications, setNotifications] = useState([])
+const Notifications = ({notifications, setNotifications}) => {
 
     const handleRemoveGroup = (groupId, isRequest, isInvitation) => {
         const newNotifications = JSON.parse(JSON.stringify(notifications))

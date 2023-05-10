@@ -41,7 +41,14 @@ func NewManager() *Manager {
 	}
 }
 
+var Mgr *Manager
+
+func SetManager(m *Manager) {
+	Mgr = m
+}
+
 func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
+	SetManager(m)
 
 	userEmail := AuthenticateUser(w, r)
 	log.Println("new connection from", userEmail)
@@ -422,6 +429,29 @@ func (c *Client) writeMessages() {
 			if err := c.connection.WriteMessage(websocket.TextMessage, message); err != nil {
 				log.Println(err)
 			}
+		}
+	}
+}
+
+func (m *Manager) broadcastFollowNotification(from int, to int, userName string) {
+	msg := db.Message{
+		Type:     FOLLOWNOTIFICATION_TYPE,
+		From:     from,
+		UserName: userName,
+		To:       to,
+		Message:  fmt.Sprintf("%s wants to follow you", userName),
+	}
+	message, err := json.Marshal(msg)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	m.RLock()
+	defer m.RUnlock()
+	for client := range m.clients {
+		if client.userId == to {
+			client.eggress <- message
 		}
 	}
 }

@@ -100,10 +100,19 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 	followedUser := DB.GetUser(pendingFollow.UserId)
 
 	if !pendingFollow.CheckPending {
-		err = DB.ToggleFollow(userId, followedUser)
+		err, broadcast := DB.ToggleFollow(userId, followedUser)
 		if err != nil {
 			GetErrResponse(w, "Error while toggling follow", http.StatusInternalServerError)
 			return
+		}
+
+		if broadcast {
+			username, err := DB.GetUserName(userId)
+			if err != nil {
+				GetErrResponse(w, "Error while getting username", http.StatusInternalServerError)
+				return
+			}
+			Mgr.broadcastFollowNotification(userId, followedUser.ID, username)
 		}
 
 		w.WriteHeader(http.StatusOK)

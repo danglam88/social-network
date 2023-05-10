@@ -256,7 +256,7 @@ func (db *Db) TogglePrivacy(userId int) (err error) {
 	return err
 }
 
-func (db *Db) ToggleFollow(followerId int, followedUser User) (err error) {
+func (db *Db) ToggleFollow(followerId int, followedUser User) (err error, broadcast bool) {
 	var isApproved int
 
 	query := "select is_approved from follow_relation where follower_id=? and followed_id=?"
@@ -268,30 +268,34 @@ func (db *Db) ToggleFollow(followerId int, followedUser User) (err error) {
 
 			if followedUser.IsPrivate == 1 {
 				_, newErr = db.connection.Exec("insert into follow_relation(follower_id,followed_id,is_approved) values(?,?,0)", followerId, followedUser.ID)
+				if newErr != nil {
+					return newErr, false
+				}
+				broadcast = true
 			} else {
 				_, newErr = db.connection.Exec("insert into follow_relation(follower_id,followed_id,is_approved) values(?,?,1)", followerId, followedUser.ID)
 			}
 
 			if newErr != nil {
-				return newErr
+				return newErr, false
 			}
 		} else {
-			return err
+			return err, false
 		}
 	}
 
 	if isApproved == 1 {
 		_, newErr := db.connection.Exec("delete from follow_relation where follower_id=? and followed_id=?", followerId, followedUser.ID)
 		if newErr != nil {
-			return newErr
+			return newErr, false
 		}
 	}
 
 	if err == sql.ErrNoRows {
-		return nil
+		return nil, broadcast
 	}
 
-	return err
+	return err, broadcast
 }
 
 func (db *Db) CheckPending(followerId int, followedUser User) (isPending bool, err error) {

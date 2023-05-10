@@ -46,13 +46,6 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
                         }
                     } else {
                         setUserProfilePending(true)
-
-                        //send notification
-                        const payload = {
-                            type: "follownotification",
-                            to: parseInt(updatedUser.id),
-                        };
-                        WebSocketService.sendMessage(payload);
                     }
                 }
             })

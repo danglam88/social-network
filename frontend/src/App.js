@@ -94,6 +94,15 @@ function App() {
       .then((response) => {
         setUser(response.data);
 
+        handleShowPendings(response.data.id);
+
+        postsService
+          .posts("http://localhost:8080/post?creator_id=" + response.data.id)
+          .then((response) => {
+            setPosts(response.data);
+          })
+          .catch((error) => console.log(error));
+
         setPerProfileVisible(true);
         setUsersListVisible(false);
         setGroupsListVisible(false);

@@ -661,16 +661,19 @@ ul.group-users-buttons {
 }
 
 .chatBox h2 button {
-  float: right;
+  float: right !important;
   border: none;
   border-radius: 5px;
   padding: 5;
   margin-right: 5;
   cursor: pointer;
+  display: absolute;
 }
 
 .chatBox h2 {
   margin: 0px;
+  padding: 10px;
+  border-bottom: 1px solid #998650;
 }
 
 .chatBox .avatar-symbol {
@@ -785,6 +788,9 @@ ul.group-users-buttons {
 .chat-list-container li {
   border-bottom: 1px #4C2C72 solid;
   text-indent: 5px;
+  padding: 10px;
+  align-items: center;
+  display: flex;
 }
 
 .chat-list-container ul {

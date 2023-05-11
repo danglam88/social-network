@@ -69,11 +69,11 @@ const Group = ({group, setGroupInfo, handleGoToDetail}) => {
         {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
         showChatWindow ? (
           <div>
-            <div>{group.name} is available to chat from chat list</div>
+            <div>Groupchat for <b>{group.name}</b> has been added to the chat list</div>
             <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} />
           </div>
         ) : (
-          <div>{group.name} is available to chat from chat list</div>
+          <div>Groupchat for <b>{group.name}</b> is available in the chat list</div>
         )}
       </>
   );

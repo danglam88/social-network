@@ -186,7 +186,12 @@ input[type="date"]:focus {
   margin-top: -10px
 }
 
-.autologin-choice {
+.privacy-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.autologin-choice, .privacy {
   padding: 5px;
   background-color: none;
   border: 1px solid #998650;
@@ -198,8 +203,9 @@ input[type="date"]:focus {
   transition: background-color 0.2s ease-in-out;
 }
 
-.autologin-choice.autologin-true {
+.autologin-choice.autologin-true, .privacy.clicked {
   background-color: #DBBBF5;
+  font-weight: bold;
 }
 
 /* forms */
@@ -382,6 +388,26 @@ u {
     margin-right: 0;
     margin-bottom: 10px;
   }
+}
+
+.register {
+  padding: 5px;
+  font-size: smaller;
+  border:  1px solid #998650;
+  border-radius: 5px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.register:hover {
+  background-color: #DBBBF5;
+}
+
+.register-clicked {
+  padding: 10px;
+  font-size: larger;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 /* User Page */

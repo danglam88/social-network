@@ -11,6 +11,7 @@ const RegisterForm = () => {
     const [lastName, setLastName] = useState('')
     const [dateOfBirth, setDateOfBirth] = useState('')
     const [isPrivate, setPrivacy] = useState('public')
+    const [isPublic, setPublic] = useState(true)
     const [picture, setAvatar] = useState('') //optional
     const [nickname, setNickname] = useState('') //optional
     const [aboutMe, setAboutMe] = useState('') //optional
@@ -35,8 +36,13 @@ const RegisterForm = () => {
         const handleDateOfBirthChange = (event) => {
             setDateOfBirth(event.target.value);
         };
-        const handlePrivacyChange = (event) => {
-            setPrivacy(event.target.value);
+        const handlePrivateChange = () => {
+            setPrivacy("private");
+            setPublic(false);
+        };
+        const handlePublicChange = () => {
+            setPrivacy("public");
+            setPublic(true);
         };
         const handleAvatarChange = (event) => {
             setAvatar(event.target.value);
@@ -54,6 +60,55 @@ const RegisterForm = () => {
         const handleRegister = (event) => {
             event.preventDefault()
             const formData = new FormData(event.target);
+
+            let emailMessage = ValidateField("Email", email, 5, 50);
+            if ( emailMessage !== "") {
+                setErrorMessage(emailMessage);
+                return
+            }
+            let passwordMessage = ValidateField("Password", password, 8, 20);
+            if ( passwordMessage !== "") {
+                setErrorMessage(passwordMessage);
+                return
+            }
+            if (password !== password2) {
+                setErrorMessage("Passwords do not match");
+                return
+            }
+            let firstNameMessage = ValidateField("First name", firstName, 2, 20);
+            if ( firstNameMessage !== "") {
+                setErrorMessage(firstNameMessage);
+                return
+            }
+            let lastNameMessage = ValidateField("Last name", lastName, 2, 14);
+            if ( lastNameMessage !== "") {
+                setErrorMessage(lastNameMessage);
+                return
+            }
+            let dateOfBirthMessage = ValidateField("Age", dateOfBirth, 5, 120);
+            if ( dateOfBirthMessage !== "") {
+                setErrorMessage(dateOfBirthMessage);
+                return
+            }
+            let avatarMessage = ValidateField("Picture", picture, 0, 5);
+            if ( avatarMessage !== "") {
+                setErrorMessage(avatarMessage);
+                return
+            }
+            let nicknameMessage = ValidateField("Nickname", nickname, 1, 14);
+            if ( nicknameMessage !== "") {
+                setErrorMessage(nicknameMessage);
+                return
+            }
+            let aboutMeMessage = ValidateField("About me", aboutMe, 0, 100);
+            if ( aboutMeMessage !== "") {
+                setErrorMessage(aboutMeMessage);
+                return
+            }
+            if (isPrivate !== "private" && isPrivate !== "public") {
+                setErrorMessage("Account must be either private or public");
+                return
+            }
 
             registerService.register(formData)
             .then(response => {
@@ -136,10 +191,10 @@ const RegisterForm = () => {
                     <label>About Me</label>
                 </div>
                 <div className="input-container">
-                    <select id="privacy" name="privacy" value={isPrivate} onChange={handlePrivacyChange}>
-                        <option value="public">Public Account</option>
-                        <option value="private">Private Account</option>
-                    </select>
+                    <div className="privacy-choice">
+                        <div className={`privacy ${isPublic ? 'clicked' :''}`} onClick={handlePublicChange}>Public Account</div>
+                        <div className={`privacy ${!isPublic ? 'clicked' :''}`} onClick={handlePrivateChange}>Private Account</div>
+                    </div>
                 </div>
                 <div className="input-container">
                     <div className={`autologin-choice ${isAutoLogin ? 'autologin-true' :''}`} onClick={handleAutoLoginChange}>Log in automatically after registration</div>

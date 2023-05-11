@@ -85,11 +85,11 @@ const User = ({ user }) => {
       {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
         showChatWindow ? (
           <div>
-            <div>{userName} is available to chat from chat list</div>
+            <div><b>{userName}</b> has been added to the chat list</div>
             <ChatWindow chat={{ GroupID: 0, ChatID: user.id }} />
           </div>
         ) : (
-          <div>{userName} is available to chat from chat list</div>
+          <div><b>{userName}</b> is available in the chat list</div>
         )}
     </div>
   );

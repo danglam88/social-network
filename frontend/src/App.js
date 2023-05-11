@@ -44,6 +44,8 @@ function App() {
   const [groupsListVisible, setGroupsListVisible] = useState(false);
   const [isGroupDetailPage, setIsGroupDetailPage] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [isLinkClicked, setIsLinkClicked] = useState(false);
 
   useEffect(() => {
     axios
@@ -168,6 +170,11 @@ function App() {
       .catch(error => console.log(error))
   };
 
+  const handleRegisterLinkClick = () => {
+    setShowRegisterForm(!showRegisterForm);
+    setIsLinkClicked(!isLinkClicked);
+  };
+
   const handleLogout = (event) => {
     event.preventDefault();
     console.log("handle logout");
@@ -246,8 +253,13 @@ function App() {
       ) : (
         <div className="App-body">
           <div><img src={logo} className="App-logo" alt="logo" /></div>
+          <LoginForm />
+          <div className={isLinkClicked ? 'register-clicked' : 'register'} onClick={handleRegisterLinkClick}> Register new user</div>
+          {showRegisterForm && (
+            <div>
             <RegisterForm />
-            <LoginForm />
+            </div>
+          )}
         </div>
       )}
     </div>

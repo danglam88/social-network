@@ -553,6 +553,22 @@ func (db *Db) GetUserID(username string) int {
 	return userId
 }
 
+func (db *Db) NickNameExist(nickname string) bool {
+	if nickname == "" {
+		return false
+	}
+	var count int
+	row := db.connection.QueryRow("select count(*) from user where nickname = ?", nickname)
+	err := row.Scan(&count)
+	if err != nil {
+		return false
+	}
+	if count > 0 {
+		return true
+	}
+	return false
+}
+
 func (db *Db) GetEmail(mail string) string {
 	var expected_user User
 	// Reading the only row and saving the returned user

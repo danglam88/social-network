@@ -103,7 +103,7 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 		}
 	}
 
-	if DB.GetUserID(username) != -1 {
+	if DB.NickNameExist(username) {
 		user_error = "Nickname already exists"
 	}
 	if username != "" && len(username) < 4 || len(username) > 14 || !ValidatePasswordUsername(username, false) {

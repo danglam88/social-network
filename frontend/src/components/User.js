@@ -61,19 +61,19 @@ const User = ({ user }) => {
       <div>
         {follows && (
           <div className="follow">
-            {follows.followers && (
+            {follows.followers && follows.followers.length > 0 && (
               <FollowsWrapper
                 userId={user.id}
                 follows={follows.followers}
-                title="Followers:"
+                title="Followers"
                 handleShowPendings={handleUpdateFollows}
               />
             )}
-            {follows.followings && (
+            {follows.followings && follows.followings.length > 0 && (
               <FollowsWrapper
                 userId={user.id}
                 follows={follows.followings}
-                title="Followings:"
+                title="Followings"
                 handleShowPendings={handleUpdateFollows}
               />
             )}

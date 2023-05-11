@@ -11,9 +11,9 @@ const PersonalProfile = ({user, posts, setPosts, follows, handleShowPendings, no
       <PersonalInfo user={user} type="own" handleUpdateFollows={handleShowPendings} />
       {follows && (
         <div className="follow">
-          {follows.followers && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Followers:" handleShowPendings={handleShowPendings} />}
-          {follows.followings && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Followings:" handleShowPendings={handleShowPendings} />}
-          {follows.pendings && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pendings:" handleShowPendings={handleShowPendings} />}
+          {follows.followers && follows.followers.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Followers" handleShowPendings={handleShowPendings} />}
+          {follows.followings && follows.followings.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Followings" handleShowPendings={handleShowPendings} />}
+          {follows.pendings && follows.pendings.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pendings" handleShowPendings={handleShowPendings} />}
         </div>
       )}
       <Notifications notifications={notifications} setNotifications={setNotifications} />

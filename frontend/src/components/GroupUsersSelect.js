@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import usersService from '../services/UsersService';
 import groupService from '../services/GroupsService';
 import WebSocketService from '../services/WebSocketService'
-
 
 //Showing user info + checkbox to add user
 const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
@@ -41,22 +40,10 @@ const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
 } 
 
 //Main component, user list for inviting to the group
-const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
+const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => {
 
   const [isVisible, setIsVisible] = useState(false)
-  const [users, setUsers] = useState([])
   const [invitedUsers, setInvitedUsers] = useState([])
-
-
-  useEffect(() => {
-     usersService.groupUsers(groupId)
-      .then(response => {
-        if (response.data) {
-          setUsers(response.data)
-        }
-      })
-      .catch(error => console.log(error))
-}, [])
 
   const showList = () => {
 
@@ -69,7 +56,7 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
         })
         .catch(error => console.log(error))
     }
-    
+
     setIsVisible(!isVisible)
   }
 
@@ -81,6 +68,8 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
     }
 
     groupService.join(data).then(response => {
+      console.log(response)
+
       handleSuccessInvitation()
       setIsVisible(!isVisible)
     })
@@ -113,8 +102,6 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
   }
 
   return (
-      <div>
-        {users && users.length > 0 &&
         <div>
           <button className="button-small" onClick={showList}>{buttonName}</button>
           {isVisible &&
@@ -127,8 +114,7 @@ const GroupUsersSelect = ({buttonName, groupId, groupName}) => {
             <br />
             <button type="submit">Invite</button>
           </form>}
-        </div>}
-      </div>
+        </div>
   )
 }
     

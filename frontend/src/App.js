@@ -223,12 +223,12 @@ function App() {
           <div className="page-body">
             <div className="Menu">
               <div className="button-wrapper">
-                {users && (
+                {users && users.length > 0 && (
                   <div>
                     <button onClick={handleShowUsersList}>Show Users</button>
                   </div>
                 )}
-                {groups && (
+                {groups && groups.length > 0 && (
                   <div>
                     <button onClick={handleShowGroupsList}>Show Groups</button>
                   </div>

@@ -160,11 +160,11 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
               >
                 <option value="public">Public</option>
                 <option value="allfollowers">Followers Only</option>
-                {follows && follows.followers && <option value="superprivate">Choose Followers</option>}
+                {follows && follows.followers && follows.followers.length > 0 && <option value="superprivate">Choose Followers</option>}
               </select>
             </div>
           )}
-          {privacy === "superprivate" && follows && follows.followers && (
+          {privacy === "superprivate" && follows && follows.followers && follows.followers.length > 0 && (
             <div>
               <label htmlFor="users">Followers:</label>
               <select

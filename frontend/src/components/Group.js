@@ -6,11 +6,13 @@ import FollowsWrapper from './FollowsWrapper'
 import GroupUsersSelect from "./GroupUsersSelect"
 import ChatWindow from './ChatWindow'
 import ChatService from '../services/ChatService'
+import usersService from '../services/UsersService'
 
 const Group = ({group, setGroupInfo, handleGoToDetail}) => {
   const membersCount = group.members?.length === 0 ? 0 : group.members.length;
   const [chatButton, setChatButton] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     ChatService
@@ -21,6 +23,14 @@ const Group = ({group, setGroupInfo, handleGoToDetail}) => {
         }
       })
       .catch((error) => console.log(error));
+
+    usersService.groupUsers(group.id)
+      .then(response => {
+        if (response.data) {
+          setUsers(response.data)
+        }
+      })
+      .catch(error => console.log(error))
   }, []);
 
   const addChatToChatList = () => {
@@ -41,15 +51,17 @@ const Group = ({group, setGroupInfo, handleGoToDetail}) => {
                 alt="Avatar Image"
               />
             </div>}
+        {((group.members && group.members.length > 0) || (users && users.length > 0)) &&
         <ul className="group-users-buttons">
-          {group.members &&
+          {group.members && group.members.length > 0 &&
           <li>
-            <FollowsWrapper userId={group.id} follows={group.members} title="Members:" handleShowPendings={handleGoToDetail} />
+            <FollowsWrapper userId={group.id} follows={group.members} title="Members" handleShowPendings={handleGoToDetail} />
           </li>}
+          {users && users.length > 0 &&
           <li>
-            <GroupUsersSelect buttonName="Invite users:" groupId={group.id} groupName={group.name}/>
-          </li>
-        </ul>
+            <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name} users={users} setUsers={setUsers} />
+          </li>}
+        </ul>}
         {group.events && <EventList list={group.events} groupId={group.id}/>}
         <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
         {group.posts && <Posts posts={group.posts} type="group" />}

@@ -282,25 +282,26 @@ func (c *Client) readMessages() {
 
 				if check {
 					log.Println(errmsg)
-					res.Message = "Message not allowed"
 				}
 
-				chatUsers, err := DB.GetUserIdsfromChatId(res.To)
-				if err != nil {
-					log.Println(err)
-				}
+				if !check {
+					chatUsers, err := DB.GetUserIdsfromChatId(res.To)
+					if err != nil {
+						log.Println(err)
+					}
 
-				for _, chatUser := range chatUsers {
-					for wsclient := range c.manager.clients {
-						if wsclient.userId == chatUser {
-							wsclient.eggress <- message
+					for _, chatUser := range chatUsers {
+						for wsclient := range c.manager.clients {
+							if wsclient.userId == chatUser {
+								wsclient.eggress <- message
+							}
 						}
 					}
-				}
-				//insert chatid, creatorid, message, createdat
-				err = DB.AddMessage(res.To, res.From, res.Message, res.CreatedAt)
-				if err != nil {
-					log.Println(err)
+					//insert chatid, creatorid, message, createdat
+					err = DB.AddMessage(res.To, res.From, res.Message, res.CreatedAt)
+					if err != nil {
+						log.Println(err)
+					}
 				}
 
 			} else if res.Type == LOGOUT_TYPE {

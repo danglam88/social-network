@@ -125,7 +125,6 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   return (
     <div className="new-post-wrapper">
-      <h2>Create a post</h2>
       <div className="post-comment-form">
         <form onSubmit={handleSubmit}>
           <div>
@@ -136,6 +135,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
               name="title"
               value={title}
               onChange={handleTitleChange}
+              placeholder="New post title"
               required
             />
           </div>
@@ -146,6 +146,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
               name="content"
               value={content}
               onChange={handleContentChange}
+              placeholder="New post content"
               required
             />
           </div>

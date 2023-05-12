@@ -434,9 +434,15 @@ u {
 
 /* User Page */
 /* Your profile */
-.personal-info {
-  min-height: 260px;
+
+.personal-profile-wrapper {
+  min-width: 470px;
 }
+
+.personal-info {
+  min-height: 300px;
+}
+ 
 .personal-info-column {
   margin-bottom: 10px;
   float: left;

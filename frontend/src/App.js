@@ -227,21 +227,15 @@ function App() {
               <button type="submit">Logout</button>
             </form>
           </div>
-          <div className="page-body">
-            <div className="Menu">
-              <div className="button-wrapper">
+          <ul className="Menu">
                 {users && users.length > 0 && (
-                  <div>
-                    <button onClick={handleShowUsersList}>Show Users</button>
-                  </div>
+                  <li onClick={handleShowUsersList}>Show Users</li>
                 )}
                 {groups && groups.length > 0 && (
-                  <div>
-                    <button onClick={handleShowGroupsList}>Show Groups</button>
-                  </div>
+                  <li onClick={handleShowGroupsList}>Show Groups</li>
                 )}
-              </div>
-            </div>
+            </ul>
+          <div className="page-body">
             <div className="Mainpage">
               {perProfileVisible && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} notifications={notifications} setNotifications={setNotifications} />}
               {usersListVisible && <UserList users={users} setUsers={setUsers} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}

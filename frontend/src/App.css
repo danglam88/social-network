@@ -191,6 +191,21 @@ input[type="date"]:focus {
   grid-template-columns: 1fr 1fr;
 }
 
+.autologin-choice {
+  min-width: 50px;
+}
+
+.autologin-choice-div {
+  display: flex;
+  align-items: center;
+}
+
+.autologin-info {
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
 .autologin-choice, .privacy {
   padding: 5px;
   background-color: none;
@@ -719,8 +734,15 @@ ul.group-users-buttons {
   margin-bottom: 8px;
 }
 
+.chat-container span {
+  margin:2px;
+}
+
 .chat-message-displayed {
+  margin-top: 5px;
   padding:2px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-radius: 10px;
   background-color: #f8f8f8;
 }
@@ -759,13 +781,19 @@ ul.group-users-buttons {
   margin-bottom: 10px;
 }
 
-.chat-input-user .emoji-picker {
+.emoji-picker {
   cursor: pointer;
   display: block;
   position: fixed;
   bottom: 50px;
   left: 420px;
   width: 200px;
+  background-color: #4C2C72 solid;
+}
+
+.emoji-picker span {
+  font-size: 20px;
+  padding: 1px;
 }
 
 .chat-bubble {

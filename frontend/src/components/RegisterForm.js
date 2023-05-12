@@ -90,7 +90,7 @@ const RegisterForm = () => {
                 setErrorMessage(dateOfBirthMessage);
                 return
             }
-            let nicknameMessage = ValidateField("Nickname", nickname, 1, 14);
+            let nicknameMessage = ValidateField("Nickname", nickname, 2, 14);
             if ( nicknameMessage !== "") {
                 setErrorMessage(nicknameMessage);
                 return
@@ -192,7 +192,12 @@ const RegisterForm = () => {
                     </div>
                 </div>
                 <div className="input-container">
-                    <div className={`autologin-choice ${isAutoLogin ? 'autologin-true' :''}`} onClick={handleAutoLoginChange}>Log in automatically after registration</div>
+                    <div className="autologin-choice-div">
+                        <div className={`autologin-choice ${isAutoLogin ? 'autologin-true' :''}`} onClick={handleAutoLoginChange}>
+                            {isAutoLogin ? 'YES' : 'NO'}
+                        </div>
+                        <div className="autologin-info">Log in automatically after registration</div>
+                    </div>
                 </div>
                 <div>
                     <button type="submit">Register</button>

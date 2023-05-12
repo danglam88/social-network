@@ -232,7 +232,7 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 		errorCheck = true
 	}
 
-	regex := regexp.MustCompile(`^[\p{L}\p{N}\p{P}\p{S}\p{Z}\p{Sm}\p{Sc}\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\r\n]+$`)
+	regex := regexp.MustCompile(`^[\p{L}\p{N}\p{P}\p{S}\p{Z}\p{Sm}\p{Sc}\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\r\nåäöÅÄÖ]+$`)
 	if !errorCheck && !regex.MatchString(field) {
 		errorMessage = fieldName + " can only contain letters, numbers, special characters, and emojis"
 		errorCheck = true

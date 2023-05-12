@@ -1,10 +1,10 @@
-export const TextRegex = /^[\x20-\x7E\n\t]+$/;
+export const TextRegex = /^[\x20-\x7E\n\tåäöÅÄÖ€]+$/;
 export const TagRegex = /<[^>]*>/g;
 export const ImageRegex = /(jpe?g|png|gif|svg)/;
 export const EmailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-export const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!#$%&()*+]{8,}$/;
-export const NicknameRegex = /^[a-zA-Z0-9]+$/;
-export const NameRegex = /^[a-zA-Z ]+$/;
+export const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!#$%&()*+åäöÅÄÖ]{8,}$/;
+export const NicknameRegex = /^[a-zA-Z0-9åäöÅÄÖ]+$/;
+export const NameRegex = /^[a-zA-Z åäöÅÄÖ]+$/;
 export const MaxSize = 50000000;
 export const MaxSizeAvatar = 5000000;
 

@@ -108,8 +108,8 @@ func validateForm(w http.ResponseWriter, r *http.Request, email, password, repas
 	if DB.NickNameExist(username) {
 		user_error = "Nickname already exists"
 	}
-	if username != "" && len(username) < 4 || len(username) > 14 || !ValidatePasswordUsername(username, false) {
-		user_error = "Nickname must be 4 - 14 characters, and include no special characters"
+	if username != "" && len(username) < 2 || len(username) > 14 || !ValidatePasswordUsername(username, false) {
+		user_error = "Nickname must be 2 - 14 characters, and include no special characters"
 	}
 	if (len(firstName) <= 1) || (len(firstName) > 14) || !ValidatePasswordUsername(firstName, false) {
 		firstName_error = "First name must be 2 - 14 characters, and include no special characters"
@@ -179,9 +179,9 @@ func ValidatePasswordUsername(pwd string, stat bool) bool {
 	numb := false
 	validate := true
 	for _, symb := range pwd {
-		if symb >= 'A' && symb <= 'Z' {
+		if symb >= 'A' && symb <= 'Z' || symb == 'Å' || symb == 'Ä' || symb == 'Ö' {
 			A = true
-		} else if symb >= 'a' && symb <= 'z' {
+		} else if symb >= 'a' && symb <= 'z' || symb == 'å' || symb == 'ä' || symb == 'ö' {
 			a = true
 		} else if symb >= '0' && symb <= '9' {
 			numb = true
@@ -255,11 +255,11 @@ func validateAboutMe(aboutMe string) string {
 	}
 
 	// Determine what characters are allowed in the field
-	reg := regexp.MustCompile(`^[a-zA-Z0-9,.!? ]*$`)
+	reg := regexp.MustCompile(`^[a-zA-Z0-9,.!? åäöÅÄÖ]*$`)
 
 	// Validate that the input only contains these characters
 	if !reg.MatchString(aboutMe) {
-		return "About me field should only contain alphanumeric characters, commas, periods, exclamation marks, question marks, and spaces"
+		return "About me should only contain regular characters"
 	}
 
 	return ""

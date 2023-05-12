@@ -90,11 +90,6 @@ const RegisterForm = () => {
                 setErrorMessage(dateOfBirthMessage);
                 return
             }
-            let avatarMessage = ValidateField("Picture", picture, 0, 5);
-            if ( avatarMessage !== "") {
-                setErrorMessage(avatarMessage);
-                return
-            }
             let nicknameMessage = ValidateField("Nickname", nickname, 1, 14);
             if ( nicknameMessage !== "") {
                 setErrorMessage(nicknameMessage);

@@ -276,6 +276,7 @@ button:focus {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  min-width: 200px;
 }
 
 .Menu div {
@@ -567,7 +568,7 @@ span + .button-small {
   margin-bottom: 0
 }
 .group-wrapper {
-  min-width: 600px;
+  min-width: 200px;
   padding-bottom: 30px;
   padding-top: 30px;
 }
@@ -790,7 +791,6 @@ ul.group-users-buttons {
   color: white;
   text-align: center;
   border: white;
-  height: 50px;
 }
 
 .chat-list {

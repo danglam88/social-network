@@ -37,7 +37,7 @@ function ValidateField(validateFieldName, content, minlength = 1, maxlength = 30
       return validateFieldName+" must not contain HTML tags";
     }
     if (validateFieldName === "Nickname" && !NicknameRegex.test(content) && content.length > 0) {
-      return "Nickname must be alphanumeric";
+      return "Nickname must be alphanumeric, with no spaces";
     }
     if ((validateFieldName === "First name" || validateFieldName === "Last name") && !NameRegex.test(content)) {
       return validateFieldName + " must be regular characters";
@@ -73,11 +73,12 @@ function ValidateField(validateFieldName, content, minlength = 1, maxlength = 30
       if (maxlength !== 5 && content.size > MaxSize) {
         return "Uploaded image must be less than 50MB";
       }
+      console.log(content.type)
       if ( !ImageRegex.test(content.type)) {
         return "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg";
       }
     }
-    if (validateFieldName === "About me" && content.length > 0 && TextRegex.test(content)) {
+    if (validateFieldName === "About me" && content.length > 0 && !TextRegex.test(content)) {
       return validateFieldName + " must be regular characters";
     }
     return "";

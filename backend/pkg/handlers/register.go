@@ -39,19 +39,13 @@ func RegisterPost(w http.ResponseWriter, r *http.Request) {
 	privacyName := r.FormValue("privacy")
 	username := r.FormValue("nickname")
 	about := r.FormValue("aboutMe")
-	ImgUrl, imgErr := UploadFile(w, r, true)
-	if imgErr != nil {
-		fmt.Println(imgErr)
-	}
-	if ImgUrl == "" {
-		ImgUrl = SetRandomAvatar()
-	}
+
 	privacy := 0
 	if privacyName == "private" {
 		privacy = 1
 	}
 
-	json, status := validateForm(email, password, repassword, firstName, lastName, birth, ImgUrl, username, about, privacy)
+	json, status := validateForm(w, r, email, password, repassword, firstName, lastName, birth, username, about, privacy)
 	// fmt.Println(string(json))
 	w.WriteHeader(status)
 	io.WriteString(w, string(json))
@@ -69,12 +63,11 @@ func addUsertoJson(user []DataValidation, status int) []byte {
 		fmt.Println(err)
 		return nil
 	}
-	// fmt.Println(string(content))
 	return content
 }
 
 // Calling HandleRegistration function whenever there is a request to the URL
-func validateForm(email, password, repassword, firstName, lastName, birth, avatar, username, about string, privacy int) ([]byte, int) {
+func validateForm(w http.ResponseWriter, r *http.Request, email, password, repassword, firstName, lastName, birth, username, about string, privacy int) ([]byte, int) {
 	var user []DataValidation
 	user_error := ""
 	email_error := ""
@@ -82,6 +75,15 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 	firstName_error := ""
 	lastName_error := ""
 	registered_error := ""
+	avatar_error := ""
+
+	ImgUrl, imgErr := UploadFile(w, r, true)
+	if imgErr != nil {
+		avatar_error = "Avatar " + imgErr.Error()
+	}
+	if ImgUrl == "" {
+		ImgUrl = SetRandomAvatar()
+	}
 
 	if DB.GetUserID(username) == -1 && ValidatePasswordUsername(username, false) &&
 		ValidatePasswordUsername(password, true) && !DB.EmailExists(email) &&
@@ -89,14 +91,14 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 		ValidateMail(email) && len(firstName) >= 2 && len(firstName) < 21 &&
 		ValidatePasswordUsername(firstName, false) &&
 		len(lastName) >= 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) &&
-		isValidDateOfBirth(birth) && validateAboutMe(about) == "" && !DB.NickNameExist(username) {
+		isValidDateOfBirth(birth) && validateAboutMe(about) == "" && !DB.NickNameExist(username) && avatar_error == "" {
 		passwordH, err := HashPassword(password)
 		if err != nil {
 			fmt.Println(err)
 		}
 
 		//ADD USER TO DB
-		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, avatar, privacy) == "200 OK" {
+		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, ImgUrl, privacy) == "200 OK" {
 			// APPENDING NEW USER TO JSON FILE
 			user = append(user, DataValidation{})
 			return addUsertoJson(user, 200), http.StatusOK
@@ -162,6 +164,9 @@ func validateForm(email, password, repassword, firstName, lastName, birth, avata
 	if DB.EmailExists(email) {
 		registered_error = "User already registered"
 		user = append(user, DataValidation{Field: "email", Message: registered_error})
+	}
+	if avatar_error != "" {
+		user = append(user, DataValidation{Field: "avatar", Message: avatar_error})
 	}
 
 	// CHECK THIS
@@ -242,7 +247,7 @@ func isValidDateOfBirth(dateOfBirth string) bool {
 }
 
 func validateAboutMe(aboutMe string) string {
-	maxLength := 500
+	maxLength := 100
 
 	// Validate that the input does not exceed the maximum length
 	if len(aboutMe) > maxLength {

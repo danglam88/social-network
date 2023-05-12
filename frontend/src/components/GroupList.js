@@ -24,7 +24,7 @@ const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
 
     return (  
         <div className="group-wrapper">
-            <h3>{group.name}</h3>
+            <h3><img className="avatar-symbol" src={`http://localhost:8080${group.avatar_url}`}/>{group.name}</h3>
             <div>
                 <div className="group-column">{group.description}</div>
                 {group.is_member ?
@@ -174,16 +174,15 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
             <>
             <h1>Groups</h1>
                 <div>
-                    {groupsList}
-                    <div className="group-wrapper">
+                <div className="group-wrapper">
                     {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
                     (
                         <>
-                        <div className="group-column">If you haven't found a group, you can create our own!</div>
-                        <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>Create a group</div>
+                        <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>+</div>
                         </>
                 )}
                     </div>
+                    {groupsList}         
                 </div>
             </>   
              )}

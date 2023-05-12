@@ -77,9 +77,9 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     return (
         <div className="user-item">
             {updatedUser.nick_name ? (
-                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}>{updatedUser.nick_name}</span>
+                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.nick_name}</span>
             ) : (
-                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}>{updatedUser.first_name} {updatedUser.last_name}</span>
+                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.first_name} {updatedUser.last_name}</span>
             )}
 
             {userProfilePending ? (

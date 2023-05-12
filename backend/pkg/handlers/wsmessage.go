@@ -99,7 +99,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				Type:    EVENTNOTIFICATION_TYPE,
 				From:    0,
 				To:      id,
-				Message: fmt.Sprintf("Event %s has been created in %s", event.EventName, event.GroupName),
+				Message: fmt.Sprintf("Event %s has been created in %s. Accept/reject in your profile", event.EventName, event.GroupName),
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -122,7 +122,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				From:     0,
 				To:       id,
 				UserName: group,
-				Message:  fmt.Sprintf("You are invited to join group %s", group),
+				Message:  fmt.Sprintf("You are invited to join group %s. Accept/reject in your profile", group),
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -145,7 +145,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				From:     n.UserId,
 				UserName: n.UserName,
 				To:       id,
-				Message:  fmt.Sprintf("%s wants to join your group %s", n.UserName, n.GroupName),
+				Message:  fmt.Sprintf("%s wants to join your group %s. Accept/reject in your profile", n.UserName, n.GroupName),
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -167,7 +167,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				From:     0,
 				UserName: follower,
 				To:       id,
-				Message:  fmt.Sprintf("%s wants to follow you", follower),
+				Message:  fmt.Sprintf("%s wants to follow you. Accept/reject in your profile.", follower),
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -321,7 +321,7 @@ func (c *Client) readMessages() {
 					}
 				}
 			} else if res.Type == FOLLOWNOTIFICATION_TYPE {
-				res.Message = fmt.Sprintf("%s requested to follow you", res.UserName)
+				res.Message = fmt.Sprintf("%s requested to follow you. Accept/reject in your profile", res.UserName)
 				//notify the user that he has a new follower
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {
@@ -337,7 +337,7 @@ func (c *Client) readMessages() {
 			} else if res.Type == INVITENOTIFICATION_TYPE {
 				// notify the user that he has a new group invitation
 
-				res.Message = fmt.Sprintf("%s invited you to join %s", res.UserName, res.Message)
+				res.Message = fmt.Sprintf("%s invited you to join %s. Accept/reject in your profile", res.UserName, res.Message)
 
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {
@@ -362,7 +362,7 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-				res.Message = res.UserName + " wants to join your group " + group.GroupName
+				res.Message = res.UserName + " wants to join your group " + group.GroupName + ". Accept/reject in your profile"
 
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == creatorId {
@@ -387,7 +387,7 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName
+				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName + ". Accept/reject in your profile"
 
 				for _, groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {

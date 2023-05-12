@@ -877,7 +877,9 @@ func (db *Db) GetLastMessage(chatId int) time.Time {
 	row := db.connection.QueryRow(query, chatId)
 	err := row.Scan(&msgTime)
 	if err != nil {
-		fmt.Println(err)
+		if err != sql.ErrNoRows {
+			fmt.Println(err)
+		}
 	}
 	return msgTime
 }

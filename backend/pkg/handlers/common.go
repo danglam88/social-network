@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	db "socialnetwork/pkg/db/sqlite"
+	"time"
 )
 
 const RESPONSE_OK = "ok"
@@ -61,7 +62,19 @@ func Start(collection []Handler) {
 	manager := NewManager()
 	mux.HandleFunc("/ws", manager.serveWS)
 
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	limitedMux := Limit(mux)
+
+	// Setting timeout, idle timeout, and read timeout
+	server := &http.Server{
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  20 * time.Second,
+		Addr:         ":8080",
+		Handler:      limitedMux,
+	}
+
+	log.Println("Server is listening on port 8080")
+	log.Fatal(server.ListenAndServe())
 }
 
 func GetFunc(handler Handler) http.HandlerFunc {

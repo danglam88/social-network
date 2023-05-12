@@ -287,20 +287,26 @@ button:focus {
 }
 
 .Menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  min-width: 200px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background:#4C2C72;
 }
 
-.Menu div {
-  margin-bottom: 20px
+.Menu li {
+  float: left;
+  padding: 10px;
+  color: #ede6f4;
+}
+
+.Menu li:hover {
+  background: #ede6f4;
+  color:#4C2C72;
 }
 
 .Mainpage {
   flex: 1;
-  padding: 20px;
 }
 
 .button-wrapper {
@@ -428,8 +434,23 @@ u {
 
 /* User Page */
 /* Your profile */
+.personal-info {
+  min-height: 260px;
+}
+.personal-info-column {
+  margin-bottom: 10px;
+  float: left;
+  width: 50%;
+}
 
-.personal-info div{
+/* Clear floats after the columns */
+.personal-info-column:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.personal-info-column div{
   margin-bottom: 10px;
 }
 
@@ -508,6 +529,16 @@ u {
 .group-wrapper textarea, .event-desc textarea {
   resize: none;
   min-height: 30px;
+}
+
+.new-post-wrapper {
+  background-color:  #ede6f4;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.main-wrapper {
+  padding: 20px;
 }
 
 /* Created posts */
@@ -685,6 +716,10 @@ ul.group-users-buttons {
   to {
     transform: rotate(360deg);
   }
+}
+
+.user-item {
+  vertical-align: middle;
 }
 
 .header span:hover, .user-item span:hover, .icon:hover {

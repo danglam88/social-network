@@ -137,10 +137,12 @@ func CheckChat(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := ResponseError{Status: RESPONSE_OK}
-	if chatId <= 0 {
+	if chatId > 0 {
+		response.Error = "Chat found"
+	} else if chatId == 0 {
 		response.Error = "Chat not found"
 	} else {
-		response.Error = "Chat found"
+		response.Error = "Chat not allowed"
 	}
 	res, err := json.Marshal(response)
 	if err != nil {

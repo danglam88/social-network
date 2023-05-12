@@ -40,9 +40,11 @@ func GetVisiblePosts(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
 		return
 	}
+
 	for i := range posts {
 		posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
 	}
+
 	//sort posts reversed
 	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
 		posts[i], posts[j] = posts[j], posts[i]

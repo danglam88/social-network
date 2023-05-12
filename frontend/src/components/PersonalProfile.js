@@ -6,10 +6,10 @@ import Notifications from "./Notifications";
 const PersonalProfile = ({user, posts, setPosts, follows, handleShowPendings, notifications, setNotifications}) => {
   return (
     <div className="personal-profile-wrapper">
-      <PersonalInfo user={user} type="own" handleUpdateFollows={handleShowPendings} follows={follows} />
+      <PersonalInfo user={user} type="own" handleUpdateFollows={handleShowPendings} follows={follows} limitedInfo={false} />
       <Notifications notifications={notifications} setNotifications={setNotifications} />
       <PostForm userId={user.id} setPosts={setPosts} follows={follows} />
-      {posts && <Posts posts={posts} type="you" userId={user.id} />}
+      {posts && posts.length > 0 && <Posts posts={posts} type="you" userId={user.id} />}
     </div>
   );
 };

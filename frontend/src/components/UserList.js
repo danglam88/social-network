@@ -4,7 +4,6 @@ import User from './User';
 import followsService from "../services/FollowsService";
 
 const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
-    const [userProfileAccessible, setUserProfileAccessible] = useState(false)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
@@ -12,14 +11,9 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     const [followValue, setFollowValue] = useState(false)
 
     useEffect(() => {
-        if (!updatedUser.is_private) {
-            setUserProfileAccessible(true)
-        }
-
         if (followings !== null) {
             followings.forEach(following => {
                 if (following.id === updatedUser.id) {
-                    setUserProfileAccessible(true)
                     setUserProfileFollowed(true)
                 }
             })
@@ -39,9 +33,6 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
                 if (!check_pending) {
                     if (!followValue || !updatedUser.is_private) {
                         setUserProfileFollowed(!userProfileFollowed)
-                        if (!followValue && updatedUser.is_private) {
-                            setUserProfileAccessible(false)
-                        }
                     } else {
                         setUserProfilePending(true)
                     }
@@ -77,9 +68,9 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     return (
         <div className="user-item">
             {updatedUser.nick_name ? (
-                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.nick_name}</span>
+                <span onClick={() => {handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.nick_name}</span>
             ) : (
-                <span onClick={() => {userProfileAccessible && handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.first_name} {updatedUser.last_name}</span>
+                <span onClick={() => {handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.first_name} {updatedUser.last_name}</span>
             )}
 
             {userProfilePending ? (
@@ -101,10 +92,8 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
     const handleUserProfile = (userId) => {
         usersService.user(userId)
             .then(response => {
-                if (response.data.Status !== "error") {
-                    setUserData(response.data)
-                    setShowUserProfile(true)
-                }
+                setUserData(response.data)
+                setShowUserProfile(true)
             })
             .catch(error => console.log(error))
     }
@@ -114,6 +103,7 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
             {showUserProfile ? (<User user={userData} key={userData.id} />) : (
                 <div>
                     <h1>Users</h1>
+                    <br />
                     {users.map(user => {
                         const userItemKey = "userItem" + user.id;
                         return <UserItem user={user} users={users} setUsers={setUsers} key={userItemKey} followings={followings} handleUserProfile={handleUserProfile} />

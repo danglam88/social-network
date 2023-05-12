@@ -79,7 +79,7 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 
 	} else if groupID == 0 && !DB.IsFollower(userId, creatorID) && creatorStruct.IsPrivate == 1 && creatorID != userId {
 		w.WriteHeader(http.StatusOK)
-		response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a follower of this user"}
+		response := ResponseError{Status: RESPONSE_ERR, Error: "You are not a follower of this private user"}
 		res, err := json.Marshal(response)
 		if err != nil {
 			log.Println(err)

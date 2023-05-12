@@ -209,11 +209,11 @@ func (db *Db) Close() {
 	db.connection.Close()
 }
 
-func (db *Db) IsFollower(followerId, followdId int) bool {
+func (db *Db) IsFollower(followerId, followedId int) bool {
 	var isApproved int
 
 	query := "select is_approved from follow_relation where follower_id=? and followed_id=?"
-	row := db.connection.QueryRow(query, followerId, followdId)
+	row := db.connection.QueryRow(query, followerId, followedId)
 	err := row.Scan(&isApproved)
 	if err != nil {
 		return false
@@ -1109,7 +1109,6 @@ func (db *Db) GetUser(id int) User {
 	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.IsPrivate, &user.BirthDate, &user.CreatedAt, &user.NickName, &user.AvatarUrl, &user.AboutMe)
 	if err != nil {
 		fmt.Println(err)
-		return user
 	}
 	return user
 }
@@ -1301,10 +1300,17 @@ func (db *Db) GetChat(groupId, from, to int) (chatId int, err error) {
 	row := db.connection.QueryRow(query, options...)
 	err = row.Scan(&chatId)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			err = nil
+		if err != sql.ErrNoRows {
+			return chatId, err
 		}
-		return chatId, err
+		err = nil
+		chatId = 0
+	}
+
+	user := db.GetUser(to)
+
+	if user.IsPrivate == 1 && !db.IsFollower(from, to) {
+		chatId = -1
 	}
 
 	return chatId, err
@@ -1384,7 +1390,7 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 		if groupId == 0 {
 			user := db.GetUser(to)
 			if user.IsPrivate == 1 && !db.IsFollower(from, user.ID) {
-				err := errors.New("not allowed to send message to this user")
+				err := errors.New("not allowed to send message to this private user")
 				return messages, id, created, err
 			}
 		}

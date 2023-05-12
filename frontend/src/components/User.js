@@ -12,6 +12,7 @@ const User = ({ user }) => {
   const [follows, setFollows] = useState(null);
   const [chatButton, setChatButton] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
+  const [chatNotAllowed, setChatNotAllowed] = useState(false);
 
   useEffect(() => {
     postsService
@@ -33,6 +34,8 @@ const User = ({ user }) => {
       .then((response) => {
         if (response.data.Error === "Chat not found") {
           setChatButton(true);
+        } else if (response.data.Error === "Chat not allowed") {
+          setChatNotAllowed(true);
         }
       })
       .catch((error) => console.log(error));
@@ -57,32 +60,11 @@ const User = ({ user }) => {
   return (
     <div>
       <h2>{userName}'s profile</h2>
-      <PersonalInfo user={user} type="user" handleUpdateFollows={handleUpdateFollows} />
-      <div>
-        {follows && (
-          <div className="follow">
-            {follows.followers && follows.followers.length > 0 && (
-              <FollowsWrapper
-                userId={user.id}
-                follows={follows.followers}
-                title="Followers"
-                handleShowPendings={handleUpdateFollows}
-              />
-            )}
-            {follows.followings && follows.followings.length > 0 && (
-              <FollowsWrapper
-                userId={user.id}
-                follows={follows.followings}
-                title="Followings"
-                handleShowPendings={handleUpdateFollows}
-              />
-            )}
-          </div>
-        )}
-      </div>
-      {posts && <Posts posts={posts} type={userName} />}
+      <PersonalInfo user={user} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} limitedInfo={chatNotAllowed} />
+      {posts && posts.length > 0 && <Posts posts={posts} type={userName} userId={user.id} />}
       <br />
-      {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
+      {chatNotAllowed ? <div>You need to follow <b>{userName}</b> in order to chat</div> :
+        chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
         showChatWindow ? (
           <div>
             <div><b>{userName}</b> has been added to the chat list</div>

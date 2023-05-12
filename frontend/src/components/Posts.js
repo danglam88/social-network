@@ -43,7 +43,7 @@ const Post = ({post, type, userId}) => {
 const Posts = ({posts, type, userId}) => {
     return (
         <div className="created-posts-wrapper main-wrapper">
-            {posts && posts.map(post => {
+            {posts && posts.length > 0 && posts.map(post => {
                 const postKey = "post" + post.id;
                 return <Post post={post} key={postKey} type={type} userId={userId} />
             })}

@@ -178,7 +178,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
                     {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
                     (
                         <>
-                        <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>+</div>
+                        <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>Add new group</div>
                         </>
                 )}
                     </div>

@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Follows from './Follows';
 
 const FollowsWrapper = ({userId, follows, title, handleShowPendings}) => {
     const [followsVisible, setFollowsVisible] = useState(false)
+
+    useEffect(() => {
+        if (title === "Pendings") {
+            setFollowsVisible(true)
+        }
+    }, [])
 
     const toggleFollows = () => {
         setFollowsVisible(!followsVisible)

@@ -42,14 +42,7 @@ const Post = ({post, type, userId}) => {
 
 const Posts = ({posts, type, userId}) => {
     return (
-        <div className="created-posts-wrapper">
-            {type === "you" ? <h2>Your created posts:</h2> :
-              type === "group" ? (
-                <h2>Group's created posts:</h2>
-              ) : (
-                <h2>{type}'s created posts:</h2>
-              )
-            }
+        <div className="created-posts-wrapper main-wrapper">
             {posts && posts.map(post => {
                 const postKey = "post" + post.id;
                 return <Post post={post} key={postKey} type={type} userId={userId} />

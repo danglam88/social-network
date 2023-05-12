@@ -292,6 +292,7 @@ button:focus {
   padding: 0;
   overflow: hidden;
   background:#4C2C72;
+  cursor: pointer
 }
 
 .Menu li {
@@ -498,7 +499,8 @@ u {
   flex-direction: column;
 }
 
-.post-comment-form label {
+.post-comment-form label,
+.create-event label {
   margin-bottom: 10px;
   font-weight: bold;
   display: flex;
@@ -512,7 +514,8 @@ u {
 .post-comment-form input[type="text"],
 .post-comment-form input[type="file"],
 .post-comment-form select,
-.post-comment-form textarea {
+.post-comment-form textarea,
+.create-event  input[required]{
   width: 90%;
   padding: 10px;
   margin-bottom: 20px;
@@ -537,10 +540,20 @@ u {
   min-height: 30px;
 }
 
+.create-event textarea {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #223127;
+  flex: 1;
+}
+
 .new-post-wrapper {
   background-color:  #ede6f4;
   padding: 20px;
-  margin-top: 10px;
 }
 
 .main-wrapper {
@@ -610,15 +623,27 @@ span + .button-small {
   margin-top: 10px;
 }
 
+.user-list {
+  padding: 20px
+}
 
 /*
   Group List
 */
 
 .Mainpage h1{
-  margin-top: 10px;
+  margin-top: 0;
   margin-bottom: 0
 }
+
+.groups-wrapper {
+  padding: 20px;
+}
+
+.single-group-wrapper {
+  padding: 20px
+}
+
 .group-wrapper {
   min-width: 200px;
   padding-bottom: 30px;
@@ -691,8 +716,16 @@ ul.group-users-buttons {
   font-size:small;
 }
 
+.group-avatar {
+  margin-top: 10px
+}
+
 .event-info {
   margin-top: 5px;
+}
+
+.events-wrapper {
+  padding: 20px
 }
 
 .event-info > li {
@@ -705,6 +738,14 @@ ul.group-users-buttons {
 
 .group-events > ul:nth-child(2) {
   margin-top: 20px;
+}
+
+.create-event-wrapper {
+  background-color: #FFE1E8
+}
+
+.create-event {
+  padding: 20px;
 }
 
 
@@ -725,7 +766,17 @@ ul.group-users-buttons {
 }
 
 .user-item {
-  vertical-align: middle;
+  margin-top: 10px;
+  align-items: center;
+  display: flex
+}
+
+.user-item button {
+  margin-left: 10px
+}
+
+.user-profile-name {
+  display:flex;
 }
 
 .header span:hover, .user-item span:hover, .icon:hover, .Menu li:hover {
@@ -734,13 +785,51 @@ ul.group-users-buttons {
 
 /* Chat */
 .chat-window-modal {
+  border-radius: 5px;
   padding: 10px;
   display: block;
   position: fixed;
   bottom: 0;
-  left: 0;
-  width: 600px;
+  right: 0;
+  margin-right: 210px;
+  width: 250px;
   background-color: #DBBBF5;
+}
+
+div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(3) {
+  font-size: 12px;
+  padding-left: 1px;
+  padding-right: 1px;
+  /* border: 1px solid white !important; */
+}
+
+div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
+  background-color: transparent !important;
+  padding: 0;
+}
+
+
+
+.chat-window-modal h2 {
+  word-wrap: break-word;
+}
+
+.chat-info {
+  display: flex;
+}
+
+.chatBox button:first-child {
+  position: absolute;
+  text-align: center !important;
+  margin-left: 233px;
+  margin-top: -10px;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.chat-title h2 {
+  max-width: 160px;
 }
 
 .chatBox h2 button {
@@ -756,7 +845,6 @@ ul.group-users-buttons {
 .chatBox h2 {
   margin: 0px;
   padding: 10px;
-  border-bottom: 1px solid #998650;
 }
 
 .chatBox .avatar-symbol {
@@ -780,21 +868,37 @@ ul.group-users-buttons {
 }
 
 .chat-message-displayed {
-  margin-top: 5px;
-  padding:2px;
-  padding-left: 5px;
-  padding-right: 5px;
+  display: inline-block;
+  margin-top: 10px !important;
+  padding: 5px;
   border-radius: 10px;
   background-color: #f8f8f8;
+  margin-top: 10px !important;
+  max-width: 200px;
 }
 
-.right-message {
+.chat-message {
+  margin-top: 4px
+}
+
+div.chat-window-modal > div > div > div.chat-container > .right-message > span {
+  float: right
+}
+
+div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-message {
+  align-items: end;
+}
+
+.left-message .chat-message .chat-message-displayed{
+  float: left
+}
+
+.right-message .chat-message {
   text-align: right;
 }
 
 .right-message .chat-message-displayed {
   background-color: #FF2E63;
-  color: white;
 }
 
 .chat-input-user {
@@ -822,14 +926,34 @@ ul.group-users-buttons {
   margin-bottom: 10px;
 }
 
+.emoji-wrapper {
+  position: absolute;
+  /* border: 10px solid red; */
+  height: 100px;
+}
+
+.emoji-wrapper ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+.emoji-wrapper ::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
 .emoji-picker {
   cursor: pointer;
-  display: block;
-  position: fixed;
-  bottom: 50px;
-  left: 420px;
-  width: 200px;
-  background-color: #4C2C72 solid;
+  position: relative;
+  bottom: 80px;
+  left: 106px;
+  width: 140px;
+  height: 106px;
+  overflow-y: scroll;
+  border-radius: 5px;
+  padding: 2px;
+  background-color: #4C2C72;
 }
 
 .emoji-picker span {
@@ -840,7 +964,7 @@ ul.group-users-buttons {
 .chat-bubble {
   width: 50px;
   height: 50px;
-  background-color: #DBBBF5;
+  background-color: #4C2C72;
   border-radius: 50%;
   font-size: 24px;
   cursor: pointer;

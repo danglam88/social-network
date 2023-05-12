@@ -171,7 +171,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
         return (
             <>
             {isGroupDetailPage ? (<Group group={groupInfo} key={groupInfo.id} setGroupInfo={setGroupInfo} handleGoToDetail={handleGoToDetail} />) : (
-            <>
+            <div className="groups-wrapper">
             <h1>Groups</h1>
                 <div>
                 <div className="group-wrapper">
@@ -184,7 +184,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
                     </div>
                     {groupsList}         
                 </div>
-            </>   
+            </div>   
              )}
             </>    
         )

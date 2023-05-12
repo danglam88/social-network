@@ -125,6 +125,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   return (
     <div className="new-post-wrapper">
+      <h2>Create a new post</h2>
       <div className="post-comment-form">
         <form onSubmit={handleSubmit}>
           <div>

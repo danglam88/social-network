@@ -65,27 +65,29 @@ const NewEvent = ({groupId, handleNewEvent}) => {
     }
   
     return (
-        <>
-        <h2>Create a new event</h2>
-        <form onSubmit={handleCreateEvent}>
-        <div>
-            Title: <input value={title} onChange={handleTitleChange} required/>
+        <div className="create-event-wrapper">
+            <div className="create-event">
+            <h2>Create a new event</h2>
+            <form onSubmit={handleCreateEvent}>
+                <div>
+                    <label>Title:</label><input value={title} onChange={handleTitleChange} required />
+                </div>
+                <br />
+                <div className="event-desc">
+                    <label>Description:</label><textarea value={description} onChange={handleDescriptionChange} required />
+                </div>
+                <br />
+                <div>
+                    <label>Occur date:</label><input type="datetime-local" name="dateOfBirth" value={occurDate} onChange={handleOccurDateChange} placeholder=" " required />
+                </div>
+                <br />
+                <div>
+                    <button type="submit">Create event</button>
+                </div>
+                {errorMessage && <div>{errorMessage}</div>}
+            </form>
+            </div>
         </div>
-        <br />
-        <div className="event-desc">
-            Description: <textarea value={description} onChange={handleDescriptionChange} required/>
-        </div>
-        <br />   
-        <div>
-            Occur date: <input type="datetime-local" name="dateOfBirth" value={occurDate} onChange={handleOccurDateChange} placeholder=" " required />
-        </div>
-        <br />
-        <div>
-            <button type="submit">Create event</button>
-        </div>
-        {errorMessage && <div>{errorMessage}</div>}
-        </form>
-        </>
     )
 }
 
@@ -118,11 +120,13 @@ const EventList = ({list, groupId}) => {
    
     return (
         <>
-            <h2>Events:</h2>
-            <div className="group-events">
-            {events}
+            <div className="events-wrapper">
+                <h2>Events:</h2>
+                <div className="group-events">
+                    {events}
+                </div>
             </div>
-            <NewEvent groupId={groupId} handleNewEvent={handleNewEvent}/>
+            <NewEvent groupId={groupId} handleNewEvent={handleNewEvent} />
         </>
     )
 }

@@ -68,9 +68,15 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     return (
         <div className="user-item">
             {updatedUser.nick_name ? (
-                <span onClick={() => {handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.nick_name}</span>
+                <div className="user-profile-name" onClick={() => {handleShowUserProfile(updatedUser.id)}}>
+                    <img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} />
+                    <div>{updatedUser.nick_name}</div>
+                </div>
             ) : (
-                <span onClick={() => {handleShowUserProfile(updatedUser.id)}}><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`}/>{updatedUser.first_name} {updatedUser.last_name}</span>
+                <div className="user-profile-name" onClick={() => {handleShowUserProfile(updatedUser.id)}}>
+                    <img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} />
+                    <div>{updatedUser.first_name} {updatedUser.last_name}</div>
+                </div>
             )}
 
             {userProfilePending ? (
@@ -99,9 +105,9 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
     }
 
     return (
-        <div>
+        <>
             {showUserProfile ? (<User user={userData} key={userData.id} />) : (
-                <div>
+                <div className="user-list">
                     <h1>Users</h1>
                     <br />
                     {users.map(user => {
@@ -110,7 +116,7 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
                     })}
                 </div>
             )}
-        </div>
+        </>
     )
 }
 

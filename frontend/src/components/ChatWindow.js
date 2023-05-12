@@ -53,7 +53,6 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
     "😗",
     "😙",
     "😚",
-    "☺️",
     "🙂",
     "🤗",
     "🤩",
@@ -286,12 +285,13 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
   <div>
     {!newChatCreated ? (
     <div className="chatBox" style={{ flex: 1, display: "flex", flexDirection: "column" }} onClick={handleOutsideClick}>
-      <h2>
-        <img src={`http://localhost:8080${avatarUrl || chat.AvatarUrl}`} className='avatar-symbol'/>
-        {username ? username : chat.DisplayName} 
-        <button onClick={onClose}>Close</button>
-      </h2>
-
+              <button onClick={onClose}>X</button>
+      <div className="chat-info">
+      <div className="chat-avatar">
+      <img src={`http://localhost:8080${avatarUrl || chat.AvatarUrl}`} className='avatar-symbol'/>
+      </div>
+      <div className="chat-title"><h2>{username ? username : chat.DisplayName}</h2></div>
+      </div>
       <div
         ref={chatContainerRef}
         className="chat-container"
@@ -317,7 +317,9 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
               </span>
             )}
             <br />
-            <span className="chat-message-displayed" style={{fontSize: "20px"}}>{msg.message}</span>
+            <div className="chat-message">
+            <div className="chat-message-displayed">{msg.message}</div>
+            </div>
           </div>
           ))}
       </div>
@@ -333,10 +335,11 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
         />
         
         <button onClick={toggleEmojiPicker}>
-          {showEmojiPicker ? "Emojis 🔼" : "Emojis 🔽"}
+          {showEmojiPicker ? "😊" : "😊"}
         </button>
-        {showEmojiPicker &&
-          <div
+          <button onClick={sendMessage}>Send</button>
+          {showEmojiPicker &&
+          <div className="emoji-wrapper"><div
           className="emoji-picker"
           >
             {emojis.map((emoji, index) => {
@@ -348,8 +351,7 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
                 {emoji}
               </span>
             })}
-          </div>}
-          <button onClick={sendMessage}>Send</button>
+          </div></div>}
       </div>
     </div>) : null}
   </div>

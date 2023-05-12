@@ -490,6 +490,13 @@ u {
 
 /* Create a post */
 
+.comments-wrapper {
+  margin-top: 10px;
+  padding: 20px;
+  background-color: #FFE1E8;
+  border-radius: 5px;
+}
+
 .post-comment-form {
   margin-top: 20px;
 }

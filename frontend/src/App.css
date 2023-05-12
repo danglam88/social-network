@@ -728,7 +728,7 @@ ul.group-users-buttons {
   vertical-align: middle;
 }
 
-.header span:hover, .user-item span:hover, .icon:hover {
+.header span:hover, .user-item span:hover, .icon:hover, .Menu li:hover {
   cursor: pointer;
 }
 

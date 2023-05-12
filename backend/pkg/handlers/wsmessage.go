@@ -440,7 +440,7 @@ func (m *Manager) broadcastFollowNotification(from int, to int, userName string)
 		From:     from,
 		UserName: userName,
 		To:       to,
-		Message:  fmt.Sprintf("%s wants to follow you", userName),
+		Message:  fmt.Sprintf("%s wants to follow you. Accept/reject in your profile", userName),
 	}
 	message, err := json.Marshal(msg)
 	if err != nil {

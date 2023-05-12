@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import ChatList from "./ChatList";
 import ChatWindow from "./ChatWindow";
-import "../chat.css";
 import ChatService from "../services/ChatService"
 
 

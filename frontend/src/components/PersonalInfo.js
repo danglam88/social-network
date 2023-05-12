@@ -19,7 +19,7 @@ const PersonalInfo = ({user, type, handleUpdateFollows, follows}) => {
 
     return (
         <div className="personal-info main-wrapper">
-          <div class="personal-info-column">
+          <div className="personal-info-column">
             {user.avatar_url &&
               <div>
                 <img className="personal-avatar"
@@ -30,7 +30,7 @@ const PersonalInfo = ({user, type, handleUpdateFollows, follows}) => {
             
             {user.about_me && <div>About Me: {user.about_me}</div>}
           </div>
-          <div class="personal-info-column">
+          <div className="personal-info-column">
             {user.nick_name && <div>Nick Name: {user.nick_name}</div>}
             <div>First Name: {user.first_name}</div>
             <div>Last Name: {user.last_name}</div>

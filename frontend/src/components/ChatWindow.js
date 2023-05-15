@@ -29,7 +29,6 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const topRef = useRef(null);
   const [hasMore, setHasMore] = useState(true);
   const chatContainerRef = useRef(null);
   const [scrollToBottom, setScrollToBottom] = useState(false);
@@ -139,9 +138,8 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
   };
 
   const fetchInitialChatHistory = useCallback(
-    
     async () => {
-      setChatMessages([]); // clear the messages
+      setChatMessages([]);
       try {
         const response = await ChatService.fetchChatHistory(
           chat.GroupID,
@@ -170,13 +168,15 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
         }
         recipientChatId = response.data.chat_id;
         console.log("Initial chat history:", response.data.history);
-        const initialHistory = response.data.history;
+        const initialHistory = await response.data.history;
         setChatMessages(sortMessagesByDate(initialHistory));
         // Scroll chat textarea to the bottom when it first loads
+        setTimeout(() => {
         if (chatContainerRef.current) {
           chatContainerRef.current.scrollTop =
             chatContainerRef.current.scrollHeight;
         }
+        }, 50);
       } catch (error) {
         console.error("Error fetching initial chat history:", error);
       }
@@ -186,7 +186,7 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
 
   useEffect(() => {
     fetchInitialChatHistory();
-  }, [fetchInitialChatHistory, chatId, recipientChatId]);
+  }, [fetchInitialChatHistory, chatId]);
 
   useEffect(() => {
     const callback = messageData => {
@@ -298,8 +298,6 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
         ref={chatContainerRef}
         className="chat-container"
       >
-        
-        <div ref={topRef} />
 
         {chatMessages.map(msg => (
           <div key={msg.created_at+msg.id+msg.message} className={msg.from ===  userId ? "right-message" : "left-message"}>

@@ -94,6 +94,10 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
 
 const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProfile}) => {
     const [userData, setUserData] = useState({})
+    const [filter, setFilter] = useState("")
+    const [items, setItems] = useState(users)
+    const [initialItems, setInitialItems] = useState(users)
+    const [filterMessage, setFilterMessage] = useState("")
 
     const handleUserProfile = (userId) => {
         usersService.user(userId)
@@ -104,13 +108,31 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
             .catch(error => console.log(error))
     }
 
+    const handleFilter = (event) => {
+
+        const newFilter = event.target.value.trim().toLowerCase()
+        setFilter(newFilter)
+
+        const newItems = users.filter((item => newFilter.length == 0 || item.nick_name.toLowerCase().includes(newFilter) || item.first_name.toLowerCase().includes(newFilter) || item.last_name.toLowerCase().includes(newFilter))) 
+
+        if (newItems.length == 0) {
+            setItems(initialItems)
+            setFilterMessage("No users found")
+        } else {
+            setItems(newItems)
+            setFilterMessage("")
+        } 
+    }
+
     return (
         <>
             {showUserProfile ? (<User user={userData} key={userData.id} />) : (
                 <div className="user-list">
                     <h1>Users</h1>
                     <br />
-                    {users.map(user => {
+                    <input value={filter} onChange={handleFilter}/>
+                    <div>{filterMessage}</div>
+                    {items.map(user => {
                         const userItemKey = "userItem" + user.id;
                         return <UserItem user={user} users={users} setUsers={setUsers} key={userItemKey} followings={followings} handleUserProfile={handleUserProfile} />
                     })}

@@ -441,13 +441,14 @@ u {
 }
 
 .personal-info {
-  min-height: 300px;
+  display: grid;
+  grid-template-columns: 240px auto auto;
 }
  
 .personal-info-column {
   margin-bottom: 10px;
-  float: left;
-  width: 50%;
+  display: inline-grid;
+  align-content: space-around;
 }
 
 /* Clear floats after the columns */
@@ -531,10 +532,6 @@ u {
   background-color: #fff;
   color: #223127;
   flex: 1;
-}
-
-.post-comment-form select {
-  width: 96% !important;
 }
 
 .post-comment-form textarea {

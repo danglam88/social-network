@@ -40,18 +40,19 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
 
   return (
     <>
-      <div className="single-group-wrapper">
-        <h1>{group.name}</h1>
-        <div className="group-desc">{group.description}</div>
-        <div className="group-created-at">Group creation: {group.created_at.replace("T", " ").replace("Z", "")}</div>
-        <div className="group-members">Total members: {membersCount}</div>
-        {group.avatar_url &&
-          <div>
+      <div className="personal-info main-wrapper">
+      {group.avatar_url &&
+          <div className="personal-info-column">
             <img className="personal-avatar group-avatar"
               src={`http://localhost:8080${group.avatar_url}`}
               alt="Avatar Image"
             />
           </div>}
+        <div className="personal-info-column">
+        <h1>{group.name}</h1>
+        <div className="group-desc">{group.description}</div>
+        <div className="group-created-at">Group creation: {group.created_at.replace("T", " ").replace("Z", "")}</div>
+        <div className="group-members">Total members: {membersCount}</div>
         {((group.members && group.members.length > 0) || (users && users.length > 0)) &&
           <ul className="group-users-buttons">
             {group.members && group.members.length > 0 &&
@@ -63,6 +64,7 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
                 <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name} users={users} setUsers={setUsers} />
               </li>}
           </ul>}
+          </div>
       </div>
       {group.events && <EventList list={group.events} groupId={group.id} />}
       <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />

@@ -3,7 +3,7 @@ import usersService from '../services/UsersService';
 import User from './User';
 import followsService from "../services/FollowsService";
 
-const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
+const UserItem = ({ownId, user, users, setUsers, handleUserProfile}) => {
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
@@ -11,13 +11,18 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     const [followValue, setFollowValue] = useState(false)
 
     useEffect(() => {
-        if (followings !== null) {
-            followings.forEach(following => {
-                if (following.id === updatedUser.id) {
-                    setUserProfileFollowed(true)
+        followsService
+            .follows("http://localhost:8080/follow?user_id=" + ownId)
+            .then((response) => {
+                if (response.data && response.data.followings) {
+                    response.data.followings.forEach(following => {
+                        if (following.id === updatedUser.id) {
+                            setUserProfileFollowed(true)
+                        }
+                    })
                 }
             })
-        }
+            .catch((error) => console.log(error));
     }, [])
 
     useEffect(() => {
@@ -92,7 +97,7 @@ const UserItem = ({user, users, setUsers, followings, handleUserProfile}) => {
     )
 }
 
-const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProfile}) => {
+const UserList = ({ownId, users, setUsers, showUserProfile, setShowUserProfile}) => {
     const [userData, setUserData] = useState({})
     const [filter, setFilter] = useState("")
     const [items, setItems] = useState(users)
@@ -126,7 +131,7 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
 
     return (
         <>
-            {showUserProfile ? (<User user={userData} key={userData.id} />) : (
+            {showUserProfile ? (<User ownId={ownId} user={userData} key={userData.id} users={users} setUsers={setUsers} setShowUserProfile={setShowUserProfile} />) : (
                 <div className="user-list">
                     <h1>Users</h1>
                     <br />
@@ -135,7 +140,7 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
                     <div>{filterMessage}</div>
                     {items.map(user => {
                         const userItemKey = "userItem" + user.id;
-                        return <UserItem user={user} users={users} setUsers={setUsers} key={userItemKey} followings={followings} handleUserProfile={handleUserProfile} />
+                        return <UserItem ownId={ownId} user={user} users={users} setUsers={setUsers} key={userItemKey} handleUserProfile={handleUserProfile} />
                     })}
                 </div>
             )}

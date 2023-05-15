@@ -237,8 +237,8 @@ function App() {
             </ul>
           <div className="page-body">
             <div className="Mainpage">
-              {perProfileVisible && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} notifications={notifications} setNotifications={setNotifications} />}
-              {usersListVisible && <UserList users={users} setUsers={setUsers} followings={follows.followings} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
+              {perProfileVisible && follows && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} notifications={notifications} setNotifications={setNotifications} />}
+              {usersListVisible && <UserList ownId={user.id} users={users} setUsers={setUsers} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
               {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>
             <Chat userId={user.id}/>

@@ -4,10 +4,9 @@ import Posts from './Posts';
 import postsService from '../services/PostsService';
 import followsService from '../services/FollowsService';
 import ChatService from '../services/ChatService';
-import FollowsWrapper from './FollowsWrapper';
 import ChatWindow from './ChatWindow';
 
-const User = ({ user }) => {
+const User = ({ ownId, user, users, setUsers, setShowUserProfile }) => {
   const [posts, setPosts] = useState([]);
   const [follows, setFollows] = useState(null);
   const [chatButton, setChatButton] = useState(false);
@@ -60,7 +59,7 @@ const User = ({ user }) => {
   return (
     <div>
       <h2>{userName}'s profile</h2>
-      <PersonalInfo user={user} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} limitedInfo={chatNotAllowed} />
+      {follows && <PersonalInfo ownId={ownId} user={user} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} limitedInfo={chatNotAllowed} users={users} setUsers={setUsers} setShowUserProfile={setShowUserProfile} />}
       {posts && posts.length > 0 && <Posts posts={posts} type={userName} userId={user.id} />}
       <br />
       {chatNotAllowed ? <div>You need to follow <b>{userName}</b> in order to chat</div> :

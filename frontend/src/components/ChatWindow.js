@@ -139,7 +139,9 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
   };
 
   const fetchInitialChatHistory = useCallback(
+    
     async () => {
+      setChatMessages([]); // clear the messages
       try {
         const response = await ChatService.fetchChatHistory(
           chat.GroupID,
@@ -184,7 +186,7 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
 
   useEffect(() => {
     fetchInitialChatHistory();
-  }, [fetchInitialChatHistory, chatId]);
+  }, [fetchInitialChatHistory, chatId, recipientChatId]);
 
   useEffect(() => {
     const callback = messageData => {

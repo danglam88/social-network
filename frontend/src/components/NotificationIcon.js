@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NotificationService from '../services/NotificationService';
 
-const NotificationIcon = () => {
+const NotificationIcon = ({ handleShowPersonalProfile }) => {
   const [notifications, setNotifications] = useState([]);
   const [showList, setShowList] = useState(false);
 
@@ -60,6 +60,13 @@ const NotificationIcon = () => {
                 >
                   Clear
                 </button>
+                <button
+                  className="go-to-profile"
+                  onClick={handleShowPersonalProfile}
+                >
+                  Go to Profile
+                </button>
+            
               </li>
             )})}
         </ul>

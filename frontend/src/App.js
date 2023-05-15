@@ -222,7 +222,7 @@ function App() {
                 !
               </div>
             )}
-            <NotificationIcon />
+            <NotificationIcon handleShowPersonalProfile={handleShowPersonalProfile} />
             <form onSubmit={handleLogout}>
               <button type="submit">Logout</button>
             </form>

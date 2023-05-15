@@ -59,7 +59,7 @@ const User = ({ ownId, user, users, setUsers, setShowUserProfile }) => {
   return (
     <div>
       <h2>{userName}'s profile</h2>
-      {follows && <PersonalInfo ownId={ownId} user={user} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} limitedInfo={chatNotAllowed} users={users} setUsers={setUsers} setShowUserProfile={setShowUserProfile} />}
+      {follows && <PersonalInfo ownId={ownId} user={user} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} limitedInfo={chatNotAllowed} users={users} setUsers={setUsers} setShowUserProfile={setShowUserProfile} setPosts={setPosts} />}
       {posts && posts.length > 0 && <Posts posts={posts} type={userName} userId={user.id} />}
       <br />
       {chatNotAllowed ? <div>You need to follow <b>{userName}</b> in order to chat</div> :

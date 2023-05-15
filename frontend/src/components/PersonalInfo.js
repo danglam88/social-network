@@ -3,8 +3,9 @@ import perProfileService from "../services/PerProfileService";
 import FollowsWrapper from "./FollowsWrapper";
 import followsService from "../services/FollowsService";
 import usersService from '../services/UsersService';
+import postsService from '../services/PostsService';
 
-const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedInfo, users, setUsers, setShowUserProfile}) => {
+const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedInfo, users, setUsers, setShowUserProfile, setPosts}) => {
     const [profilePrivate, setProfilePrivate] = useState(user.is_private === 1)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
@@ -50,6 +51,13 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedI
                     setShowUserProfile(false)
                   } else if (type === "user") {
                     handleUpdateFollows(updatedUser.id)
+
+                    postsService
+                      .posts('http://localhost:8080/visible?creator_id=' + updatedUser.id)
+                      .then((response) => {
+                        setPosts(response.data);
+                      })
+                      .catch((error) => console.log(error));
                   }
               }
           })

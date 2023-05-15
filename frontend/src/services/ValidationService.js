@@ -8,77 +8,77 @@ export const NameRegex = /^[a-zA-Z åäöÅÄÖ]+$/;
 export const MaxSize = 50000000;
 export const MaxSizeAvatar = 5000000;
 
-function ValidateField(validateFieldName, content, minlength = 1, maxlength = 3000) {
+function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 3000) {
     if (validateFieldName === "Title" || validateFieldName === "Content") {
-      let ckeckEmptyField = content.replace(/\s/g, '');
-      if (ckeckEmptyField.length === 0) {
+      let checkEmptyField = textValue.replace(/\s/g, '');
+      if (checkEmptyField.length === 0) {
         return validateFieldName+" can not consist of only spaces or newlines";
       }
     }
-    if ((validateFieldName === "Email" || validateFieldName === "Password" || validateFieldName === "First name" || validateFieldName === "Last name") && content.length < minlength) {
+    if ((validateFieldName === "Email" || validateFieldName === "Password" || validateFieldName === "First name" || validateFieldName === "Last name") && textValue.length < minlength) {
       return validateFieldName+" must be at least " + minlength + " characters";
     }
-    if ((validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "Email" || validateFieldName === "Password" || validateFieldName === "First name" || validateFieldName === "Last name" || validateFieldName === "Nickname") && content.length > maxlength) {
+    if ((validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "Email" || validateFieldName === "Password" || validateFieldName === "First name" || validateFieldName === "Last name" || validateFieldName === "Nickname") && textValue.length > maxlength) {
       return validateFieldName+" can be maximum " + maxlength + " characters";
     }
-    if (validateFieldName === "Email" && !EmailRegex.test(content)) {
+    if (validateFieldName === "Email" && !EmailRegex.test(textValue)) {
       return "Email must be valid";
     }
-    if (validateFieldName === "Password" && !PasswordRegex.test(content)) {
+    if (validateFieldName === "Password" && !PasswordRegex.test(textValue)) {
       return "Password must contain at least one uppercase letter, one lowercase letter and one number";
     }
-    if ((validateFieldName === "Title" || validateFieldName === "Content"|| validateFieldName === "First name" || validateFieldName === "Last name" || validateFieldName === "Email" || validateFieldName === "Password") && content.length === 0) {
+    if ((validateFieldName === "Title" || validateFieldName === "Content"|| validateFieldName === "First name" || validateFieldName === "Last name" || validateFieldName === "Email" || validateFieldName === "Password") && textValue.length === 0) {
       return validateFieldName+" is required";
     }
-    if ((validateFieldName === "Title" || validateFieldName === "Content") && !TextRegex.test(content)) {
+    if ((validateFieldName === "Title" || validateFieldName === "Content") && !TextRegex.test(textValue)) {
       return validateFieldName+" must be regular characters";
     }
-    if ((validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") && TagRegex.test(content)) {
+    if ((validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") && TagRegex.test(textValue)) {
       return validateFieldName+" must not contain HTML tags";
     }
-    if (validateFieldName === "Nickname" && !NicknameRegex.test(content) && content.length > 0) {
+    if (validateFieldName === "Nickname" && !NicknameRegex.test(textValue) && textValue.length > 0) {
       return "Nickname must be alphanumeric, with no spaces";
     }
-    if ((validateFieldName === "First name" || validateFieldName === "Last name") && !NameRegex.test(content)) {
+    if ((validateFieldName === "First name" || validateFieldName === "Last name") && !NameRegex.test(textValue)) {
       return validateFieldName + " must be regular characters";
     }
     if (validateFieldName === "Age") {
       var today = new Date().toISOString().slice(0, 10);
-      if (content > today) {
+      if (textValue > today) {
         return "Date of birth must be in the past";
       }
-      if (content < "1900-01-01") {
+      if (textValue < "1900-01-01") {
         return "Date of birth must be after 1900";
       }
-      if (content === "" || content === "Invalid date" || content === "NaN-NaN-NaN") {
+      if (textValue === "" || textValue === "Invalid date" || textValue === "NaN-NaN-NaN") {
         return "Date of birth is required";
       }
-      if (content > new Date(new Date().setFullYear(new Date().getFullYear() - 5)).toISOString().slice(0, 10)) {
+      if (textValue > new Date(new Date().setFullYear(new Date().getFullYear() - 5)).toISOString().slice(0, 10)) {
         return "Date of birth must be at least 5 years ago";
       }
     }
     
     if (validateFieldName !== "Picture" && validateFieldName !== "Email" && validateFieldName !== "Age") {
-      var words = content.split(' ');
+      var words = textValue.split(' ');
       for (var i = 0; i < words.length; i++) {
         if (words[i].length > 30) {
           return "Words must be less than 30 characters each";
         }
       }
     }
-    if (validateFieldName === "Picture" && content !== "") {
-      if (maxlength === 5 && content.size > MaxSizeAvatar) {
+    if (validateFieldName === "Picture" && textValue !== "") {
+      if (maxlength === 5 && textValue.size > MaxSizeAvatar) {
         return "Uploaded avatar must be less than 5MB";
       }
-      if (maxlength !== 5 && content.size > MaxSize) {
+      if (maxlength !== 5 && textValue.size > MaxSize) {
         return "Uploaded image must be less than 50MB";
       }
-      console.log(content.type)
-      if ( !ImageRegex.test(content.type)) {
+      console.log(textValue.type)
+      if ( !ImageRegex.test(textValue.type)) {
         return "Uploaded image can only have the formats: jpg, jpeg, png, gif, svg";
       }
     }
-    if (validateFieldName === "About me" && content.length > 0 && !TextRegex.test(content)) {
+    if (validateFieldName === "About me" && textValue.length > 0 && !TextRegex.test(textValue)) {
       return validateFieldName + " must be regular characters";
     }
     return "";

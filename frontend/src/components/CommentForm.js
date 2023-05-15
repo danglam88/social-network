@@ -73,7 +73,7 @@ const CommentForm = ({ postId, setComments }) => {
               .catch((error) => console.log(error));
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => setErrorMessage(error.response.data.Error));
     } catch (error) {
       console.error("Error creating comment:", error);
     }

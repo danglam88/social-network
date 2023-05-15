@@ -1307,10 +1307,12 @@ func (db *Db) GetChat(groupId, from, to int) (chatId int, err error) {
 		chatId = 0
 	}
 
-	user := db.GetUser(to)
+	if groupId == 0 {
+		user := db.GetUser(to)
 
-	if user.IsPrivate == 1 && !db.IsFollower(from, to) {
-		chatId = -1
+		if user.IsPrivate == 1 && !db.IsFollower(from, to) {
+			chatId = -1
+		}
 	}
 
 	return chatId, err

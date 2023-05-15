@@ -16,7 +16,7 @@ const ChatList = ({ availableChats, selectedChat, onSelectChat, onToggleChatList
   return (
     <div className="chat-list-container">
       <h2>Available Chats</h2>
-      {availableChats.length === 0 && <div>Find a user and add them to your chat list from their profile</div>}
+      {availableChats.length === 0 && <div className="find-chat">Find a user and add them to your chat list from their profile</div>}
       <ul>
         {availableChats.map((chat) => {
           const chatKey = "chat" + chat.ChatID;

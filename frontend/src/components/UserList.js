@@ -130,7 +130,8 @@ const UserList = ({users, setUsers, followings, showUserProfile, setShowUserProf
                 <div className="user-list">
                     <h1>Users</h1>
                     <br />
-                    <input value={filter} onChange={handleFilter}/>
+                    <label>Search an user:</label>
+                    <input type="text" value={filter} onChange={handleFilter}/>
                     <div>{filterMessage}</div>
                     {items.map(user => {
                         const userItemKey = "userItem" + user.id;

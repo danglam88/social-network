@@ -363,7 +363,15 @@ u {
 }
 
 .login-error {
-  
+  text-align: center;
+  max-width: 200px;
+  color: #FF2E63;
+  border: 1px solid #FF2E63;
+  font-size: medium;
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
 }
 
 .notification-icon {
@@ -796,7 +804,7 @@ ul.group-users-buttons {
   bottom: 0;
   right: 0;
   margin-right: 210px;
-  width: 250px;
+  width: 350px;
   background-color: #DBBBF5;
 }
 
@@ -825,11 +833,24 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
 .chatBox button:first-child {
   position: absolute;
   text-align: center !important;
-  margin-left: 233px;
+  margin-left: 333px;
   margin-top: -10px;
   padding: 10px;
   border-radius: 4px;
   font-size: 10px;
+}
+
+.user-list label{
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  color: #4C2C72
+}
+
+.find-chat {
+  font-weight: bold;
+  width: 190px;
+  padding: 5px;
 }
 
 .chat-title h2 {

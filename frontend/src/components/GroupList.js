@@ -108,6 +108,9 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
     const [items, setItems] = useState([])
     const [isCreateGroup, setIsCreateGroup] = useState(false)
     const [groupInfo, setGroupInfo] = useState({})
+    const [filter, setFilter] = useState("")
+    const [initialItems, setInitialItems] = useState([])
+    const [filterMessage, setFilterMessage] = useState("")
 
     const handleCreateGroup = (event) => {
         setIsCreateGroup(true)
@@ -118,6 +121,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
         const newItems = items.concat(data)
 
         setItems(newItems)
+        setInitialItems(newItems)
     }
 
     const handleGoToDetail = (groupId) => {
@@ -127,6 +131,22 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
             setIsGroupDetailPage(true)
         })
         .catch(error => console.log(error))
+    }
+
+    const handleFilter = (event) => {
+
+        const newFilter = event.target.value.trim().toLowerCase()
+        setFilter(newFilter)
+
+        const newItems = initialItems.filter((item => newFilter.length == 0 || item.name.toLowerCase().includes(newFilter) || item.description.toLowerCase().includes(newFilter))) 
+
+        if (newItems.length == 0) {
+            setItems(initialItems)
+            setFilterMessage("No groups found")
+        } else {
+            setItems(newItems)
+            setFilterMessage("")
+        } 
     }
 
     const handleSuccessJoinRequest = (groupId) => {
@@ -156,6 +176,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
                 list.push(data)
             })
             setItems(list)
+            setInitialItems(list)
         })
         .catch(error => console.log(error))
     }, [])
@@ -182,6 +203,8 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
                         </>
                 )}
                     </div>
+                    <input value={filter} onChange={handleFilter}/>
+                    <div>{filterMessage}</div>
                     {groupsList}         
                 </div>
             </div>   

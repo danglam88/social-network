@@ -3,7 +3,7 @@ import NotificationService from '../services/NotificationService';
 import eventsService from '../services/EventsService';
 import followsService from '../services/FollowsService';
 
-const NotificationIcon = ({ handleShowPersonalProfile }) => {
+const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
   const [notifications, setNotifications] = useState([]);
   const [showList, setShowList] = useState(false);
 
@@ -87,6 +87,7 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
 
       if (followResponse.status === 200) {
         try {
+          handleShowPendings(from);
           handleClearNotification(index);
         } catch (eventError) {
           console.log(eventError);

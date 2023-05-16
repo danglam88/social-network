@@ -222,7 +222,7 @@ function App() {
                 )}
                 </div>
                 <div className="user-options-menu">
-                <NotificationIcon />
+                <NotificationIcon handleShowPendings={handleShowPendings}/>
                 <img onClick={handleShowUserOptions} className="avatar-symbol" src={`http://localhost:8080${user.avatar_url}`} alt="Avatar Image"/>
                 {showUserOptions && <UserOptions setShowUserOptions={setShowUserOptions} handleShowPersonalProfile={handleShowPersonalProfile} handleLogout={handleLogout} />}
                 </div>

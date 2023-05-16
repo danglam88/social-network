@@ -7,7 +7,6 @@ const PersonalProfile = ({user, posts, setPosts, follows, handleShowPendings, no
   return (
     <div className="personal-profile-wrapper">
       <PersonalInfo user={user} type="own" handleUpdateFollows={handleShowPendings} follows={follows} />
-      <Notifications notifications={notifications} setNotifications={setNotifications} />
       <PostForm userId={user.id} setPosts={setPosts} follows={follows} />
       {posts && posts.length > 0 && <Posts posts={posts} type="you" userId={user.id} />}
     </div>

@@ -154,7 +154,6 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
               <div className="follow">
                 {follows.followers && follows.followers.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Followers" handleShowPendings={handleUpdateFollows} />}
                 {follows.followings && follows.followings.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Followings" handleShowPendings={handleUpdateFollows} />}
-                {type === "own" && follows.pendings && follows.pendings.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.pendings} title="Pendings" handleShowPendings={handleUpdateFollows} />}
               </div>
             )}
           </div>

@@ -82,23 +82,21 @@ const NewGroup = ({handleNewGroup}) => {
     }
   
     return (
-        <>
+        <div class="new-post-wrapper">
         <h3>Create a new group</h3>
-        <form onSubmit={handleCreateGroup}>
-        <div>
-            Title: <input value={title} onChange={handleTitleChange}/>
-        </div>
+        <form className='post-comment-form' onSubmit={handleCreateGroup}>
+        <label>Title:</label>
+        <input type='text' value={title} onChange={handleTitleChange}/>
         <br />
-        <div>
-            Description: <textarea value={description} onChange={handleDescriptionChange}/>
-        </div>
+        <label>Description:</label> 
+        <textarea value={description} onChange={handleDescriptionChange}/>
         <br />   
         <div>
             <button type="submit">Create group</button>
         </div>
         {errorMessage && <div>{errorMessage}</div>}
         </form>
-        </>
+        </div>
     )
 }
 
@@ -190,27 +188,28 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
 
     if (items.length > 0) {
         return (
-            <>
+        <div>
             {isGroupDetailPage ? (<Group group={groupInfo} key={groupInfo.id} setGroupInfo={setGroupInfo} handleGoToDetail={handleGoToDetail} />) : (
+                 <>
             <div className="groups-wrapper">
-            <h1>Groups</h1>
-                <div>
-                <div className="group-wrapper">
-                    {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
-                    (
-                        <>
-                        <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>Add new group</div>
-                        </>
-                )}
-                    </div>
-                    <input value={filter} onChange={handleFilter}/>
-                    <div>{filterMessage}</div>
-                    {groupsList}         
+                <h1>Groups</h1>
+                <br/>
+                <label className="filter-label">Search a group:</label>
+                <input type="text" value={filter} onChange={handleFilter}/>
+                <div>{filterMessage}</div>
+            </div>
+            {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
+            (
+                <div className='groups-wrapper'>
+                    <div className="group-column group-activity-link button-small create" onClick={handleCreateGroup}>Add new group</div>
                 </div>
-            </div>   
-             )}
-            </>    
-        )
+            )}
+            <div className='groups-wrapper'>
+                {groupsList}
+            </div>
+                           
+        </>)}
+        </div>)
     } else {
         return (<></>)
     }

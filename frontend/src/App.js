@@ -16,6 +16,7 @@ import loginService from "./services/LoginService";
 import usersService from "./services/UsersService";
 import groupService from "./services/GroupsService";
 import postsService from "./services/PostsService";
+import UserOptions from "./components/UserOptions";
 
 const clientToken = document.cookie
   .split("; ")
@@ -46,6 +47,7 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [isLinkClicked, setIsLinkClicked] = useState(false);
+  const [showUserOptions, setShowUserOptions] = useState(false);
 
   useEffect(() => {
     axios
@@ -170,6 +172,10 @@ function App() {
       .catch(error => console.log(error))
   };
 
+  const handleShowUserOptions = () => {
+    setShowUserOptions(!showUserOptions);
+  };
+
   const handleRegisterLinkClick = () => {
     setShowRegisterForm(!showRegisterForm);
     setIsLinkClicked(!isLinkClicked);
@@ -199,41 +205,27 @@ function App() {
       {token !== "" && user ? (
         <div>
           <div className="Header">
-            {user.nick_name ? (
               <div className="header">
-                Welcome{" "}
                 <span onClick={handleShowPersonalProfile}>
-                  <i>
-                    <u>{user.nick_name}</u>
+                  <i><img src={logo} className="App-logo" alt="logo" />Name of Social Network
                   </i>
                 </span>
-                !
               </div>
-            ) : (
-              <div className="header">
-                Welcome{" "}
-                <span onClick={handleShowPersonalProfile}>
-                  <i>
-                    <u>
-                      {user.first_name} {user.last_name}
-                    </u>
-                  </i>
-                </span>
-                !
-              </div>
-            )}
-            <NotificationIcon handleShowPersonalProfile={handleShowPersonalProfile} />
-            <form onSubmit={handleLogout}>
-              <button type="submit">Logout</button>
-            </form>
           </div>
           <ul className="Menu">
+            <div>
                 {users && users.length > 0 && (
                   <li onClick={handleShowUsersList}>Show Users</li>
                 )}
                 {groups && groups.length > 0 && (
                   <li onClick={handleShowGroupsList}>Show Groups</li>
                 )}
+                </div>
+                <div className="user-options-menu">
+                <NotificationIcon />
+                <img onClick={handleShowUserOptions} className="avatar-symbol" src={`http://localhost:8080${user.avatar_url}`} alt="Avatar Image"/>
+                {showUserOptions && <UserOptions setShowUserOptions={setShowUserOptions} handleShowPersonalProfile={handleShowPersonalProfile} handleLogout={handleLogout} />}
+                </div>
             </ul>
           <div className="page-body">
             <div className="Mainpage">

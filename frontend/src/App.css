@@ -4,6 +4,11 @@
   font-size: larger;
 }
 
+.header img {
+  height: 80px;
+  margin-right: 10px;
+}
+
 h1, h2, h3 {
   font-family: 'Playfair Display', serif;
 }
@@ -374,8 +379,35 @@ u {
   border-radius: 5px;
 }
 
-.notification-icon {
+.user-options-menu {
+  padding-top: 5px;
   display: flex;
+  justify-content: flex-end;
+}
+
+.notification-list, .user-options{
+  width:auto;
+  display:flex;
+  flex-direction: column;
+  position: absolute;
+  margin-top: 34px;
+  background-color: #DBBBF5;
+  padding-inline-start: 0px;
+}
+
+.notification-list li button {
+  padding: 2px 4px;
+  margin-left: 5px
+}
+
+.user-options li, .notification-list li {
+  list-style-type: none;
+  cursor: pointer;
+  color: #4C2C72;
+}
+
+.notification-icon {
+  display: grid;
   align-items: center;
 }
 

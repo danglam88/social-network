@@ -37,41 +37,39 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
   };
 
   return (
+    <>
     <div className="notification-icon">
       <div className="icon" onClick={toggleShowList}>
         <i className="fas fa-bell">🔔</i>
-        {notifications.length !== 0 && (
           <span className="notification-count">{notifications.length}</span>
-        )}
-        {notifications.length === 0 && (
-          <span className="notification-count">0</span>
-        )}
       </div>
-      {showList && (
-        <ul className="notification-list">
-          {notifications.map((notification, index) => {
-            const notificationKey = "notification" + index;
-            return (
-              <li key={notificationKey}>
-                <span>{notification.message}</span>
-                <button
-                  className="clear-notification"
-                  onClick={() => handleClearNotification(index)}
-                >
-                  Clear
-                </button>
-                <button
-                  className="go-to-profile"
-                  onClick={handleShowPersonalProfile}
-                >
-                  Go to Profile
-                </button>
-            
-              </li>
-            )})}
-        </ul>
-      )}
+      
     </div>
+    {showList && (
+      <ul className="notification-list">
+        {notifications.map((notification, index) => {
+          const notificationKey = "notification" + index;
+          return (
+            <li key={notificationKey}>
+              <span>{notification.message}</span>
+              <button
+                className="clear-notification"
+                onClick={() => handleClearNotification(index)}
+              >
+                Clear
+              </button>
+              <button
+                className="go-to-profile"
+                onClick={handleShowPersonalProfile}
+              >
+                Go to Profile
+              </button>
+          
+            </li>
+          )})}
+      </ul>
+    )}
+    </>
   );
 };
 

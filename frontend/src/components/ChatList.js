@@ -10,9 +10,7 @@ const config = {
   },
 };
 
-const ChatList = ({ availableChats, selectedChat, onSelectChat, onToggleChatList }) => {
-
-
+const ChatList = ({ availableChats, selectedChat, onSelectChat }) => {
   return (
     <div className="chat-list-container">
       <h2>Available Chats</h2>
@@ -25,7 +23,6 @@ const ChatList = ({ availableChats, selectedChat, onSelectChat, onToggleChatList
               key={chatKey}
               onClick={() => {
                 onSelectChat(chat);
-                onToggleChatList();
               }}
               style={{
                 cursor: "pointer",

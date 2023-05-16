@@ -44,7 +44,6 @@ const Chat = ({ userId }) => {
           availableChats={availableChats}
           selectedChat={selectedChat}
           onSelectChat={setSelectedChat}
-          onToggleChatList={toggleChatList}
         />
       </div>
       {selectedChat && (

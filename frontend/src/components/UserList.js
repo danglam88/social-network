@@ -3,7 +3,7 @@ import usersService from '../services/UsersService';
 import User from './User';
 import followsService from "../services/FollowsService";
 
-const UserItem = ({ownId, user, users, setUsers, handleUserProfile}) => {
+const UserItem = ({ownId, user, handleUserProfile}) => {
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
@@ -57,12 +57,9 @@ const UserItem = ({ownId, user, users, setUsers, handleUserProfile}) => {
         setFollowValue(follow)
 
         usersService
-            .users()
+            .user(updatedUser.id)
             .then((response) => {
-                setUsers(response.data);
-            })
-            .then(() => {
-                setUpdatedUser(users.find(u => u.id === updatedUser.id))
+                setUpdatedUser(response.data);
             })
             .then(() => {
                 setCheckPending(false)
@@ -97,7 +94,7 @@ const UserItem = ({ownId, user, users, setUsers, handleUserProfile}) => {
     )
 }
 
-const UserList = ({ownId, users, setUsers, showUserProfile, setShowUserProfile}) => {
+const UserList = ({ownId, users, showUserProfile, setShowUserProfile}) => {
     const [userData, setUserData] = useState({})
     const [filter, setFilter] = useState("")
     const [items, setItems] = useState(users)
@@ -131,7 +128,7 @@ const UserList = ({ownId, users, setUsers, showUserProfile, setShowUserProfile})
 
     return (
         <>
-            {showUserProfile ? (<User ownId={ownId} user={userData} key={userData.id} users={users} setUsers={setUsers} setShowUserProfile={setShowUserProfile} />) : (
+            {showUserProfile ? (<User ownId={ownId} user={userData} key={userData.id} setShowUserProfile={setShowUserProfile} />) : (
                 <div className="user-list">
                     <h1>Users</h1>
                     <br />
@@ -140,7 +137,7 @@ const UserList = ({ownId, users, setUsers, showUserProfile, setShowUserProfile})
                     <div>{filterMessage}</div>
                     {items.map(user => {
                         const userItemKey = "userItem" + user.id;
-                        return <UserItem ownId={ownId} user={user} users={users} setUsers={setUsers} key={userItemKey} handleUserProfile={handleUserProfile} />
+                        return <UserItem ownId={ownId} user={user} key={userItemKey} handleUserProfile={handleUserProfile} />
                     })}
                 </div>
             )}

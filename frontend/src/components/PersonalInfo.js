@@ -5,7 +5,7 @@ import followsService from "../services/FollowsService";
 import usersService from '../services/UsersService';
 import postsService from '../services/PostsService';
 
-const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedInfo, users, setUsers, setShowUserProfile, setPosts}) => {
+const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedInfo, setShowUserProfile, setPosts}) => {
     const [profilePrivate, setProfilePrivate] = useState(user.is_private === 1)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
@@ -83,15 +83,12 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedI
       setFollowValue(follow)
 
       usersService
-          .users()
+          .user(updatedUser.id)
           .then((response) => {
-              setUsers(response.data);
+            setUpdatedUser(response.data);
           })
           .then(() => {
-              setUpdatedUser(users.find(u => u.id === updatedUser.id))
-          })
-          .then(() => {
-              setCheckPending(false)
+            setCheckPending(false)
           })
           .catch((error) => console.log(error));
       }

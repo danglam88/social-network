@@ -177,6 +177,17 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
           </button>
         </>
       )}
+      {notification.type === "eventnotification" && (
+        <>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> {notification.message}</span>
+        <button
+            onClick={() => handleClearNotification(index)}
+          >
+            Clear
+          </button>
+
+        </>
+      )}
 
             
               </li>

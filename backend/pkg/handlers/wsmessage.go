@@ -99,7 +99,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				Type:    EVENTNOTIFICATION_TYPE,
 				From:    0,
 				To:      id,
-				Message: fmt.Sprintf("Event %s has been created in %s. Accept/reject in your profile", event.EventName, event.GroupName),
+				Message: fmt.Sprintf("Event %s has been created in %s. Go to the group to reply", event.EventName, event.GroupName),
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -398,7 +398,7 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName + ". Accept/reject in your profile"
+				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName + ". Go to the group to check it out!"
 
 				for _, groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {

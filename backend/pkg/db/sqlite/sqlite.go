@@ -1645,6 +1645,7 @@ func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
 type EventNotification struct {
 	EventName string
 	GroupName string
+	GroupId   int
 }
 
 func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, error) {

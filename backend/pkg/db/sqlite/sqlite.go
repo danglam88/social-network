@@ -1563,8 +1563,8 @@ func (db *Db) GetTime() string {
 	return time.Now().Local().Format(time_format)
 }
 
-func (db *Db) GetFollowNotifications(userID int) ([]string, error) {
-	var followers []string
+func (db *Db) GetFollowNotifications(userID int) ([]User, error) {
+	var followers []User
 
 	rows, err := db.connection.Query(`
 		SELECT follow_relation.follower_id
@@ -1579,13 +1579,13 @@ func (db *Db) GetFollowNotifications(userID int) ([]string, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var followerId int
-		err = rows.Scan(&followerId)
+		var follower User
+		err = rows.Scan(&follower.ID)
 		if err != nil {
 			return nil, err
 		}
-		var follower string
-		follower, err = db.GetUserName(followerId)
+
+		follower.NickName, err = db.GetUserName(follower.ID)
 		if err != nil {
 			return nil, err
 		}

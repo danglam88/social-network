@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NotificationService from '../services/NotificationService';
 import eventsService from '../services/EventsService';
+import followsService from '../services/FollowsService';
 
 const NotificationIcon = ({ handleShowPersonalProfile }) => {
   const [notifications, setNotifications] = useState([]);
@@ -80,6 +81,24 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
     }
   };
 
+  const handleFollowResponse = async (from, to, index, isAccepted) => {
+    try {
+     const followResponse = await followsService.pending({user_id: from, follow_id: to, accept: isAccepted});
+
+      if (followResponse.status === 200) {
+        try {
+          handleClearNotification(index);
+        } catch (eventError) {
+          console.log(eventError);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+      
+
 
       
   const handleClearNotification = (index) => {
@@ -135,6 +154,23 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
           <button
             className="reject-invitation"
             onClick={() => handleGroupJoinRequestResponse(notification.group_id, index, notification.from, false)}
+          >
+            Reject
+          </button>
+        </>
+      )}
+      {notification.type === "follownotification" && (
+        <>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> <b>{notification.username}</b> requested to follow you</span>
+          <button
+            className="accept-invitation"
+            onClick={() => handleFollowResponse(notification.to, notification.from, index, true)}
+          >
+            Accept
+          </button>
+          <button
+            className="reject-invitation"
+            onClick={() => handleFollowResponse(notification.to, notification.from, index, false)}
           >
             Reject
           </button>

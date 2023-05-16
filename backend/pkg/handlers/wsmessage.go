@@ -163,12 +163,13 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 
 	if len(FollowNotifications) > 0 {
 		for _, follower := range FollowNotifications {
+			avatarUrl := DB.GetUserAvatar(id)
 			msg := db.Message{
-				Type:     FOLLOWNOTIFICATION_TYPE,
-				From:     0,
-				UserName: follower,
-				To:       id,
-				Message:  fmt.Sprintf("%s wants to follow you. Accept/reject in your profile.", follower),
+				Type:      FOLLOWNOTIFICATION_TYPE,
+				UserName:  follower.NickName,
+				To:        id,
+				From:      follower.ID,
+				AvatarUrl: avatarUrl,
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -322,7 +323,6 @@ func (c *Client) readMessages() {
 					}
 				}
 			} else if res.Type == FOLLOWNOTIFICATION_TYPE {
-				res.Message = fmt.Sprintf("%s requested to follow you. Accept/reject in your profile", res.UserName)
 				//notify the user that he has a new follower
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {
@@ -446,12 +446,14 @@ func (c *Client) writeMessages() {
 }
 
 func (m *Manager) broadcastFollowNotification(from int, to int, userName string) {
+	avatarUrl := DB.GetUserAvatar(from)
+
 	msg := db.Message{
-		Type:     FOLLOWNOTIFICATION_TYPE,
-		From:     from,
-		UserName: userName,
-		To:       to,
-		Message:  fmt.Sprintf("%s wants to follow you. Accept/reject in your profile", userName),
+		Type:      FOLLOWNOTIFICATION_TYPE,
+		From:      from,
+		UserName:  userName,
+		To:        to,
+		AvatarUrl: avatarUrl,
 	}
 	message, err := json.Marshal(msg)
 	if err != nil {

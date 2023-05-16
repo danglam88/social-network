@@ -128,7 +128,7 @@ const UserList = ({ownId, users, showUserProfile, setShowUserProfile}) => {
 
     return (
         <>
-            {showUserProfile ? (<User ownId={ownId} user={userData} key={userData.id} setShowUserProfile={setShowUserProfile} />) : (
+            {showUserProfile ? (<User ownId={ownId} user={userData} key={userData.id} />) : (
                 <div className="user-list">
                     <h1>Users</h1>
                     <br />

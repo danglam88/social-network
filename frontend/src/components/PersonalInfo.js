@@ -4,14 +4,16 @@ import FollowsWrapper from "./FollowsWrapper";
 import followsService from "../services/FollowsService";
 import usersService from '../services/UsersService';
 import postsService from '../services/PostsService';
+import ChatService from '../services/ChatService';
 
-const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedInfo, setShowUserProfile, setPosts}) => {
+const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedInfo, setPosts, setChatNotAllowed}) => {
     const [profilePrivate, setProfilePrivate] = useState(user.is_private === 1)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
     const [updatedUser, setUpdatedUser] = useState(user)
     const [followValue, setFollowValue] = useState(false)
+    const [exclusive, setExclusive] = useState(limitedInfo)
 
     useEffect(() => {
       if (type === "user") {
@@ -47,17 +49,28 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedI
                       setUserProfilePending(true)
                   }
 
-                  if (type === "user" && !followValue && updatedUser.is_private) {
-                    setShowUserProfile(false)
-                  } else if (type === "user") {
-                    handleUpdateFollows(updatedUser.id)
-
+                  if (type === "user") {
                     postsService
                       .posts('http://localhost:8080/visible?creator_id=' + updatedUser.id)
                       .then((response) => {
                         setPosts(response.data);
                       })
                       .catch((error) => console.log(error));
+
+                    ChatService
+                      .checkChat('http://localhost:8080/checkchat?user_id=' + updatedUser.id)
+                      .then((response) => {
+                        if (response.data.Error === "Chat not allowed") {
+                          setChatNotAllowed(true);
+                        }
+                      })
+                      .catch((error) => console.log(error));
+
+                    if (!followValue && updatedUser.is_private) {
+                      setExclusive(true)
+                    } else {
+                      handleUpdateFollows(updatedUser.id)
+                    }
                   }
               }
           })
@@ -103,18 +116,18 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedI
                   alt="Avatar Image"
                 />
               </div>}
-            {user.about_me && !limitedInfo && <div>About Me: {user.about_me}</div>}
+            {user.about_me && !exclusive && <div>About Me: {user.about_me}</div>}
           </div>
           <div className="personal-info-column">
-            {user.nick_name && !limitedInfo && <div>Nick Name: {user.nick_name}</div>}
-            {!limitedInfo &&
+            {user.nick_name && !exclusive && <div>Nick Name: {user.nick_name}</div>}
+            {!exclusive &&
             <div>
               <div>First Name: {user.first_name}</div>
               <div>Last Name: {user.last_name}</div>
               <div>Birth Date: {user.birth_date}</div>
             </div>}
             {profilePrivate ? <div>Private Profile {type === "own" && <button onClick={handleTogglePrivacy}>Change to Public</button>}</div> : <div>Public Profile {type === "own" && <button onClick={handleTogglePrivacy}>Change to Private</button>}</div>}
-            {!limitedInfo &&
+            {!exclusive &&
             <div>
               <div>Email: {user.email}</div>
               <div>Member Since: {user.created_at.replace("T", " ").replace("Z", "")}</div>
@@ -128,7 +141,7 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedI
                 type === "user" && <button className="button-small follow-users" onClick={() => {toggleFollow(true)}}>Follow</button>
               )
             )}
-            {follows && !limitedInfo && (
+            {follows && !exclusive && (
               <div className="follow">
                 {follows.followers && follows.followers.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Followers" handleShowPendings={handleUpdateFollows} />}
                 {follows.followings && follows.followings.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Followings" handleShowPendings={handleUpdateFollows} />}

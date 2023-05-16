@@ -400,6 +400,12 @@ u {
   justify-content: flex-end;
 }
 
+.follow-options-menu {
+  padding-top: 5px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .follow-options {
   width:auto;
   display:flex;
@@ -408,7 +414,6 @@ u {
   background-color: #DBBBF5;
   padding-inline-start: 0px;
   margin: 0px;
-  padding: 10px;
 }
 
 .follow-options li {
@@ -416,7 +421,7 @@ u {
   color: #4C2C72;
 }
 
-.notification-list, .user-options{
+.notification-list, .user-options {
   width:auto;
   display:flex;
   flex-direction: column;

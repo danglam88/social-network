@@ -1,12 +1,12 @@
 const Follow = ({ follow }) => {
     return (
-        <li>
+        <>
             {follow.nick_name ? (
-                <div>{follow.nick_name}</div>
+                <li>{follow.nick_name}</li>
             ) : (
-                <div>{follow.first_name} {follow.last_name}</div>
+                <li>{follow.first_name} {follow.last_name}</li>
             )}
-        </li>
+        </>
     )
 }
 

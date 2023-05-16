@@ -10,7 +10,7 @@ const FollowsWrapper = ({userId, follows, title, handleShowPendings}) => {
     }
 
     return (
-        <div>
+        <div className="follow-options-menu">
             <button className="button-small" onClick={toggleFollows}>Show/Hide {title}</button>
             {followsVisible && <Follows follows={follows} />}
         </div>

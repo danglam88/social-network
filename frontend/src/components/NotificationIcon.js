@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NotificationService from '../services/NotificationService';
+import eventsService from '../services/EventsService';
 
 const NotificationIcon = ({ handleShowPersonalProfile }) => {
   const [notifications, setNotifications] = useState([]);
@@ -26,6 +27,33 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
     NotificationService.onMessage(messageListener);
   }, []);
 
+  const handleInvitationResponse = async (groupId, index, isAccepted) => {
+    try {
+      const data = {
+        type: "invitenotification",
+        group_id: groupId,
+        is_accepted: isAccepted,
+      };
+  
+      const response = await NotificationService.reply(data);
+  
+      if (response.status === 200) {
+        try {
+          const eventResponse = await eventsService.event(data);
+  
+          if (eventResponse.status === 200) {
+            handleClearNotification(index);
+          }
+        } catch (eventError) {
+          console.log(eventError);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+      
   const handleClearNotification = (index) => {
     setNotifications((prevNotifications) =>
       prevNotifications.filter((_, i) => i !== index)
@@ -43,7 +71,38 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
         <i className="fas fa-bell">🔔</i>
           <span className="notification-count">{notifications.length}</span>
       </div>
+<<<<<<< Updated upstream
       
+=======
+      {showList && (
+        <ul className="notification-list">
+{notifications.map((notification, index) => {
+  const notificationKey = "notification" + index;
+  return (
+    <li key={notificationKey}>
+      <span>{notification.message}</span>
+      {notification.type === "invitenotification" && (
+        <>
+          <button
+            className="accept-invitation"
+            onClick={() => handleInvitationResponse(notification.group_id, index, true)}
+          >
+            Accept
+          </button>
+          <button
+            className="reject-invitation"
+            onClick={() => handleInvitationResponse(notification.group_id, index, false)}
+          >
+            Reject
+          </button>
+        </>
+      )}
+            
+              </li>
+            )})}
+        </ul>
+      )}
+>>>>>>> Stashed changes
     </div>
     {showList && (
       <ul className="notification-list">

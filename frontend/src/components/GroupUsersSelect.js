@@ -93,6 +93,7 @@ const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => 
         const payload = {
           type: "invitenotification",
           to: userId,
+          group_id: groupId,
           message : groupName
         };
         WebSocketService.sendMessage(payload);

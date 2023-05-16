@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import ChatService from "../services/ChatService";
 import debounce from "lodash/debounce";
 let recipientChatId;
@@ -24,7 +24,7 @@ const sortMessagesByDate = messages => {
   return sortedMessages;
 };
 
-const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
+const ChatWindow = memo(({ chat, onClose, chatId, username, avatarUrl, userId }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
@@ -186,7 +186,7 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
 
   useEffect(() => {
     fetchInitialChatHistory();
-  }, [fetchInitialChatHistory, chatId]);
+  }, [fetchInitialChatHistory]);
 
   useEffect(() => {
     const callback = messageData => {
@@ -356,6 +356,6 @@ const ChatWindow = ({ chat, onClose, chatId, username, avatarUrl, userId }) => {
     </div>) : null}
   </div>
   );
-};
+});
 
 export default ChatWindow;

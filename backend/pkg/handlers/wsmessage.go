@@ -119,10 +119,10 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 		for _, group := range GroupInviteNotifications {
 			msg := db.Message{
 				Type:     INVITENOTIFICATION_TYPE,
-				From:     0,
+				GroupId:  group.GroupId,
 				To:       id,
-				UserName: group,
-				Message:  fmt.Sprintf("You are invited to join group %s. Accept/reject in your profile", group),
+				UserName: group.GroupName,
+				Message:  fmt.Sprintf("You are invited to join group %s. Accept/reject in your profile", group.GroupName),
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {

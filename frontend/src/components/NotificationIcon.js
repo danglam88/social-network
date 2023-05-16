@@ -71,7 +71,34 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
         <i className="fas fa-bell">🔔</i>
           <span className="notification-count">{notifications.length}</span>
       </div>
-      
+      {showList && (
+        <ul className="notification-list">
+{notifications.map((notification, index) => {
+  const notificationKey = "notification" + index;
+  return (
+    <li key={notificationKey}>
+      <span>{notification.message}</span>
+      {notification.type === "invitenotification" && (
+        <>
+          <button
+            className="accept-invitation"
+            onClick={() => handleInvitationResponse(notification.group_id, index, true)}
+          >
+            Accept
+          </button>
+          <button
+            className="reject-invitation"
+            onClick={() => handleInvitationResponse(notification.group_id, index, false)}
+          >
+            Reject
+          </button>
+        </>
+      )}
+            
+              </li>
+            )})}
+        </ul>
+      )}
     </div>
     {showList && (
       <ul className="notification-list">

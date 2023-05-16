@@ -15,6 +15,11 @@ const config = {
   },
 };
 
+const checkfollow = async (checkUrl) => {
+    const request = await axios.get(checkUrl, config)
+    return request
+}
+
 const follows = async (followUrl) => {
     const request = await axios.get(followUrl, config)
     return request
@@ -30,6 +35,6 @@ const pending = async (data) => {
     return request
 }
 
-const followsService = { follows, follow, pending }
+const followsService = { follows, follow, pending, checkfollow }
 
 export default followsService

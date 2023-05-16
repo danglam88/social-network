@@ -18,9 +18,9 @@ const Follow = ({user_id, follow, title, handleShowPendings}) => {
     }
 
     return (
-        <div>
+        <>
             {!pendingResolved &&
-            <div>
+            <li>
                 {follow.nick_name ? (
                     <div>{follow.nick_name} {title === "Pendings" &&
                     <span>
@@ -34,20 +34,19 @@ const Follow = ({user_id, follow, title, handleShowPendings}) => {
                         <button onClick={() => {resolvePending(false)}}>Reject</button>
                     </span>}</div>
                 )}
-            </div>}
-        </div>
+            </li>}
+        </>
     )
 }
 
 const Follows = ({userId, follows, title, handleShowPendings}) => {
     return (
-        <div>
-            <br />
+        <ul className="follow-options">
             {follows.map(follow => {
                 const followKey = "follow" + follow.id;
                 return <Follow user_id={userId} follow={follow} key={followKey} title={title} handleShowPendings={handleShowPendings} />
             })}
-        </div>
+        </ul>
     )
 }
 

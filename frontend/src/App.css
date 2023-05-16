@@ -385,6 +385,22 @@ u {
   justify-content: flex-end;
 }
 
+.follow-options {
+  width:auto;
+  display:flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: #DBBBF5;
+  padding-inline-start: 0px;
+  margin: 0px;
+  padding: 10px;
+}
+
+.follow-options li {
+  list-style-type: none;
+  color: #4C2C72;
+}
+
 .notification-list, .user-options{
   width:auto;
   display:flex;

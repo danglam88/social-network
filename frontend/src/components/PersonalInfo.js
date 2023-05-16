@@ -6,14 +6,14 @@ import usersService from '../services/UsersService';
 import postsService from '../services/PostsService';
 import ChatService from '../services/ChatService';
 
-const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedInfo, setPosts, setChatNotAllowed}) => {
+const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts, setChatNotAllowed}) => {
     const [profilePrivate, setProfilePrivate] = useState(user.is_private === 1)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
     const [updatedUser, setUpdatedUser] = useState(user)
     const [followValue, setFollowValue] = useState(false)
-    const [exclusive, setExclusive] = useState(limitedInfo)
+    const [exclusive, setExclusive] = useState(false)
 
     useEffect(() => {
       if (type === "user") {
@@ -26,6 +26,15 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, limitedI
                   setUserProfileFollowed(true)
                 }
               })
+            }
+          })
+          .catch((error) => console.log(error));
+
+        followsService
+          .checkfollow('http://localhost:8080/checkfollow?user_id=' + updatedUser.id)
+          .then((response) => {
+            if (response.data.Error === "Yes") {
+              setExclusive(true)
             }
           })
           .catch((error) => console.log(error));

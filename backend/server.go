@@ -79,6 +79,10 @@ func main() {
 			PostFunction: handlers.LoggedIn,
 		},
 		{
+			Endpoint:    "/checkfollow",
+			GetFunction: handlers.CheckFollow,
+		},
+		{
 			Endpoint:     "/follow",
 			GetFunction:  handlers.GetFollows,
 			PostFunction: handlers.ToggleFollow,

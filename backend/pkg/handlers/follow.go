@@ -19,6 +19,42 @@ type PendingResolve struct {
 	Accepted   bool `json:"accept"`
 }
 
+func CheckFollow(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	params := r.URL.Query()
+
+	filterUser := 0
+	if userId, isExist := params["user_id"]; isExist {
+		filterUser, err = strconv.Atoi(userId[0])
+		if err != nil {
+			GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
+			return
+		}
+	}
+
+	if filterUser == 0 {
+		username := IsUser(w, r)
+		filterUser = DB.GetUserID(username)
+	}
+
+	userId := GetLoggedInUserID(w, r)
+
+	w.WriteHeader(http.StatusOK)
+	response := ResponseError{Status: RESPONSE_OK}
+	if DB.NotFollowPrivate(userId, filterUser) {
+		response.Error = "Yes"
+	} else {
+		response.Error = "No"
+	}
+	res, err := json.Marshal(response)
+	if err != nil {
+		GetErrResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	io.WriteString(w, string(res))
+}
+
 func GetFollows(w http.ResponseWriter, r *http.Request) {
 	var err error
 

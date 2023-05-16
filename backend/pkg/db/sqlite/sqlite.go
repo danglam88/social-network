@@ -210,6 +210,16 @@ func (db *Db) Close() {
 	db.connection.Close()
 }
 
+func (db *Db) NotFollowPrivate(followerId, followedId int) bool {
+	user := db.GetUser(followedId)
+
+	if user.IsPrivate == 0 || db.IsFollower(followerId, followedId) {
+		return false
+	}
+
+	return true
+}
+
 func (db *Db) IsFollower(followerId, followedId int) bool {
 	var isApproved int
 

@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-// The Rate limiter now it is set to 50 requests per second
-var limiter = NewLimiter(50, 1*time.Second)
+// The Rate limiter now it is set to 100 requests per second
+var limiter = NewLimiter(100, 1*time.Second)
 
 // Limit is a middleware that limits the number of requests per second
 func Limit(next http.Handler) http.Handler {

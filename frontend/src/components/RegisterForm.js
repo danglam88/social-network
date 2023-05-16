@@ -202,7 +202,7 @@ const RegisterForm = () => {
                 <div>
                     <button type="submit">Register</button>
                 </div>
-                {errorMessage && <div className="login-error">{errorMessage}</div>}
+                {errorMessage && <div className="error register-error">{errorMessage}</div>}
             </form>
             </>
         )

@@ -35,7 +35,6 @@ const LoginForm = () => {
 
   return (
     <div>
-      {unauthorizedAccess && <div className="login-error">Invalid credentials. Please login again.</div>}
       <form onSubmit={handleLogin}>
         <div className="input-container">
           <input type="email" id="email" value={email} onChange={handleEmailChange}/>
@@ -45,8 +44,9 @@ const LoginForm = () => {
           <input type="password" id="password" value={password} onChange={handlePasswordChange}/>
           <label>Password:</label>
         </div>   
-        <div>
+        <div className="login-button-error">
           <button type="submit">Login</button>
+          {unauthorizedAccess && <div className="error login">Invalid credentials.<br/>Please login again.</div>}
         </div>
       </form>
     </div>

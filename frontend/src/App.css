@@ -367,16 +367,31 @@ u {
   margin: 0;
 }
 
-.login-error {
+.login-button-error {
+  height: 42.5px;
+}
+
+.error {
+  position: relative;
   text-align: center;
   max-width: 200px;
   color: #FF2E63;
   border: 1px solid #FF2E63;
   font-size: medium;
   padding: 5px;
+  bottom: 55.5px;
   margin-bottom: 10px;
   margin-top: 10px;
   border-radius: 5px;
+}
+
+.login {
+  left: 100px;
+}
+
+.register-error {
+  left: 120px;
+  bottom: 53px !important;
 }
 
 .user-options-menu {
@@ -494,6 +509,48 @@ u {
 
 .personal-profile-wrapper {
   min-width: 470px;
+}
+
+@media only screen and (max-width: 500px){
+.personal-profile-wrapper {
+  min-width: 0;
+  /* border: 1px solid red */
+}
+
+.personal-info {
+  grid-template-columns: none !important;
+}
+
+.chat-window-modal {
+  border-radius: 5px;
+  display: block;
+  position: fixed;
+  bottom: 0;
+  left: 0px;
+  right: 0 !important;
+  margin-right: 0px !important;
+  width: 190px !important;
+  background-color: #DBBBF5;
+}
+
+.emoji-wrapper {
+  height: 100px !important;
+  right: 50vw;
+}
+
+.chatBox button:first-child {
+  margin-left: 173px !important;
+}
+
+.user-list-list {
+  grid-template-columns: none !important;
+}
+
+.user-item {
+  display: grid;
+  grid-template-columns: 1fr 100px !important;
+}
+
 }
 
 .personal-info {
@@ -687,6 +744,11 @@ span + .button-small {
   padding: 20px
 }
 
+.user-list-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 /*
   Group List
 */
@@ -828,7 +890,8 @@ ul.group-users-buttons {
 .user-item {
   margin-top: 10px;
   align-items: center;
-  display: flex
+  display: grid;
+  grid-template-columns: 0.5fr 100px;
 }
 
 .user-item button {
@@ -876,6 +939,7 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
 
 .chat-info {
   display: flex;
+  border-bottom: 1px solid #4C2C72;
 }
 
 .chatBox button:first-child {
@@ -1065,7 +1129,7 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
   right: 0px;
   background-color: #DBBBF5;
   border-radius: 5px;
-  min-width: 200px;
+  max-width: 200px;
   min-height: 400px;
   overflow: hidden;
   padding: 0;

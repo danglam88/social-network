@@ -103,7 +103,7 @@ const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => 
   }
 
   return (
-        <div>
+        <div className="follow-options-menu">
           <button className="button-small" onClick={showList}>{buttonName}</button>
           {isVisible &&
           <form onSubmit={handleInviteUsers}>

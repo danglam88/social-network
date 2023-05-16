@@ -162,7 +162,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
         //send notification
         const payload = {
             type: "joinreqnotification",
-            to: parseInt(groupId),
+            group_id: parseInt(groupId),
           };
           WebSocketService.sendMessage(payload);
     }

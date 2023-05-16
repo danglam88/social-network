@@ -15,11 +15,11 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
         message.type === "eventnotification"
       ) {
         setNotifications((prevNotifications) => {
-          if (!prevNotifications.some((n) => n.message === message.message)) {
-            return [...prevNotifications, message].reverse();
-          } else {
+          // if prevNotifications already contains the message, don't add it again
+          if (prevNotifications.find((item) => item === message)) {
             return prevNotifications;
           }
+          return [...prevNotifications, message];
         });
       }
     };
@@ -53,6 +53,34 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
     }
   };
 
+  const handleGroupJoinRequestResponse = async (groupId, index, userId, isAccepted) => {
+    try {
+      const data = {
+        type: "joinreqnotification",
+        group_id: groupId,
+        user_id: userId,
+        is_accepted: isAccepted,
+      };
+
+      const response = await NotificationService.reply(data);
+
+      if (response.status === 200) {
+        try {
+          const eventResponse = await eventsService.event(data);
+          
+          if (eventResponse.status === 200) {
+            handleClearNotification(index);
+          }
+        } catch (eventError) {
+          console.log(eventError);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
       
   const handleClearNotification = (index) => {
     setNotifications((prevNotifications) =>
@@ -77,9 +105,10 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
   const notificationKey = "notification" + index;
   return (
     <li key={notificationKey}>
-      <span>{notification.message}</span>
+      
       {notification.type === "invitenotification" && (
         <>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> You are invited to join group <b>{notification.message}</b></span>
           <button
             className="accept-invitation"
             onClick={() => handleInvitationResponse(notification.group_id, index, true)}
@@ -94,36 +123,30 @@ const NotificationIcon = ({ handleShowPersonalProfile }) => {
           </button>
         </>
       )}
+      {notification.type === "joinreqnotification" && (
+        <>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> <b>{notification.username}</b> wants to join your group <b>{notification.message}</b></span>
+          <button
+            className="accept-invitation"
+            onClick={() => handleGroupJoinRequestResponse(notification.group_id, index, notification.from, true)}
+          >
+            Accept
+          </button>
+          <button
+            className="reject-invitation"
+            onClick={() => handleGroupJoinRequestResponse(notification.group_id, index, notification.from, false)}
+          >
+            Reject
+          </button>
+        </>
+      )}
+
             
               </li>
             )})}
         </ul>
       )}
     </div>
-    {showList && (
-      <ul className="notification-list">
-        {notifications.map((notification, index) => {
-          const notificationKey = "notification" + index;
-          return (
-            <li key={notificationKey}>
-              <span>{notification.message}</span>
-              <button
-                className="clear-notification"
-                onClick={() => handleClearNotification(index)}
-              >
-                Clear
-              </button>
-              <button
-                className="go-to-profile"
-                onClick={handleShowPersonalProfile}
-              >
-                Go to Profile
-              </button>
-          
-            </li>
-          )})}
-      </ul>
-    )}
     </>
   );
 };

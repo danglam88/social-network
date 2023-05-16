@@ -115,6 +115,7 @@ type Message struct {
 	UserName  string `json:"username"`
 	CreatedAt string `json:"created_at"`
 	GroupId   int    `json:"group_id"`
+	AvatarUrl string `json:"avatar_url"`
 }
 
 type MessageUser struct {
@@ -1678,16 +1679,11 @@ func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, er
 	return eventNotifications, nil
 }
 
-type GroupWithInvite struct {
-	GroupName string
-	GroupId   int
-}
-
-func (db *Db) GetGroupInviteNotifications(userId int) ([]GroupWithInvite, error) {
-	var groupsWithInvites []GroupWithInvite
+func (db *Db) GetGroupInviteNotifications(userId int) ([]Group, error) {
+	var groupsWithInvites []Group
 
 	rows, err := db.connection.Query(`
-		SELECT user_group.group_name, user_group.id
+		SELECT user_group.group_name, user_group.id, user_group.avatar_url
 		FROM user_group
 		WHERE user_group.id IN (
 			SELECT group_relation.group_id
@@ -1700,9 +1696,9 @@ func (db *Db) GetGroupInviteNotifications(userId int) ([]GroupWithInvite, error)
 	defer rows.Close()
 
 	for rows.Next() {
-		var groupWithInvite GroupWithInvite
+		var groupWithInvite Group
 
-		if err := rows.Scan(&groupWithInvite.GroupName, &groupWithInvite.GroupId); err != nil {
+		if err := rows.Scan(&groupWithInvite.GroupName, &groupWithInvite.ID, &groupWithInvite.AvatarUrl); err != nil {
 			return nil, err
 		}
 

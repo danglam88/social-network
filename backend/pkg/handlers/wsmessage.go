@@ -118,11 +118,11 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 	if len(GroupInviteNotifications) > 0 {
 		for _, group := range GroupInviteNotifications {
 			msg := db.Message{
-				Type:     INVITENOTIFICATION_TYPE,
-				GroupId:  group.GroupId,
-				To:       id,
-				UserName: group.GroupName,
-				Message:  fmt.Sprintf("You are invited to join group %s. Accept/reject in your profile", group.GroupName),
+				Type:      INVITENOTIFICATION_TYPE,
+				GroupId:   group.ID,
+				To:        id,
+				Message:   group.GroupName,
+				AvatarUrl: group.AvatarUrl,
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -144,8 +144,9 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				Type:     JOINREQNOTIFICATION_TYPE,
 				From:     n.UserId,
 				UserName: n.UserName,
+				Message:  n.GroupName,
 				To:       id,
-				Message:  fmt.Sprintf("%s wants to join your group %s. Accept/reject in your profile", n.UserName, n.GroupName),
+				GroupId:  n.GroupId,
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -337,7 +338,12 @@ func (c *Client) readMessages() {
 			} else if res.Type == INVITENOTIFICATION_TYPE {
 				// notify the user that he has a new group invitation
 
-				res.Message = fmt.Sprintf("%s invited you to join %s. Accept/reject in your profile", res.UserName, res.Message)
+				group, err := DB.GetGroup(res.GroupId, c.userId)
+				if err != nil {
+					log.Println(err)
+				}
+
+				res.AvatarUrl = group.AvatarUrl
 
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == res.To {
@@ -352,17 +358,22 @@ func (c *Client) readMessages() {
 			} else if res.Type == JOINREQNOTIFICATION_TYPE {
 				// notify the creator of the group that he has a new join request
 				// get the creator of the group
-				creatorId, err := DB.GetGroupCreatorId(res.To) //assuming res.To is group id.
+				creatorId, err := DB.GetGroupCreatorId(res.GroupId)
 				if err != nil {
 					log.Println(err)
 				}
 
-				group, err := DB.GetGroup(res.To, c.userId)
+				group, err := DB.GetGroup(res.GroupId, c.userId)
 				if err != nil {
 					log.Println(err)
 				}
 
-				res.Message = res.UserName + " wants to join your group " + group.GroupName + ". Accept/reject in your profile"
+				res.Message = group.GroupName
+
+				res.UserName, err = DB.GetUserName(res.From)
+				if err != nil {
+					log.Println(err)
+				}
 
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == creatorId {

@@ -88,9 +88,9 @@ func validateForm(w http.ResponseWriter, r *http.Request, email, password, repas
 	if DB.GetUserID(username) == -1 && ValidatePasswordUsername(username, false) &&
 		ValidatePasswordUsername(password, true) && !DB.EmailExists(email) &&
 		password == repassword && len(password) > 7 && len(password) < 21 &&
-		ValidateMail(email) && len(firstName) >= 2 && len(firstName) < 21 &&
+		ValidateMail(email) && len(firstName) >= 2 && len(firstName) < 15 &&
 		ValidatePasswordUsername(firstName, false) &&
-		len(lastName) >= 2 && len(lastName) < 14 && ValidatePasswordUsername(lastName, false) &&
+		len(lastName) >= 2 && len(lastName) < 15 && ValidatePasswordUsername(lastName, false) &&
 		isValidDateOfBirth(birth) && validateAboutMe(about) == "" && !DB.NickNameExist(username) && avatar_error == "" {
 		passwordH, err := HashPassword(password)
 		if err != nil {

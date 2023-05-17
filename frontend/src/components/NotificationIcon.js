@@ -119,6 +119,7 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
         <i className="fas fa-bell">🔔</i>
           <span className="notification-count">{notifications.length}</span>
       </div>
+    </div>
       {showList && (
         <ul className="notification-list">
 {notifications.map((notification, index) => {
@@ -128,7 +129,7 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
       
       {notification.type === "invitenotification" && (
         <>
-        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> You are invited to join group <b>{notification.message}</b></span>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> You are invited to join group <b>{" "+notification.message}</b>
           <button
             className="accept-invitation"
             onClick={() => handleInvitationResponse(notification.group_id, index, true)}
@@ -141,11 +142,12 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
           >
             Reject
           </button>
+          </span>
         </>
       )}
       {notification.type === "joinreqnotification" && (
         <>
-        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> <b>{notification.username}</b> wants to join your group <b>{notification.message}</b></span>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> <b>{notification.username}</b> wants to join your group <b>{notification.message}</b>
           <button
             className="accept-invitation"
             onClick={() => handleGroupJoinRequestResponse(notification.group_id, index, notification.from, true)}
@@ -158,11 +160,12 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
           >
             Reject
           </button>
+          </span>
         </>
       )}
       {notification.type === "follownotification" && (
         <>
-        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> <b>{notification.username}</b> requested to follow you</span>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> <b>{notification.username}</b> requested to follow you
           <button
             className="accept-invitation"
             onClick={() => handleFollowResponse(notification.to, notification.from, index, true)}
@@ -175,16 +178,18 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
           >
             Reject
           </button>
+          </span>
         </>
       )}
       {notification.type === "eventnotification" && (
         <>
-        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> {notification.message}</span>
+        <span><img src={`http://localhost:8080${notification.avatar_url}`} className='avatar-symbol'/> {notification.message}
         <button
             onClick={() => handleClearNotification(index)}
           >
             Clear
           </button>
+          </span>
 
         </>
       )}
@@ -194,7 +199,6 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
             )})}
         </ul>
       )}
-    </div>
     </>
   );
 };

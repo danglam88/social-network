@@ -436,10 +436,19 @@ u {
   margin-left: 5px
 }
 
+.notification-list span b {
+  margin: 0px 5px;
+}
+
 .user-options li, .notification-list li {
   list-style-type: none;
   cursor: pointer;
   color: #4C2C72;
+}
+
+.notification-list li span {
+  display:flex;
+  align-items: center;
 }
 
 .notification-icon {
@@ -688,7 +697,7 @@ u {
 
 .post-image img, .comment-image img {
   margin-top: 5px;
-  max-width: 100%;
+  max-width: 70%;
   border: 1px solid #998650;
 }
 

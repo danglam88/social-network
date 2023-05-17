@@ -87,7 +87,6 @@ func validateForm(w http.ResponseWriter, r *http.Request, email, password, repas
 			fmt.Println(err)
 		}
 		ImgUrl, imgErr := UploadFile(w, r, true)
-		fmt.Println("ImgUrl ", ImgUrl, "imgErr ", imgErr)
 		if imgErr != nil {
 			avatar_error = "Avatar " + imgErr.Error()
 		}

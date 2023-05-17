@@ -120,12 +120,14 @@ const EventList = ({list, groupId}) => {
    
     return (
         <>
+            {events.length > 0 && 
             <div className="events-wrapper">
                 <h2>Events:</h2>
                 <div className="group-events">
                     {events}
                 </div>
             </div>
+            }
             <NewEvent groupId={groupId} handleNewEvent={handleNewEvent} />
         </>
     )

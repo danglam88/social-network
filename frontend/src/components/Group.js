@@ -66,7 +66,7 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
           </ul>}
           </div>
       </div>
-      {group.events && <EventList list={group.events} groupId={group.id} />}
+      <EventList list={group.events} groupId={group.id} />
       <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
       {group.posts && <Posts posts={group.posts} type="group" />}
       <br />

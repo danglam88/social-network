@@ -112,8 +112,10 @@ const UserList = ({ownId, users, showUserProfile, setShowUserProfile}) => {
 
     const handleFilter = (event) => {
 
-        const newFilter = event.target.value.trim().toLowerCase()
+        let newFilter = event.target.value.toLowerCase()
         setFilter(newFilter)
+
+        newFilter = newFilter.trim()
 
         const newItems = users.filter((item => newFilter.length == 0 || item.nick_name.toLowerCase().includes(newFilter) || item.first_name.toLowerCase().includes(newFilter) || item.last_name.toLowerCase().includes(newFilter))) 
 

@@ -133,8 +133,10 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
 
     const handleFilter = (event) => {
 
-        const newFilter = event.target.value.trim().toLowerCase()
+        let newFilter = event.target.value.toLowerCase()
         setFilter(newFilter)
+
+        newFilter = newFilter.trim()
 
         const newItems = initialItems.filter((item => newFilter.length == 0 || item.name.toLowerCase().includes(newFilter) || item.description.toLowerCase().includes(newFilter))) 
 

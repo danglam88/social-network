@@ -7,13 +7,13 @@ import postsService from '../services/PostsService';
 import ChatService from '../services/ChatService';
 
 const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts, setChatNotAllowed}) => {
-    const [profilePrivate, setProfilePrivate] = useState(user.is_private === 1)
     const [userProfileFollowed, setUserProfileFollowed] = useState(false)
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
     const [updatedUser, setUpdatedUser] = useState(user)
     const [followValue, setFollowValue] = useState(false)
     const [exclusive, setExclusive] = useState(false)
+    const [profilePrivate, setProfilePrivate] = useState(updatedUser.is_private === 1)
 
     const privacyIconPath = 'http://localhost:8080/upload/'
 
@@ -31,7 +31,11 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
             }
           })
           .catch((error) => console.log(error));
+      }
+    }, [])
 
+    useEffect(() => {
+      if (type === "user") {
         followsService
           .checkfollow('http://localhost:8080/checkfollow?user_id=' + updatedUser.id)
           .then((response) => {
@@ -40,8 +44,14 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
             }
           })
           .catch((error) => console.log(error));
+
+        if (updatedUser.is_private === 1) {
+          setProfilePrivate(true)
+        } else {
+          setProfilePrivate(false)
+        }
       }
-    }, [])
+    }, [updatedUser])
 
     useEffect(() => {
       const user_id = updatedUser.id
@@ -97,7 +107,7 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
         perProfileService.privacy({})
             .then(response => {
                 if (response.data.Status === "ok") {
-                  handleUpdateFollows(user.id)
+                  handleUpdateFollows(updatedUser.id)
                 }
             })
             .catch(error => console.log(error))
@@ -115,31 +125,31 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
             setCheckPending(false)
           })
           .catch((error) => console.log(error));
-      }
+    }
 
     return (
       <div className="personal-info main-wrapper">
         <div className="personal-info-column">
-          {user.avatar_url && (
+          {updatedUser.avatar_url && (
             <div>
               <img
                 className="personal-avatar"
-                src={`http://localhost:8080${user.avatar_url}`}
+                src={`http://localhost:8080${updatedUser.avatar_url}`}
                 alt="Avatar Image"
               />
             </div>
           )}
-          {user.about_me && !exclusive && <div>About Me: {user.about_me}</div>}
+          {updatedUser.about_me && !exclusive && <div>About Me: {updatedUser.about_me}</div>}
         </div>
         <div className="personal-info-column">
-          {user.nick_name && !exclusive && (
-            <div>Nick Name: {user.nick_name}</div>
+          {updatedUser.nick_name && !exclusive && (
+            <div>Nick Name: {updatedUser.nick_name}</div>
           )}
           {!exclusive && (
             <div>
-              <div>First Name: {user.first_name}</div>
-              <div>Last Name: {user.last_name}</div>
-              <div>Birth Date: {user.birth_date}</div>
+              <div>First Name: {updatedUser.first_name}</div>
+              <div>Last Name: {updatedUser.last_name}</div>
+              <div>Birth Date: {updatedUser.birth_date}</div>
             </div>
           )}
           {profilePrivate ? (
@@ -169,10 +179,10 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
           )}
           {!exclusive && (
             <div>
-              <div>Email: {user.email}</div>
+              <div>Email: {updatedUser.email}</div>
               <div>
                 Member Since:{" "}
-                {user.created_at.replace("T", " ").replace("Z", "")}
+                {updatedUser.created_at.replace("T", " ").replace("Z", "")}
               </div>
             </div>
           )}

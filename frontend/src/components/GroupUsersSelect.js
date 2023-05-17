@@ -7,7 +7,7 @@ import WebSocketService from '../services/WebSocketService'
 const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
 
   const [isChecked, setIsChecked] = useState(false)
-  const name = user.nick_name ? user.nick_name : user.last_name + user.first_name
+  const name = user.nick_name ? user.nick_name : user.first_name + " " + user.last_name
  
   //todo checkbox can be hidden and you can add users by clicking on div  + in div can be shown extra info about user from user object(for styling)
   return (

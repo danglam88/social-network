@@ -34,7 +34,7 @@ const Post = ({post, type, userId}) => {
             />
           </div>
         )}
-        <Comments comments={comments} userId={userId} />
+        {comments && comments.length > 0 && <Comments comments={comments} userId={userId} />}
         <CommentForm postId={post.id} setComments={setComments} />
       </div>
     );

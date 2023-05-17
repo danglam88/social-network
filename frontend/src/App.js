@@ -215,10 +215,10 @@ function App() {
           <ul className="Menu">
             <div>
                 {users && users.length > 0 && (
-                  <li onClick={handleShowUsersList}>Show Users</li>
+                  <li onClick={handleShowUsersList}>Users</li>
                 )}
                 {groups && groups.length > 0 && (
-                  <li onClick={handleShowGroupsList}>Show Groups</li>
+                  <li onClick={handleShowGroupsList}>Groups</li>
                 )}
                 </div>
                 <div className="user-options-menu">

@@ -48,6 +48,7 @@ function App() {
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [isLinkClicked, setIsLinkClicked] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showList, setShowList] = useState(false);
 
   useEffect(() => {
     axios
@@ -95,6 +96,13 @@ function App() {
     }
   }, [token]);
 
+  useEffect(() => {
+    if (showUserProfile || isGroupDetailPage) {
+      setShowUserOptions(false);
+      setShowList(false);
+    }
+  }, [showUserProfile, isGroupDetailPage]);
+
   const handleShowPersonalProfile = () => {
     perProfileService
       .perprofile()
@@ -115,6 +123,8 @@ function App() {
         setPerProfileVisible(true);
         setUsersListVisible(false);
         setGroupsListVisible(false);
+        setShowUserOptions(false);
+        setShowList(false);
       })
       .catch((error) => console.log(error));
   };
@@ -131,6 +141,8 @@ function App() {
             setUsersListVisible(true);
             setShowUserProfile(false);
             setGroupsListVisible(false);
+            setShowUserOptions(false);
+            setShowList(false);
           })
           .catch((error) => console.log(error));
       })
@@ -149,6 +161,8 @@ function App() {
             setUsersListVisible(false);
             setGroupsListVisible(true);
             setIsGroupDetailPage(false);
+            setShowUserOptions(false);
+            setShowList(false);
           })
           .catch((error) => console.log(error));
       })
@@ -222,7 +236,7 @@ function App() {
                 )}
                 </div>
                 <div className="user-options-menu">
-                <NotificationIcon handleShowPendings={handleShowPendings}/>
+                <NotificationIcon showList={showList} setShowList={setShowList} handleShowPendings={handleShowPendings} showUserOptions={showUserOptions} setShowUserOptions={setShowUserOptions} />
                 <img onClick={handleShowUserOptions} className="avatar-symbol" src={`http://localhost:8080${user.avatar_url}`} alt="Avatar Image"/>
                 {showUserOptions && <UserOptions handleShowPersonalProfile={handleShowPersonalProfile} handleLogout={handleLogout} />}
                 </div>

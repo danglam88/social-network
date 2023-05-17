@@ -6,8 +6,6 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -77,14 +75,6 @@ func validateForm(w http.ResponseWriter, r *http.Request, email, password, repas
 	registered_error := ""
 	avatar_error := ""
 
-	ImgUrl, imgErr := UploadFile(w, r, true)
-	if imgErr != nil {
-		avatar_error = "Avatar " + imgErr.Error()
-	}
-	if ImgUrl == "" {
-		ImgUrl = SetRandomAvatar()
-	}
-
 	if DB.GetUserID(username) == -1 && ValidatePasswordUsername(username, false) &&
 		ValidatePasswordUsername(password, true) && !DB.EmailExists(email) &&
 		password == repassword && len(password) > 7 && len(password) < 21 &&
@@ -96,9 +86,17 @@ func validateForm(w http.ResponseWriter, r *http.Request, email, password, repas
 		if err != nil {
 			fmt.Println(err)
 		}
+		ImgUrl, imgErr := UploadFile(w, r, true)
+		fmt.Println("ImgUrl ", ImgUrl, "imgErr ", imgErr)
+		if imgErr != nil {
+			avatar_error = "Avatar " + imgErr.Error()
+		}
+		if ImgUrl == "" && imgErr == nil {
+			ImgUrl = SetRandomAvatar()
+		}
 
 		//ADD USER TO DB
-		if CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, ImgUrl, privacy) == "200 OK" {
+		if avatar_error == "" && CheckPasswordHash(passwordH, repassword) && DB.CreateUser(username, passwordH, email, firstName, lastName, birth, about, ImgUrl, privacy) == "200 OK" {
 			// APPENDING NEW USER TO JSON FILE
 			user = append(user, DataValidation{})
 			return addUsertoJson(user, 200), http.StatusOK
@@ -248,20 +246,14 @@ func isValidDateOfBirth(dateOfBirth string) bool {
 
 func validateAboutMe(aboutMe string) string {
 	maxLength := 100
-
-	// Validate that the input does not exceed the maximum length
-	if len(aboutMe) > maxLength {
-		return "About me field should not exceed " + strconv.Itoa(maxLength) + " characters"
+	if len(aboutMe) == 0 {
+		return ""
 	}
 
-	// Determine what characters are allowed in the field
-	reg := regexp.MustCompile(`^[a-zA-Z0-9,.!? åäöÅÄÖ]*$`)
-
-	// Validate that the input only contains these characters
-	if !reg.MatchString(aboutMe) {
-		return "About me should only contain regular characters"
+	errorCheck, errorMessage := ValidateField("About me", aboutMe, 1, maxLength)
+	if errorCheck {
+		return errorMessage
 	}
-
 	return ""
 }
 

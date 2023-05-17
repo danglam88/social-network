@@ -230,7 +230,7 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 		remove_space := strings.TrimSpace(field)
 		remove_tab := strings.Trim(remove_space, "\t")
 		if len(remove_tab) == 0 {
-			errorMessage = fieldName + " name can not contain only spaces or newlines"
+			errorMessage = fieldName + " can not contain only spaces or newlines"
 			errorCheck = true
 		}
 	}

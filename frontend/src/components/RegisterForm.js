@@ -95,11 +95,11 @@ const RegisterForm = () => {
                 setErrorMessage(nicknameMessage);
                 return
             }
-            let aboutMeMessage = ValidateField("About me", aboutMe, 0, 100);
-            if ( aboutMeMessage !== "") {
-                setErrorMessage(aboutMeMessage);
-                return
-            }
+            // let aboutMeMessage = ValidateField("About me", aboutMe, 0, 100);
+            // if ( aboutMeMessage !== "") {
+            //     setErrorMessage(aboutMeMessage);
+            //     return
+            // }
             if (isPrivate !== "private" && isPrivate !== "public") {
                 setErrorMessage("Account must be either private or public");
                 return

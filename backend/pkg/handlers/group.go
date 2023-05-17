@@ -66,7 +66,18 @@ func GroupAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	title := r.FormValue("title")
+	ErrorCheck, TitleErrorMessage := ValidateField("Title", title, 1, 30)
+	if ErrorCheck {
+		GetErrResponse(w, TitleErrorMessage, http.StatusBadRequest)
+		return
+	}
+
 	description := r.FormValue("description")
+	descriptionErrorCheck, DescriptionErrorMessage := ValidateField("Content", description, 1, 100)
+	if descriptionErrorCheck {
+		GetErrResponse(w, DescriptionErrorMessage, http.StatusBadRequest)
+		return
+	}
 
 	groupId, err := DB.CreateGroup(userID, title, description)
 
@@ -154,7 +165,17 @@ func EventAdd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	title := r.FormValue("title")
+	ErrorCheck, TitleErrorMessage := ValidateField("Title", title, 1, 30)
+	if ErrorCheck {
+		GetErrResponse(w, TitleErrorMessage, http.StatusBadRequest)
+		return
+	}
 	description := r.FormValue("description")
+	descriptionErrorCheck, DescriptionErrorMessage := ValidateField("Content", description, 1, 100)
+	if descriptionErrorCheck {
+		GetErrResponse(w, DescriptionErrorMessage, http.StatusBadRequest)
+		return
+	}
 	occurTimeStr := r.FormValue("occur_date")
 
 	occurTime, err := time.Parse("2006-01-02T15:04", occurTimeStr)

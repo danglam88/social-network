@@ -36,8 +36,13 @@ const NewEvent = ({groupId, handleNewEvent}) => {
 
         message = ValidateField("Content", description, 1, 100);
         if ( message !== "") {
-            setErrorMessage("Description " + message.slice(8));
-            return
+            if (message.slice(0, 8) === "Content ") {
+                setErrorMessage("Description " + message.slice(8));
+                return
+            }else {
+                setErrorMessage(message);
+                return
+            }
         }
 
         

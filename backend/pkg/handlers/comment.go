@@ -89,16 +89,17 @@ func CommentAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	imgUrl, imgErr := UploadFile(w, r, false)
-	if imgErr != nil {
-		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
-		return
-	}
 	// HANDLE ERROR
 	commentErrorCheck, commentErrorMessage := ValidateField("Content", comment, 1, 1000)
 
 	if commentErrorCheck {
 		GetErrResponse(w, commentErrorMessage, http.StatusBadRequest)
+		return
+	}
+
+	imgUrl, imgErr := UploadFile(w, r, false)
+	if imgErr != nil {
+		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
 		return
 	}
 

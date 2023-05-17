@@ -9,7 +9,7 @@ export const MaxSize = 50000000;
 export const MaxSizeAvatar = 5000000;
 
 function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 3000) {
-    if (validateFieldName === "Title" || validateFieldName === "Content") {
+    if (validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") {
       let checkEmptyField = textValue.replace(/\s/g, '');
       if (checkEmptyField.length === 0) {
         return validateFieldName+" can not consist of only spaces or newlines";
@@ -34,7 +34,7 @@ function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 
       return validateFieldName+" must be regular characters";
     }
     if ((validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") && TagRegex.test(textValue)) {
-      return validateFieldName+" must not contain HTML tags";
+      return validateFieldName+" can not contain HTML tags";
     }
     if (validateFieldName === "Nickname" && !NicknameRegex.test(textValue) && textValue.length > 0) {
       return "Nickname must be alphanumeric, with no spaces";

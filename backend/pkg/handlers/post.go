@@ -115,7 +115,7 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 
 	visibility := r.FormValue("visibility")
 	visibilityNbr := 0
-	if visibility == "allmembers" {
+	if visibility == "allfollowers" {
 		visibilityNbr = 1
 	} else if visibility == "superprivate" {
 		visibilityNbr = 2
@@ -125,7 +125,12 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 	if visibility == "superprivate" {
 		followersID = append(followersID, creatorID)
 		//fetch chosen users from form, add their ids to followers
-		followers := strings.Split(r.FormValue("allowed_followers"), ",")
+		followersString := r.FormValue("allowed_followers")
+		if len(followersString) < 1 {
+			GetErrResponse(w, "No followers selected", http.StatusBadRequest)
+			return
+		}
+		followers := strings.Split(followersString, ",")
 		for _, follower := range followers {
 			followerID, err := strconv.Atoi(follower)
 			if err != nil {
@@ -156,12 +161,6 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	imgUrl, imgErr := UploadFile(w, r, false)
-	if imgErr != nil {
-		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
-		return
-	}
-
 	title := r.FormValue("title")
 	ErrorCheck, TitleErrorMessage := ValidateField("Title", title, 1, 30)
 	if ErrorCheck {
@@ -175,6 +174,13 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, DescriptionErrorMessage, http.StatusBadRequest)
 		return
 	}
+
+	imgUrl, imgErr := UploadFile(w, r, false)
+	if imgErr != nil {
+		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
+		return
+	}
+
 	//id,creator_id,group_id,visibility,title,content,created_at,img_url
 	postID, postErr := DB.CreatePost(creatorID, groupID, visibilityNbr, title, content, imgUrl)
 	if postErr != nil {

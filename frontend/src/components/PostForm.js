@@ -28,6 +28,9 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   const handlePrivacyChange = (event) => {
     setPrivacy(event.target.value);
+    if (event.target.value !== "superprivate") {
+      setUsers([]);
+    }
   };
 
   const handleUsersChange = (event) => {
@@ -62,10 +65,13 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
     if ( picture !== null && picture !== undefined) {
       Message = ValidateField("Picture", picture);
       if ( Message !== "") {
-        setPicture(null);
         setErrorMessage(Message);
         return;
       }
+    }
+    if ( privacy === "superprivate" && users.length === 0) {
+      setErrorMessage("You must select at least one follower");
+      return;
     }
 
     // Send post data and picture file to backend API using Axios or other HTTP client
@@ -127,7 +133,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   return (
     <div className="new-post-wrapper">
-      <div class="accordion" onClick={() => setShowForm(!showForm)}><h2>Create a new post</h2></div>
+      <div className="accordion" onClick={() => setShowForm(!showForm)}><h2>Create a new post</h2></div>
       <div className={showForm? 'post-comment-form panel' : 'post-comment-form panel hidden'}>
         <form onSubmit={handleSubmit} className="create-post">
           <div>

@@ -75,7 +75,7 @@ const RegisterForm = () => {
                 setErrorMessage("Passwords do not match");
                 return
             }
-            let firstNameMessage = ValidateField("First name", firstName, 2, 20);
+            let firstNameMessage = ValidateField("First name", firstName, 2, 14);
             if ( firstNameMessage !== "") {
                 setErrorMessage(firstNameMessage);
                 return

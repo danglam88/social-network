@@ -67,7 +67,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
   
     return (
         <div className="create-event-wrapper">
-            <div class="accordion" onClick={() => setShowForm(!showForm)}><h2>Create a new event</h2></div>
+            <div className="accordion" onClick={() => setShowForm(!showForm)}><h2>Create a new event</h2></div>
             <div className={showForm? 'create-event panel' : 'form panel hidden'}>
             <form onSubmit={handleCreateEvent}>
                 <div>
@@ -121,7 +121,7 @@ const EventList = ({list, groupId}) => {
    
     return (
         <>
-            {events.length > 0 && 
+            {events && events.length > 0 && 
             <div className="events-wrapper">
                 <h2>Events:</h2>
                 <div className="group-events">

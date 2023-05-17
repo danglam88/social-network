@@ -60,8 +60,6 @@ const User = ({ ownId, user }) => {
     <div>
       <h2>{userName}'s profile</h2>
       {follows && <PersonalInfo ownId={ownId} user={user} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} setPosts={setPosts} setChatNotAllowed={setChatNotAllowed} />}
-      {posts && posts.length > 0 && <Posts posts={posts} type={userName} userId={user.id} />}
-      <br />
       {chatNotAllowed ? <div>You need to follow <b>{userName}</b> in order to chat</div> :
         chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
         showChatWindow ? (
@@ -72,6 +70,7 @@ const User = ({ ownId, user }) => {
         ) : (
           <div><b>{userName}</b> is available in the chat list</div>
         )}
+      {posts && posts.length > 0 && <Posts posts={posts} type={userName} userId={user.id} />}
     </div>
   );
 };

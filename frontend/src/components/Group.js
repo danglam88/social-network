@@ -69,12 +69,8 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
                 <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name} users={users} setUsers={setUsers} />
               </li>}
           </ul>}
-          </div>
+        </div>
       </div>
-      <EventList list={group.events} groupId={group.id} />
-      <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
-      {group.posts && <Posts posts={group.posts} type="group" />}
-      <br />
       {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
         showChatWindow ? (
           <div>
@@ -84,6 +80,9 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
         ) : (
           <div>Group chat for <b>{group.name}</b> is available in the chat list</div>
         )}
+      <EventList list={group.events} groupId={group.id} />
+      <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
+      {group.posts && <Posts posts={group.posts} type="group" />}
     </>
   );
 }

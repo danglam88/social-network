@@ -27,7 +27,8 @@ const Event = ({ event }) => {
       .catch((error) => console.log(error));
   };
 
-  const isInPast = new Date(event.occur_time) <= new Date();
+  const occurTime =  new Date(event.occur_time.replace('Z', ''))
+  const isInPast = occurTime <= new Date();
 
   return (
     <ul>
@@ -38,7 +39,7 @@ const Event = ({ event }) => {
       </li>
       <li>{event.description}</li>
       <div className="event-info">
-        <li>Event time: {event.occur_time.replace("T", " ").replace("Z", "")}</li>
+        <li>Event time: {occurTime.toLocaleString()}</li>
       </div>
 
       {isInPast ? (

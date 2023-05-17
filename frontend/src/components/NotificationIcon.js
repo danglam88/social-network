@@ -3,9 +3,8 @@ import NotificationService from '../services/NotificationService';
 import eventsService from '../services/EventsService';
 import followsService from '../services/FollowsService';
 
-const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
+const NotificationIcon = ({ showList, setShowList, handleShowPendings, showUserOptions, setShowUserOptions}) => {
   const [notifications, setNotifications] = useState([]);
-  const [showList, setShowList] = useState(false);
 
   useEffect(() => {
     const messageListener = (message) => {
@@ -27,6 +26,18 @@ const NotificationIcon = ({ handleShowPersonalProfile, handleShowPendings}) => {
 
     NotificationService.onMessage(messageListener);
   }, []);
+
+  useEffect(() => {
+    if (showUserOptions) {
+      setShowList(false);
+    }
+  }, [showUserOptions]);
+
+  useEffect(() => {
+    if (showList) {
+      setShowUserOptions(false);
+    }
+  }, [showList]);
 
   const handleInvitationResponse = async (groupId, index, isAccepted) => {
     try {

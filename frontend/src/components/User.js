@@ -70,6 +70,7 @@ const User = ({ ownId, user }) => {
         ) : (
           <div><b>{userName}</b> is available in the chat list</div>
         )}
+      <br />
       {posts && posts.length > 0 && <Posts posts={posts} type={userName} userId={user.id} />}
     </div>
   );

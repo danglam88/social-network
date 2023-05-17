@@ -1399,8 +1399,10 @@ func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatI
 	var id int
 
 	id, err = db.GetChat(groupId, from, to)
+	if err != nil {
+		return messages, id, created, err
+	}
 
-	//todo err check
 	if id <= 0 {
 		if groupId == 0 {
 			user := db.GetUser(to)

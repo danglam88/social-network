@@ -11,6 +11,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
   const [users, setUsers] = useState([]);
   const [picture, setPicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showForm, setShowForm] = useState(false)
 
   const uploadDiv = document.getElementById("upload-post");
   if (uploadDiv) {
@@ -126,9 +127,9 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   return (
     <div className="new-post-wrapper">
-      <h2>Create a new post</h2>
-      <div className="post-comment-form">
-        <form onSubmit={handleSubmit}>
+      <div class="accordion" onClick={() => setShowForm(!showForm)}><h2>Create a new post</h2></div>
+      <div className={showForm? 'post-comment-form panel' : 'post-comment-form panel hidden'}>
+        <form onSubmit={handleSubmit} className="create-post">
           <div>
             <label htmlFor="title">Title:</label>
             <input

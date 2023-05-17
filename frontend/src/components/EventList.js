@@ -11,6 +11,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
     const [description, setDescription] = useState('')
     const [occurDate, setOccurDate] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const [showForm, setShowForm] = useState(false)
   
     const handleTitleChange = (event) => {
       setTitle(event.target.value)          
@@ -66,8 +67,8 @@ const NewEvent = ({groupId, handleNewEvent}) => {
   
     return (
         <div className="create-event-wrapper">
-            <div className="create-event">
-            <h2>Create a new event</h2>
+            <div class="accordion" onClick={() => setShowForm(!showForm)}><h2>Create a new event</h2></div>
+            <div className={showForm? 'create-event panel' : 'form panel hidden'}>
             <form onSubmit={handleCreateEvent}>
                 <div>
                     <label>Title:</label><input value={title} onChange={handleTitleChange} required />

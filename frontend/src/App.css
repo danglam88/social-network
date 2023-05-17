@@ -372,7 +372,6 @@ u {
 }
 
 .error {
-  position: relative;
   text-align: center;
   max-width: 200px;
   color: #FF2E63;
@@ -387,6 +386,14 @@ u {
 
 .login {
   left: 100px;
+  position: relative;
+}
+
+.filter {
+  left: 200px;
+  margin-top: 19px;
+  padding: 8px;
+  position: relative;
 }
 
 .register-error {

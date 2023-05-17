@@ -143,7 +143,7 @@ const UserList = ({ownId, users, showUserProfile, setShowUserProfile}) => {
                     <br />
                     <label className='filter-label'>Search an user:</label>
                     <input type="text" value={filter} onChange={handleFilter}/>
-                    <div>{filterMessage}</div>
+                    <div className={filterMessage.length > 0 ? 'error filter' : 'hidden'}>{filterMessage}</div>
                     <div className='user-list-list'>
                     {items.map(user => {
                         const userItemKey = "userItem" + user.id;

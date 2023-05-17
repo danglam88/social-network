@@ -203,7 +203,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
                 <br/>
                 <label className="filter-label">Search a group:</label>
                 <input type="text" value={filter} onChange={handleFilter}/>
-                <div>{filterMessage}</div>
+                <div className={filterMessage.length > 0 ? 'error filter' : 'hidden'}>{filterMessage}</div>
             </div>
             {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
             (

@@ -130,6 +130,7 @@ type GroupNotification struct {
 	UserId    int
 	UserName  string
 	GroupName string
+	AvatarUrl string
 }
 
 func RunMigrations(db *sql.DB, state bool) error {
@@ -1631,6 +1632,7 @@ func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
 			return nil, err
 		}
 		notification.GroupName = group.GroupName
+		notification.AvatarUrl = group.AvatarUrl
 
 		notifications = append(notifications, notification)
 	}
@@ -1646,13 +1648,14 @@ type EventNotification struct {
 	EventName string
 	GroupName string
 	GroupId   int
+	AvatarUrl string
 }
 
 func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, error) {
 	var eventNotifications []EventNotification
 
 	rows, err := db.connection.Query(`
-        SELECT e.title AS EventName, g.group_name AS GroupName
+        SELECT e.title AS EventName, g.group_name AS GroupName, g.avatar_url AS AvatarUrl
         FROM event e
         JOIN user_group g ON e.group_id = g.id
         JOIN group_relation gr ON g.id = gr.group_id
@@ -1670,7 +1673,7 @@ func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, er
 
 	for rows.Next() {
 		var eventNotification EventNotification
-		err := rows.Scan(&eventNotification.EventName, &eventNotification.GroupName)
+		err := rows.Scan(&eventNotification.EventName, &eventNotification.GroupName, &eventNotification.AvatarUrl)
 		if err != nil {
 			return nil, err
 		}

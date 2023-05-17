@@ -96,10 +96,11 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 	if len(EventNotifications) > 0 {
 		for _, event := range EventNotifications {
 			msg := db.Message{
-				Type:    EVENTNOTIFICATION_TYPE,
-				From:    0,
-				To:      id,
-				Message: fmt.Sprintf("Event %s has been created in %s. Go to the group to reply", event.EventName, event.GroupName),
+				Type:      EVENTNOTIFICATION_TYPE,
+				From:      0,
+				To:        id,
+				Message:   fmt.Sprintf("Event %s has been created in %s. Go to the group to reply", event.EventName, event.GroupName),
+				AvatarUrl: event.AvatarUrl,
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -122,7 +123,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				GroupId:   group.ID,
 				To:        id,
 				Message:   group.GroupName,
-				AvatarUrl: group.AvatarUrl,
+				AvatarUrl: "/upload/group.png",
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -141,12 +142,13 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 	if len(GroupNotifications) > 0 {
 		for _, n := range GroupNotifications {
 			msg := db.Message{
-				Type:     JOINREQNOTIFICATION_TYPE,
-				From:     n.UserId,
-				UserName: n.UserName,
-				Message:  n.GroupName,
-				To:       id,
-				GroupId:  n.GroupId,
+				Type:      JOINREQNOTIFICATION_TYPE,
+				From:      n.UserId,
+				UserName:  n.UserName,
+				Message:   n.GroupName,
+				To:        id,
+				GroupId:   n.GroupId,
+				AvatarUrl: n.AvatarUrl,
 			}
 			message, err := json.Marshal(msg)
 			if err != nil {
@@ -163,7 +165,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 
 	if len(FollowNotifications) > 0 {
 		for _, follower := range FollowNotifications {
-			avatarUrl := DB.GetUserAvatar(id)
+			avatarUrl := DB.GetUserAvatar(follower.ID)
 			msg := db.Message{
 				Type:      FOLLOWNOTIFICATION_TYPE,
 				UserName:  follower.NickName,
@@ -399,6 +401,7 @@ func (c *Client) readMessages() {
 				}
 
 				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName + ". Go to the group to check it out!"
+				res.AvatarUrl = group.AvatarUrl
 
 				for _, groupUser := range groupUsers {
 					for wsclient := range c.manager.clients {

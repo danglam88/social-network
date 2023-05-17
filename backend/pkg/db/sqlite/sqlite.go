@@ -1632,7 +1632,10 @@ func (db *Db) GetGroupNotifications(userID int) ([]GroupNotification, error) {
 			return nil, err
 		}
 		notification.GroupName = group.GroupName
-		notification.AvatarUrl = group.AvatarUrl
+
+		user := db.GetUser(notification.UserId)
+
+		notification.AvatarUrl = user.AvatarUrl
 
 		notifications = append(notifications, notification)
 	}

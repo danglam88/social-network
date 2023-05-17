@@ -372,10 +372,13 @@ func (c *Client) readMessages() {
 
 				res.Message = group.GroupName
 
-				res.UserName, err = DB.GetUserName(res.From)
+				user := DB.GetUser(res.From)
 				if err != nil {
 					log.Println(err)
 				}
+
+				res.UserName = user.NickName
+				res.AvatarUrl = user.AvatarUrl
 
 				for wsclient := range c.manager.clients {
 					if wsclient.userId == creatorId {

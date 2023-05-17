@@ -149,6 +149,7 @@ const ChatWindow = memo(({ chat, onClose, chatId, username, avatarUrl, userId })
         if (response.data.Status === "not allowed to send message to this user") {
           console.log(response.data.Status);
           setError(response.data.Status);
+          onClose();
 
           return;
         }

@@ -207,7 +207,7 @@ function App() {
           <div className="Header">
               <div className="header">
                 <span onClick={handleShowPersonalProfile}>
-                  <i><img src={logo} className="App-logo" alt="logo" />Name of Social Network
+                  <i><img src={logo} className="App-logo" alt="logo" />Interstellar
                   </i>
                 </span>
               </div>

@@ -80,9 +80,9 @@ const NewGroup = ({handleNewGroup}) => {
         })
         .catch(error => console.log(error))
     }
-  
+
     return (
-        <div class="new-post-wrapper">
+        <div className="new-post-wrapper">
         <h3>Create a new group</h3>
         <form className='post-comment-form' onSubmit={handleCreateGroup}>
         <label>Title:</label>

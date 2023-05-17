@@ -1649,13 +1649,14 @@ type EventNotification struct {
 	GroupName string
 	GroupId   int
 	AvatarUrl string
+	EventTime string
 }
 
 func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, error) {
 	var eventNotifications []EventNotification
 
 	rows, err := db.connection.Query(`
-        SELECT e.title AS EventName, g.group_name AS GroupName, g.avatar_url AS AvatarUrl
+        SELECT e.title AS EventName, g.group_name AS GroupName, g.avatar_url AS AvatarUrl, e.occur_time AS EventTime
         FROM event e
         JOIN user_group g ON e.group_id = g.id
         JOIN group_relation gr ON g.id = gr.group_id
@@ -1673,10 +1674,26 @@ func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, er
 
 	for rows.Next() {
 		var eventNotification EventNotification
-		err := rows.Scan(&eventNotification.EventName, &eventNotification.GroupName, &eventNotification.AvatarUrl)
+		err := rows.Scan(&eventNotification.EventName, &eventNotification.GroupName, &eventNotification.AvatarUrl, &eventNotification.EventTime)
 		if err != nil {
 			return nil, err
 		}
+
+		// no timezone set in DB why does golang think it's UTC? :(
+		location, _ := time.LoadLocation("Europe/Helsinki")
+		eventTime, err := time.ParseInLocation("2006-01-02T15:04:05Z", eventNotification.EventTime, location)
+		if err != nil {
+			return nil, err
+		}
+
+		currentTime := time.Now()
+
+		fmt.Println("event time: ", eventTime, "now: ", currentTime)
+
+		if eventTime.Before(currentTime) {
+			continue // if event time has passed, skip this event
+		}
+
 		eventNotifications = append(eventNotifications, eventNotification)
 	}
 

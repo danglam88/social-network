@@ -1018,6 +1018,8 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
   overflow-y: scroll;
   height: 250px;
   padding: 5px;
+  display: flex;
+  flex-direction: column;
 }
 
 .chatBox .chat-container div {
@@ -1034,7 +1036,6 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
   padding: 5px;
   border-radius: 10px;
   background-color: #f8f8f8;
-  margin-top: 10px !important;
   max-width: 200px;
 }
 

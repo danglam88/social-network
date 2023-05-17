@@ -229,7 +229,7 @@ const ChatWindow = memo(({ chat, onClose, chatId, username, avatarUrl, userId })
       const oldHeight = chatContainer.scrollHeight; // get the old height
       const oldScrollPosition = chatContainer.scrollTop; // store the current scroll position
 
-      ChatService.fetchChatHistory(chat.GroupID, chat.ChatID, page + 1)
+      ChatService.fetchChatHistory(chat.GroupID, chatId || chat.ChatID, page + 1)
         .then(response => {
           const newHistory = response.data.history;
           if (newHistory && newHistory.length > 0) {
@@ -299,8 +299,9 @@ const ChatWindow = memo(({ chat, onClose, chatId, username, avatarUrl, userId })
         className="chat-container"
       >
 
-        {chatMessages.map(msg => (
-          <div key={msg.created_at+msg.id+msg.message} className={msg.from ===  userId ? "right-message" : "left-message"}>
+{chatMessages.map((msg, index) => {
+  return (
+    <div key={msg.created_at + index + msg.message} className={msg.from ===  userId ? "right-message" : "left-message"}>
             {msg.from !==  userId ? (
               <span>
                 <span style={{fontWeight: "bold"}}>{msg.username+" "}</span>
@@ -320,8 +321,9 @@ const ChatWindow = memo(({ chat, onClose, chatId, username, avatarUrl, userId })
             <div className="chat-message">
             <div className="chat-message-displayed">{msg.message}</div>
             </div>
-          </div>
-          ))}
+            </div>
+  );
+})}
       </div>
 
       <div className="chat-input-user">

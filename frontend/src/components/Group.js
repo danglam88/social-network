@@ -13,6 +13,7 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
   const [chatButton, setChatButton] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [users, setUsers] = useState([]);
+  const [chatCheckTrigger, setChatCheckTrigger] = useState(false);
 
   useEffect(() => {
     ChatService
@@ -20,6 +21,9 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
       .then((response) => {
         if (response.data.Error === "Chat not found") {
           setChatButton(true);
+        }
+        else {
+          setShowChatWindow(false);
         }
       })
       .catch((error) => console.log(error));
@@ -31,11 +35,12 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
         }
       })
       .catch(error => console.log(error))
-  }, []);
+  }, [chatCheckTrigger]);
 
   const addChatToChatList = () => {
     setChatButton(false);
     setShowChatWindow(true);
+    setChatCheckTrigger(!chatCheckTrigger);
   };
 
   return (

@@ -82,7 +82,7 @@ const NewGroup = ({handleNewGroup}) => {
     }
 
     return (
-        <div className="new-post-wrapper">
+        <div className="new-post-wrapper groups-wrapper">
         <h3>Create a new group</h3>
         <form className='post-comment-form' onSubmit={handleCreateGroup}>
         <label>Title:</label>

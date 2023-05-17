@@ -41,8 +41,17 @@ const User = ({ ownId, user }) => {
   }, []);
 
   const addChatToChatList = () => {
-    setChatButton(false);
-    setShowChatWindow(true);
+    ChatService
+      .checkChat('http://localhost:8080/checkchat?user_id=' + user.id)
+      .then((response) => {
+        if (response.data.Error === "Chat not allowed") {
+          setChatNotAllowed(true);
+        } else if (response.data.Error === "Chat not found") {
+          setChatButton(false);
+          setShowChatWindow(true);
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   const userName = user.nick_name ? user.nick_name : `${user.first_name} ${user.last_name}`;

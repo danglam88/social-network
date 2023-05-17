@@ -15,6 +15,8 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
     const [followValue, setFollowValue] = useState(false)
     const [exclusive, setExclusive] = useState(false)
 
+    const privacyIconPath = 'http://localhost:8080/upload/'
+
     useEffect(() => {
       if (type === "user") {
         followsService
@@ -116,49 +118,110 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
       }
 
     return (
-        <div className="personal-info main-wrapper">
-          <div className="personal-info-column">
-            {user.avatar_url &&
-              <div>
-                <img className="personal-avatar"
-                  src={`http://localhost:8080${user.avatar_url}`}
-                  alt="Avatar Image"
-                />
-              </div>}
-            {user.about_me && !exclusive && <div>About Me: {user.about_me}</div>}
-          </div>
-          <div className="personal-info-column">
-            {user.nick_name && !exclusive && <div>Nick Name: {user.nick_name}</div>}
-            {!exclusive &&
+      <div className="personal-info main-wrapper">
+        <div className="personal-info-column">
+          {user.avatar_url && (
+            <div>
+              <img
+                className="personal-avatar"
+                src={`http://localhost:8080${user.avatar_url}`}
+                alt="Avatar Image"
+              />
+            </div>
+          )}
+          {user.about_me && !exclusive && <div>About Me: {user.about_me}</div>}
+        </div>
+        <div className="personal-info-column">
+          {user.nick_name && !exclusive && (
+            <div>Nick Name: {user.nick_name}</div>
+          )}
+          {!exclusive && (
             <div>
               <div>First Name: {user.first_name}</div>
               <div>Last Name: {user.last_name}</div>
               <div>Birth Date: {user.birth_date}</div>
-            </div>}
-            {profilePrivate ? <div>Private Profile {type === "own" && <button onClick={handleTogglePrivacy}>Change to Public</button>}</div> : <div>Public Profile {type === "own" && <button onClick={handleTogglePrivacy}>Change to Private</button>}</div>}
-            {!exclusive &&
+            </div>
+          )}
+          {profilePrivate ? (
+            <div>
+              Private Profile{" "}
+              {type === "own" && (
+                <button className='privacy' onClick={handleTogglePrivacy}>
+                  <img
+                    className="avatar-symbol privacy-icon"
+                    src={`${privacyIconPath}public.png`}
+                  ></img>
+                  Change to Public
+                </button>
+              )}
+            </div>
+          ) : (
+            <div>
+              Public Profile{" "}
+              {type === "own" && (
+                <button className='privacy' onClick={handleTogglePrivacy}>
+                  <img
+                    className="avatar-symbol privacy-icon"
+                    src={`${privacyIconPath}private.png`}
+                  ></img>Change to Private</button>
+              )}
+            </div>
+          )}
+          {!exclusive && (
             <div>
               <div>Email: {user.email}</div>
-              <div>Member Since: {user.created_at.replace("T", " ").replace("Z", "")}</div>
-            </div>}
-            {type === "user" && userProfilePending ? (
-              <button className="button-small pending-users">Pending</button>
-            ) : (
-              type === "user" && userProfileFollowed ? (
-                <button className="button-small unfollow-users" onClick={() => {toggleFollow(false)}}>Unfollow</button>
-              ) : (
-                type === "user" && <button className="button-small follow-users" onClick={() => {toggleFollow(true)}}>Follow</button>
-              )
-            )}
-            {follows && !exclusive && (
-              <div className="follow">
-                {follows.followers && follows.followers.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followers} title="Followers" handleShowPendings={handleUpdateFollows} />}
-                {follows.followings && follows.followings.length > 0 && <FollowsWrapper userId={follows.user_id} follows={follows.followings} title="Followings" handleShowPendings={handleUpdateFollows} />}
+              <div>
+                Member Since:{" "}
+                {user.created_at.replace("T", " ").replace("Z", "")}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+          {type === "user" && userProfilePending ? (
+            <button className="button-small pending-users">Pending</button>
+          ) : type === "user" && userProfileFollowed ? (
+            <button
+              className="button-small unfollow-users"
+              onClick={() => {
+                toggleFollow(false);
+              }}
+            >
+              Unfollow
+            </button>
+          ) : (
+            type === "user" && (
+              <button
+                className="button-small follow-users"
+                onClick={() => {
+                  toggleFollow(true);
+                }}
+              >
+                Follow
+              </button>
+            )
+          )}
+          {follows && !exclusive && (
+            <div className="follow">
+              {follows.followers && follows.followers.length > 0 && (
+                <FollowsWrapper
+                  userId={follows.user_id}
+                  follows={follows.followers}
+                  title="Followers"
+                  handleShowPendings={handleUpdateFollows}
+                />
+              )}
+              {follows.followings && follows.followings.length > 0 && (
+                <FollowsWrapper
+                  userId={follows.user_id}
+                  follows={follows.followings}
+                  title="Followings"
+                  handleShowPendings={handleUpdateFollows}
+                />
+              )}
+            </div>
+          )}
         </div>
-    )
+      </div>
+    );
 }
 
 export default PersonalInfo

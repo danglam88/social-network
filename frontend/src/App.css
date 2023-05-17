@@ -528,6 +528,20 @@ u {
 /* User Page */
 /* Your profile */
 
+.privacy-icon {
+  margin-left: -6px !important;
+  margin-right: -4px !important;
+}
+
+.privacy {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  color: black;
+  background-color: white;
+  height: 20px;
+}
+
 .personal-profile-wrapper {
   min-width: 470px;
 }
@@ -583,6 +597,10 @@ u {
   margin-bottom: 10px;
   display: inline-grid;
   align-content: space-around;
+}
+
+div.personal-info.main-wrapper > div:nth-child(2) > div:nth-child(3) {
+  display: flex;
 }
 
 /* Clear floats after the columns */
@@ -695,6 +713,15 @@ u {
 
 .main-wrapper {
   padding: 20px;
+}
+
+#users {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: white;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Created posts */
@@ -915,7 +942,7 @@ ul.group-users-buttons {
   margin-top: 10px;
   align-items: center;
   display: grid;
-  grid-template-columns: 0.5fr 100px;
+  grid-template-columns: 0.6fr 100px;
 }
 
 .user-item button {
@@ -924,6 +951,16 @@ ul.group-users-buttons {
 
 .user-profile-name {
   display:flex;
+  align-items: center;
+}
+
+.user-profile-name > div:nth-child(2){
+  max-inline-size: 120px;
+}
+
+.user-profile-name div{
+  display: flex;
+  align-items: center;
 }
 
 .header span:hover, .user-item span:hover, .icon:hover, .Menu li:hover {
@@ -947,7 +984,6 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(3) {
   font-size: 12px;
   padding-left: 1px;
   padding-right: 1px;
-  /* border: 1px solid white !important; */
 }
 
 div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
@@ -990,7 +1026,7 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
 }
 
 .chat-title h2 {
-  max-width: 160px;
+  max-width: 170px;
 }
 
 .chatBox h2 button {

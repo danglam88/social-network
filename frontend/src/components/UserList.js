@@ -78,13 +78,15 @@ const UserItem = ({ownId, user, handleUserProfile}) => {
         <div className="user-item">
             {updatedUser.nick_name ? (
                 <div className="user-profile-name" onClick={() => {handleShowUserProfile(updatedUser.id)}}>
-                    <img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} />
-                    <div>{updatedUser.nick_name} <img className="avatar-symbol" src={privacyImage} alt={privacyText} /></div>
+                    <div className="avatar-border"><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} /></div>
+                    <div>{updatedUser.nick_name}</div>
+                    <div className="icon-border"><img className="avatar-symbol" src={privacyImage} alt={privacyText} /></div>
                 </div>
             ) : (
                 <div className="user-profile-name" onClick={() => {handleShowUserProfile(updatedUser.id)}}>
-                    <img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} />
-                    <div>{updatedUser.first_name} {updatedUser.last_name} <img className="avatar-symbol" src={privacyImage} alt={privacyText} /></div>
+                    <div className="avatar-border"><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} /></div>
+                    <div>{updatedUser.first_name} {updatedUser.last_name}</div>
+                    <div className="icon-border"><img className="avatar-symbol" src={privacyImage} alt={privacyText} /></div>
                 </div>
             )}
 

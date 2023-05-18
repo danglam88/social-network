@@ -11,7 +11,6 @@ const User = ({
   ownId,
   user,
   setAvailableChats,
-  availableChats,
   chatListVisible,
 }) => {
   const [posts, setPosts] = useState([]);
@@ -54,6 +53,12 @@ const User = ({
   }, []);
 
   useEffect(() => {
+    if (updatedUser.is_private === 1) {
+      setProfilePrivate(true);
+    } else {
+      setProfilePrivate(false);
+    }
+
     followsService
       .checkfollow(
         "http://localhost:8080/checkfollow?user_id=" + updatedUser.id
@@ -64,28 +69,17 @@ const User = ({
         }
       })
       .catch((error) => console.log(error));
-
-    if (updatedUser.is_private === 1) {
-      setProfilePrivate(true);
-    } else {
-      setProfilePrivate(false);
-    }
   }, [updatedUser]);
 
   const addChatToChatList = () => {
+    handleUpdateFollows(updatedUser.id);
+
     ChatService.checkChat(
       "http://localhost:8080/checkchat?user_id=" + updatedUser.id
     )
       .then((response) => {
         if (response.data.Error === "Chat not allowed") {
           setChatNotAllowed(true);
-
-          usersService
-            .user(updatedUser.id)
-            .then((response) => {
-              setUpdatedUser(response.data);
-            })
-            .catch((error) => console.log(error));
         } else if (response.data.Error === "Chat not found") {
           setChatButton(false);
           setShowChatWindow(true);
@@ -148,14 +142,14 @@ const User = ({
         />
       )}
       {chatNotAllowed ? (
-        <div className='to-follow'>
+        <div>
           You need to follow <b>{userName}</b> in order to chat
         </div>
       ) : chatButton ? (
-        <div className='add-chat'><button onClick={addChatToChatList}>Add Chat to Chat List</button></div>
+        <button onClick={addChatToChatList}>Add Chat to Chat List</button>
       ) : showChatWindow ? (
         <div>
-          <div className='sucsess'>
+          <div>
             <b>{userName}</b> has been added to the chat list
           </div>
           <ChatWindow
@@ -168,7 +162,7 @@ const User = ({
           />
         </div>
       ) : (
-        <div className='sucsess'>
+        <div>
           <b>{userName}</b> is available in the chat list
         </div>
       )}

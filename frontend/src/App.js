@@ -132,21 +132,17 @@ function App() {
   };
 
   const handleShowUsersList = () => {
-    handleShowPendings(user.id)
-      .then(() => {
-        usersService
-          .users()
-          .then((response) => {
-            setUsers(response.data);
+    usersService
+      .users()
+      .then((response) => {
+        setUsers(response.data);
 
-            setPerProfileVisible(false);
-            setUsersListVisible(true);
-            setShowUserProfile(false);
-            setGroupsListVisible(false);
-            setShowUserOptions(false);
-            setShowList(false);
-          })
-          .catch((error) => console.log(error));
+        setPerProfileVisible(false);
+        setUsersListVisible(true);
+        setShowUserProfile(false);
+        setGroupsListVisible(false);
+        setShowUserOptions(false);
+        setShowList(false);
       })
       .catch((error) => console.log(error));
   };

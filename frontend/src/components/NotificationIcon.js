@@ -3,8 +3,16 @@ import NotificationService from '../services/NotificationService';
 import eventsService from '../services/EventsService';
 import followsService from '../services/FollowsService';
 
-const NotificationIcon = ({ showList, setShowList, handleShowPendings, showUserOptions, setShowUserOptions}) => {
+const NotificationIcon = ({ showList, setShowList, handleShowPendings, showUserOptions, setShowUserOptions, profilePrivate}) => {
   const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    if (!profilePrivate) {
+      setNotifications(prevNotifications =>
+        prevNotifications.filter(notification => notification.type !== 'follownotification')
+      );
+    }
+  }, [profilePrivate]);
 
   useEffect(() => {
     const messageListener = (message) => {

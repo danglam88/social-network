@@ -51,6 +51,7 @@ function App() {
   const [showList, setShowList] = useState(false);
   const [availableChats, setAvailableChats] = useState([]);
   const [chatListVisible, setChatListVisible] = useState(false);
+  const [profilePrivate, setProfilePrivate] = useState(user?.is_private === 1);
 
   useEffect(() => {
     axios
@@ -236,6 +237,7 @@ function App() {
                 handleShowPendings={handleShowPendings}
                 showUserOptions={showUserOptions}
                 setShowUserOptions={setShowUserOptions}
+                profilePrivate={profilePrivate}
               />
               <img
                 onClick={handleShowUserOptions}
@@ -262,6 +264,8 @@ function App() {
                   handleShowPendings={handleShowPendings}
                   notifications={notifications}
                   setNotifications={setNotifications}
+                  profilePrivate={profilePrivate}
+                  setProfilePrivate={setProfilePrivate}
                 />
               )}
               {usersListVisible && (

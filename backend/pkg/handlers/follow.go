@@ -157,7 +157,7 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 				GetErrResponse(w, "Error while getting username", http.StatusInternalServerError)
 				return
 			}
-			Mgr.broadcastFollowNotification(userId, followedUser.ID, username)
+			Mgr.broadcastFollowNotification(userId, followedUser.ID, username, false)
 		}
 
 		w.WriteHeader(http.StatusOK)

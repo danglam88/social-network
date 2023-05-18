@@ -22,11 +22,15 @@ func PersonalProfile(w http.ResponseWriter, r *http.Request) {
 
 func TogglePrivacy(w http.ResponseWriter, r *http.Request) {
 	userId := GetLoggedInUserID(w, r)
-	err := DB.TogglePrivacy(userId)
+	_, err := DB.TogglePrivacy(userId)
 	if err != nil {
 		GetErrResponse(w, "Error while toggling privacy", http.StatusInternalServerError)
 		return
 	}
+
+	// for _, followerId := range followerIds {
+	// 	Mgr.broadcastFollowNotification(userId, followerId, "", true)
+	// }
 
 	w.WriteHeader(http.StatusOK)
 	response := ResponseError{Status: RESPONSE_OK}

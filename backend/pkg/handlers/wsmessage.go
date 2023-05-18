@@ -451,16 +451,28 @@ func (c *Client) writeMessages() {
 	}
 }
 
-func (m *Manager) broadcastFollowNotification(from int, to int, userName string) {
-	avatarUrl := DB.GetUserAvatar(from)
+func (m *Manager) broadcastFollowNotification(from int, to int, userName string, clear bool) {
+	var msg db.Message
 
-	msg := db.Message{
-		Type:      FOLLOWNOTIFICATION_TYPE,
-		From:      from,
-		UserName:  userName,
-		To:        to,
-		AvatarUrl: avatarUrl,
+	if clear {
+		msg = db.Message{
+			Type:    FOLLOWNOTIFICATION_TYPE,
+			From:    from,
+			To:      to,
+			Message: "clear",
+		}
+	} else {
+		avatarUrl := DB.GetUserAvatar(from)
+
+		msg = db.Message{
+			Type:      FOLLOWNOTIFICATION_TYPE,
+			From:      from,
+			UserName:  userName,
+			To:        to,
+			AvatarUrl: avatarUrl,
+		}
 	}
+
 	message, err := json.Marshal(msg)
 	if err != nil {
 		log.Println(err)

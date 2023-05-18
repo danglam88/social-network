@@ -239,34 +239,49 @@ func (db *Db) IsFollower(followerId, followedId int) bool {
 	return false
 }
 
-func (db *Db) TogglePrivacy(userId int) (err error) {
+func (db *Db) TogglePrivacy(userId int) ([]int, error) {
 	var isPrivate int
+	var followerIds []int
 
 	query := "select is_private from user where id=?"
 	row := db.connection.QueryRow(query, userId)
-	err = row.Scan(&isPrivate)
+	err := row.Scan(&isPrivate)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if isPrivate == 1 {
 		_, err = db.connection.Exec("update user set is_private=0 where id=?", userId)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		_, err = db.connection.Exec("update follow_relation set is_approved=1 where followed_id=?", userId)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	} else {
 		_, err = db.connection.Exec("update user set is_private=1 where id=?", userId)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	return err
+	rows, err := db.connection.Query("select follower_id from follow_relation where is_approved=1 and followed_id=?", userId)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+		var followerId int
+		if err := rows.Scan(&followerId); err != nil {
+			return nil, err
+		}
+		followerIds = append(followerIds, followerId)
+	}
+
+	return followerIds, err
 }
 
 func (db *Db) ToggleFollow(followerId int, followedUser User) (err error, broadcast bool) {

@@ -18,11 +18,13 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
     uploadDiv.className = "upload";
   }
 
-  follows.followers.sort(function(a, b) {
-    var nameA = a.nick_name || a.first_name + " " + a.last_name;
-    var nameB = b.nick_name || b.first_name + " " + b.last_name;
-    return nameA.localeCompare(nameB);
-  });
+  if (follows && follows.followers && follows.followers.length > 0) {
+    follows.followers.sort(function(a, b) {
+      var nameA = a.nick_name || a.first_name + " " + a.last_name;
+      var nameB = b.nick_name || b.first_name + " " + b.last_name;
+      return nameA.localeCompare(nameB);
+    });
+  }
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);

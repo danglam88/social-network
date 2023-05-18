@@ -78,7 +78,6 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
         ) : (
           <div>Group chat for <b>{group.name}</b> is available in the chat list</div>
         )}
-      <br />
       <EventList list={group.events} groupId={group.id} />
       <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
       {group.posts && <Posts posts={group.posts} type="group" />}

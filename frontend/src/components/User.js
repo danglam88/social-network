@@ -14,6 +14,8 @@ const User = ({ ownId, user }) => {
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [chatNotAllowed, setChatNotAllowed] = useState(false);
   const [updatedUser, setUpdatedUser] = useState(user);
+  const [exclusive, setExclusive] = useState(false);
+  const [profilePrivate, setProfilePrivate] = useState(updatedUser.is_private === 1);
 
   useEffect(() => {
     postsService
@@ -41,6 +43,23 @@ const User = ({ ownId, user }) => {
       })
       .catch((error) => console.log(error));
   }, []);
+
+  useEffect(() => {
+      followsService
+        .checkfollow('http://localhost:8080/checkfollow?user_id=' + updatedUser.id)
+        .then((response) => {
+          if (response.data.Error === "Yes") {
+            setExclusive(true)
+          }
+        })
+        .catch((error) => console.log(error));
+
+      if (updatedUser.is_private === 1) {
+        setProfilePrivate(true)
+      } else {
+        setProfilePrivate(false)
+      }
+  }, [updatedUser])
 
   const addChatToChatList = () => {
     ChatService
@@ -84,7 +103,7 @@ const User = ({ ownId, user }) => {
   return (
     <div>
       <h2>{userName}'s profile</h2>
-      {follows && <PersonalInfo ownId={ownId} user={updatedUser} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} setPosts={setPosts} setChatNotAllowed={setChatNotAllowed} />}
+      {follows && <PersonalInfo ownId={ownId} updatedUser={updatedUser} setUpdatedUser={setUpdatedUser} exclusive={exclusive} setExclusive={setExclusive} profilePrivate={profilePrivate} setProfilePrivate={setProfilePrivate} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} setPosts={setPosts} setChatNotAllowed={setChatNotAllowed} />}
       {chatNotAllowed ? <div>You need to follow <b>{userName}</b> in order to chat</div> :
         chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
         showChatWindow ? (

@@ -3,33 +3,19 @@ import usersService from "../services/UsersService";
 import User from "./User";
 import followsService from "../services/FollowsService";
 
-const UserItem = ({ ownId, user, handleUserProfile }) => {
-  const [userProfileFollowed, setUserProfileFollowed] = useState(false);
+const UserItem = ({ user, handleUserProfile, userProfileFollowed, setUserProfileFollowed }) => {
   const [userProfilePending, setUserProfilePending] = useState(false);
   const [check_pending, setCheckPending] = useState(true);
   const [updatedUser, setUpdatedUser] = useState(user);
   const [followValue, setFollowValue] = useState(false);
-  const [privacyImage, setPrivacyImage] = useState(
-    "http://localhost:8080/upload/public.png"
-  );
+  const [privacyImage, setPrivacyImage] = useState("");
 
   useEffect(() => {
-    if (updatedUser.is_private) {
+    if (updatedUser.is_private === 1) {
       setPrivacyImage("http://localhost:8080/upload/private.png");
+    } else {
+      setPrivacyImage("http://localhost:8080/upload/public.png");
     }
-
-    followsService
-      .follows("http://localhost:8080/follow?user_id=" + ownId)
-      .then((response) => {
-        if (response.data && response.data.followings) {
-          response.data.followings.forEach((following) => {
-            if (following.id === updatedUser.id) {
-              setUserProfileFollowed(true);
-            }
-          });
-        }
-      })
-      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
@@ -157,6 +143,28 @@ const UserList = ({
   const [items, setItems] = useState(users);
   const [initialItems, setInitialItems] = useState(users);
   const [filterMessage, setFilterMessage] = useState("");
+  const [userProfileFollowed, setUserProfileFollowed] = useState(() => {
+    const initialFollowed = {};
+    users.forEach((user) => {
+      initialFollowed[user.id] = false;
+    });
+    return initialFollowed;
+  });
+
+  useEffect(() => {
+    followsService
+      .follows("http://localhost:8080/follow?user_id=" + ownId)
+      .then((response) => {
+        if (response.data && response.data.followings) {
+          const updatedFollowed = { ...userProfileFollowed };
+          response.data.followings.forEach((following) => {
+            updatedFollowed[following.id] = true;
+          });
+          setUserProfileFollowed(updatedFollowed);
+        }
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleUserProfile = (userId) => {
     usersService
@@ -223,10 +231,16 @@ const UserList = ({
               const userItemKey = "userItem" + user.id;
               return (
                 <UserItem
-                  ownId={ownId}
                   user={user}
                   key={userItemKey}
                   handleUserProfile={handleUserProfile}
+                  userProfileFollowed={userProfileFollowed[user.id]}
+                  setUserProfileFollowed={(followed) => {
+                    setUserProfileFollowed((prevState) => ({
+                      ...prevState,
+                      [user.id]: followed,
+                    }));
+                  }}
                 />
               );
             })}

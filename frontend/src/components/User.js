@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import PersonalInfo from './PersonalInfo';
-import Posts from './Posts';
-import postsService from '../services/PostsService';
-import followsService from '../services/FollowsService';
-import ChatService from '../services/ChatService';
-import ChatWindow from './ChatWindow';
-import usersService from '../services/UsersService';
+import React, { useState, useEffect } from "react";
+import PersonalInfo from "./PersonalInfo";
+import Posts from "./Posts";
+import postsService from "../services/PostsService";
+import followsService from "../services/FollowsService";
+import ChatService from "../services/ChatService";
+import ChatWindow from "./ChatWindow";
+import usersService from "../services/UsersService";
 
-const User = ({ ownId, user }) => {
+const User = ({
+  ownId,
+  user,
+  setAvailableChats,
+  availableChats,
+  chatListVisible,
+}) => {
   const [posts, setPosts] = useState([]);
   const [follows, setFollows] = useState(null);
   const [chatButton, setChatButton] = useState(false);
@@ -17,21 +23,22 @@ const User = ({ ownId, user }) => {
 
   useEffect(() => {
     postsService
-      .posts('http://localhost:8080/visible?creator_id=' + updatedUser.id)
+      .posts("http://localhost:8080/visible?creator_id=" + updatedUser.id)
       .then((response) => {
         setPosts(response.data);
       })
       .catch((error) => console.log(error));
 
     followsService
-      .follows('http://localhost:8080/follow?user_id=' + updatedUser.id)
+      .follows("http://localhost:8080/follow?user_id=" + updatedUser.id)
       .then((response) => {
         setFollows(response.data);
       })
       .catch((error) => console.log(error));
 
-    ChatService
-      .checkChat('http://localhost:8080/checkchat?user_id=' + updatedUser.id)
+    ChatService.checkChat(
+      "http://localhost:8080/checkchat?user_id=" + updatedUser.id
+    )
       .then((response) => {
         if (response.data.Error === "Chat not found") {
           setChatButton(true);
@@ -43,8 +50,9 @@ const User = ({ ownId, user }) => {
   }, []);
 
   const addChatToChatList = () => {
-    ChatService
-      .checkChat('http://localhost:8080/checkchat?user_id=' + updatedUser.id)
+    ChatService.checkChat(
+      "http://localhost:8080/checkchat?user_id=" + updatedUser.id
+    )
       .then((response) => {
         if (response.data.Error === "Chat not allowed") {
           setChatNotAllowed(true);
@@ -63,7 +71,23 @@ const User = ({ ownId, user }) => {
       .catch((error) => console.log(error));
   };
 
-  const userName = updatedUser.nick_name ? updatedUser.nick_name : `${updatedUser.first_name} ${updatedUser.last_name}`;
+  const fetchChats = () => {
+    try {
+      ChatService.fetchChats().then((response) => {
+        if (response && response.data) {
+          setAvailableChats(response.data);
+        } else {
+          setAvailableChats([]);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const userName = updatedUser.nick_name
+    ? updatedUser.nick_name
+    : `${updatedUser.first_name} ${updatedUser.last_name}`;
 
   const handleUpdateFollows = async (userId) => {
     await followsService
@@ -84,19 +108,46 @@ const User = ({ ownId, user }) => {
   return (
     <div>
       <h2>{userName}'s profile</h2>
-      {follows && <PersonalInfo ownId={ownId} user={updatedUser} type="user" handleUpdateFollows={handleUpdateFollows} follows={follows} setPosts={setPosts} setChatNotAllowed={setChatNotAllowed} />}
-      {chatNotAllowed ? <div>You need to follow <b>{userName}</b> in order to chat</div> :
-        chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
-        showChatWindow ? (
+      {follows && (
+        <PersonalInfo
+          ownId={ownId}
+          user={updatedUser}
+          type="user"
+          handleUpdateFollows={handleUpdateFollows}
+          follows={follows}
+          setPosts={setPosts}
+          setChatNotAllowed={setChatNotAllowed}
+        />
+      )}
+      {chatNotAllowed ? (
+        <div>
+          You need to follow <b>{userName}</b> in order to chat
+        </div>
+      ) : chatButton ? (
+        <button onClick={addChatToChatList}>Add Chat to Chat List</button>
+      ) : showChatWindow ? (
+        <div>
           <div>
-            <div><b>{userName}</b> has been added to the chat list</div>
-            <ChatWindow chat={{ GroupID: 0, ChatID: updatedUser.id }} />
+            <b>{userName}</b> has been added to the chat list
           </div>
-        ) : (
-          <div><b>{userName}</b> is available in the chat list</div>
-        )}
+          <ChatWindow
+            chat={{
+              GroupID: 0,
+              ChatID: updatedUser.id,
+            }}
+            onNewChatCreated={fetchChats}
+            chatListVisible={chatListVisible}
+          />
+        </div>
+      ) : (
+        <div>
+          <b>{userName}</b> is available in the chat list
+        </div>
+      )}
       <br />
-      {posts && posts.length > 0 && <Posts posts={posts} type={userName} userId={updatedUser.id} />}
+      {posts && posts.length > 0 && (
+        <Posts posts={posts} type={userName} userId={updatedUser.id} />
+      )}
     </div>
   );
 };

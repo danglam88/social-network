@@ -25,7 +25,7 @@ const clientToken = document.cookie
 
 const config = {
   headers: {
-    "Authorization": `Bearer ${clientToken}`,
+    Authorization: `Bearer ${clientToken}`,
     "Content-Type": "application/json",
   },
 };
@@ -40,7 +40,7 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
   const [usersListVisible, setUsersListVisible] = useState(false);
-  const [showUserProfile, setShowUserProfile] = useState(false)
+  const [showUserProfile, setShowUserProfile] = useState(false);
   const [groups, setGroups] = useState([]);
   const [groupsListVisible, setGroupsListVisible] = useState(false);
   const [isGroupDetailPage, setIsGroupDetailPage] = useState(false);
@@ -49,6 +49,8 @@ function App() {
   const [isLinkClicked, setIsLinkClicked] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showList, setShowList] = useState(false);
+  const [availableChats, setAvailableChats] = useState([]);
+  const [chatListVisible, setChatListVisible] = useState(false);
 
   useEffect(() => {
     axios
@@ -180,10 +182,10 @@ function App() {
 
   const handleShowNotifications = async () => {
     await NotificationService.getAll()
-      .then(response => {
-        setNotifications(response.data)
+      .then((response) => {
+        setNotifications(response.data);
       })
-      .catch(error => console.log(error))
+      .catch((error) => console.log(error));
   };
 
   const handleShowUserOptions = () => {
@@ -219,45 +221,103 @@ function App() {
       {token !== "" && user ? (
         <div>
           <div className="Header">
-              <div className="header">
-                <span onClick={handleShowPersonalProfile}>
-                  <i><img src={logo} className="App-logo" alt="logo" />Interstellar
-                  </i>
-                </span>
-              </div>
+            <div className="header">
+              <span onClick={handleShowPersonalProfile}>
+                <i>
+                  <img src={logo} className="App-logo" alt="logo" />
+                  Interstellar
+                </i>
+              </span>
+            </div>
           </div>
           <ul className="Menu">
             <div>
-                {users && users.length > 0 && (
-                  <li onClick={handleShowUsersList}>Users</li>
-                )}
-                {groups && groups.length > 0 && (
-                  <li onClick={handleShowGroupsList}>Groups</li>
-                )}
-                </div>
-                <div className="user-options-menu">
-                <NotificationIcon showList={showList} setShowList={setShowList} handleShowPendings={handleShowPendings} showUserOptions={showUserOptions} setShowUserOptions={setShowUserOptions} />
-                <img onClick={handleShowUserOptions} className="avatar-symbol" src={`http://localhost:8080${user.avatar_url}`} alt="Avatar Image"/>
-                {showUserOptions && <UserOptions handleShowPersonalProfile={handleShowPersonalProfile} handleLogout={handleLogout} />}
-                </div>
-            </ul>
+              {users && users.length > 0 && (
+                <li onClick={handleShowUsersList}>Users</li>
+              )}
+              {groups && groups.length > 0 && (
+                <li onClick={handleShowGroupsList}>Groups</li>
+              )}
+            </div>
+            <div className="user-options-menu">
+              <NotificationIcon
+                showList={showList}
+                setShowList={setShowList}
+                handleShowPendings={handleShowPendings}
+                showUserOptions={showUserOptions}
+                setShowUserOptions={setShowUserOptions}
+              />
+              <img
+                onClick={handleShowUserOptions}
+                className="avatar-symbol"
+                src={`http://localhost:8080${user.avatar_url}`}
+                alt="Avatar Image"
+              />
+              {showUserOptions && (
+                <UserOptions
+                  handleShowPersonalProfile={handleShowPersonalProfile}
+                  handleLogout={handleLogout}
+                />
+              )}
+            </div>
+          </ul>
           <div className="page-body">
             <div className="Mainpage">
-              {perProfileVisible && follows && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} notifications={notifications} setNotifications={setNotifications} />}
-              {usersListVisible && <UserList ownId={user.id} users={users} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
-              {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
+              {perProfileVisible && follows && (
+                <PersonalProfile
+                  user={user}
+                  posts={posts}
+                  setPosts={setPosts}
+                  follows={follows}
+                  handleShowPendings={handleShowPendings}
+                  notifications={notifications}
+                  setNotifications={setNotifications}
+                />
+              )}
+              {usersListVisible && (
+                <UserList
+                  ownId={user.id}
+                  users={users}
+                  showUserProfile={showUserProfile}
+                  setShowUserProfile={setShowUserProfile}
+                  availableChats={availableChats}
+                  setAvailableChats={setAvailableChats}
+                  chatListVisible={chatListVisible}
+                  setChatListVisible={setChatListVisible}
+                />
+              )}
+              {groupsListVisible && (
+                <GroupList
+                  isGroupDetailPage={isGroupDetailPage}
+                  setIsGroupDetailPage={setIsGroupDetailPage}
+                />
+              )}
             </div>
-            <Chat userId={user.id}/>
+            <Chat
+              userId={user.id}
+              availableChats={availableChats}
+              setAvailableChats={setAvailableChats}
+              chatListVisible={chatListVisible}
+              setChatListVisible={setChatListVisible}
+            />
           </div>
         </div>
       ) : (
         <div className="App-body">
-          <div><img src={logo} className="App-logo" alt="logo" /></div>
+          <div>
+            <img src={logo} className="App-logo" alt="logo" />
+          </div>
           <LoginForm />
-          <div className={isLinkClicked ? 'register-clicked' : 'register'} onClick={handleRegisterLinkClick}> Register new user</div>
+          <div
+            className={isLinkClicked ? "register-clicked" : "register"}
+            onClick={handleRegisterLinkClick}
+          >
+            {" "}
+            Register new user
+          </div>
           {showRegisterForm && (
             <div>
-            <RegisterForm />
+              <RegisterForm />
             </div>
           )}
         </div>

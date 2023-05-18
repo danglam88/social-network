@@ -132,28 +132,34 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
           )}
           {profilePrivate ? (
             <div>
-              <img className="avatar-symbol" src={`${privacyIconPath}private.png`} />
-              Private Profile{" "}
+              <div><img className="avatar-symbol" src={`${privacyIconPath}private.png`} /></div>
+              <div>Private Profile{" "}</div>
               {type === "own" && (
-                <button className='privacy' onClick={handleTogglePrivacy}>
-                  <img
-                    className="avatar-symbol privacy-icon"
-                    src={`${privacyIconPath}public.png`}
-                  ></img>
-                  Change to Public
-                </button>
+                <div>
+                  <button className='privacy' onClick={handleTogglePrivacy}>
+                    <img
+                      className="avatar-symbol privacy-icon"
+                      src={`${privacyIconPath}public.png`}
+                    ></img>
+                    Change to Public
+                  </button>
+                </div>
               )}
             </div>
           ) : (
             <div>
-              <img className="avatar-symbol" src={`${privacyIconPath}public.png`} />
-              Public Profile{" "}
+              <div><img className="avatar-symbol" src={`${privacyIconPath}public.png`} /></div>
+              <div>Public Profile{" "}</div>
               {type === "own" && (
-                <button className='privacy' onClick={handleTogglePrivacy}>
-                  <img
-                    className="avatar-symbol privacy-icon"
-                    src={`${privacyIconPath}private.png`}
-                  ></img>Change to Private</button>
+                <div>
+                  <button className='privacy' onClick={handleTogglePrivacy}>
+                    <img
+                      className="avatar-symbol privacy-icon"
+                      src={`${privacyIconPath}private.png`}
+                    ></img>
+                    Change to Private
+                  </button>
+                </div>
               )}
             </div>
           )}

@@ -59,16 +59,14 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
         <div className="group-created-at">Group creation: {group.created_at.replace("T", " ").replace("Z", "")}</div>
         <div className="group-members">Total members: {membersCount}</div>
         {((group.members && group.members.length > 0) || (users && users.length > 0)) &&
-          <ul className="group-users-buttons">
+          <div className="follow">
             {group.members && group.members.length > 0 &&
-              <li>
                 <FollowsWrapper userId={group.id} follows={group.members} title="Members" handleShowPendings={handleGoToDetail} />
-              </li>}
+             }
             {users && users.length > 0 &&
-              <li>
                 <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name} users={users} setUsers={setUsers} />
-              </li>}
-          </ul>}
+            }
+          </div>}
         </div>
       </div>
       {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :

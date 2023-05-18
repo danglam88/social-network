@@ -2,9 +2,9 @@ const Follow = ({ follow }) => {
     return (
         <>
             {follow.nick_name ? (
-                <li>{follow.nick_name}</li>
+                <li><img className="avatar-symbol" src={`http://localhost:8080${follow.avatar_url}`}/>{follow.nick_name}</li>
             ) : (
-                <li>{follow.first_name} {follow.last_name}</li>
+                <li><img className="avatar-symbol" src={`http://localhost:8080${follow.avatar_url}`}/>{follow.first_name} {follow.last_name}</li>
             )}
         </>
     )

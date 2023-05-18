@@ -286,6 +286,9 @@ function App() {
                   setItems={setGroups}
                   isGroupDetailPage={isGroupDetailPage}
                   setIsGroupDetailPage={setIsGroupDetailPage}
+                  chatListVisible={chatListVisible}
+                  setChatListVisible={setChatListVisible}
+                  setAvailableChats={setAvailableChats}
                 />
               )}
             </div>

@@ -8,12 +8,27 @@ import ChatWindow from './ChatWindow'
 import ChatService from '../services/ChatService'
 import usersService from '../services/UsersService'
 
-const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
+const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats,
+  chatListVisible }) => {
   const membersCount = group.members?.length === 0 ? 0 : group.members.length;
   const [chatButton, setChatButton] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [users, setUsers] = useState([]);
   const [chatCheckTrigger, setChatCheckTrigger] = useState(false);
+
+  const fetchChats = () => {
+    try {
+      ChatService.fetchChats().then((response) => {
+        if (response && response.data) {
+          setAvailableChats(response.data);
+        } else {
+          setAvailableChats([]);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     ChatService
@@ -73,7 +88,10 @@ const Group = ({ group, setGroupInfo, handleGoToDetail }) => {
         showChatWindow ? (
           <div>
             <div>Group chat for <b>{group.name}</b> has been added to the chat list</div>
-            <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} />
+            <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} 
+            onNewChatCreated={fetchChats}
+            chatListVisible={chatListVisible}
+            />
           </div>
         ) : (
           <div>Group chat for <b>{group.name}</b> is available in the chat list</div>

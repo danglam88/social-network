@@ -106,7 +106,9 @@ const NewGroup = ({handleNewGroup}) => {
 }
 
 //Main component
-const GroupList = ({items, setItems, isGroupDetailPage, setIsGroupDetailPage}) => {
+const GroupList = ({items, setItems, isGroupDetailPage, setIsGroupDetailPage, availableChats,
+    setAvailableChats,
+    chatListVisible,setChatListVisible, }) => {
     const [isCreateGroup, setIsCreateGroup] = useState(false)
     const [groupInfo, setGroupInfo] = useState({})
     const [filter, setFilter] = useState("")
@@ -181,7 +183,10 @@ const GroupList = ({items, setItems, isGroupDetailPage, setIsGroupDetailPage}) =
     if (items.length > 0) {
         return (
         <div>
-            {isGroupDetailPage ? (<Group group={groupInfo} key={groupInfo.id} setGroupInfo={setGroupInfo} handleGoToDetail={handleGoToDetail} />) : (
+            {isGroupDetailPage ? (<Group group={groupInfo} key={groupInfo.id} setGroupInfo={setGroupInfo} handleGoToDetail={handleGoToDetail}  availableChats={availableChats}
+          setAvailableChats={setAvailableChats}
+          chatListVisible={chatListVisible}
+          setChatListVisible={setChatListVisible} />) : (
                  <>
             <div className="groups-wrapper">
                 <h1>Groups</h1>

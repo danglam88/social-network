@@ -421,6 +421,11 @@ u {
   background-color: #DBBBF5;
   padding-inline-start: 0px;
   margin-top: 4px;
+  align-items: center;
+}
+
+.invite {
+  padding-bottom : 10px;
 }
 
 .follow-options li {

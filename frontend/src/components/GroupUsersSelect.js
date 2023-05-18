@@ -11,7 +11,7 @@ const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
  
   //todo checkbox can be hidden and you can add users by clicking on div  + in div can be shown extra info about user from user object(for styling)
   return (
-      <div>
+      <li>
         {name}
         <input
           type="checkbox"
@@ -35,7 +35,7 @@ const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
           }}
           checked={isChecked}
         />
-      </div>
+      </li>
   )
 } 
 
@@ -104,13 +104,13 @@ const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => 
         <div className="follow-options-menu">
           <button className="button-small" onClick={showList}>{buttonName}</button>
           {isVisible &&
-          <form onSubmit={handleInviteUsers}>
-            <br />
+          <form className='follow-options invite' onSubmit={handleInviteUsers}>
+            <ul>
             {users.map(user => {
               const inviteUserKey = "inviteUser" + user.id;
               return <SelectItem user={user} key={inviteUserKey} setInvitedUsers={setInvitedUsers} invitedUsers={invitedUsers}/>
             })}
-            <br />
+            </ul>
             <button type="submit">Invite</button>
           </form>}
         </div>

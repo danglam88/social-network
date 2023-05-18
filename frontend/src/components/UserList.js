@@ -196,10 +196,6 @@ const UserList = ({
         var nameB = b.nick_name || b.first_name + " " + b.last_name;
         return nameA.localeCompare(nameB);
       });
-      
-      users.forEach(function(user) {
-        var name = user.nick_name || user.first_name + " " + user.last_name;
-      });
 
   return (
     <>

@@ -20,6 +20,10 @@ const User = ({
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [chatNotAllowed, setChatNotAllowed] = useState(false);
   const [updatedUser, setUpdatedUser] = useState(user);
+  const [exclusive, setExclusive] = useState(false);
+  const [profilePrivate, setProfilePrivate] = useState(
+    updatedUser.is_private === 1
+  );
 
   useEffect(() => {
     postsService
@@ -48,6 +52,25 @@ const User = ({
       })
       .catch((error) => console.log(error));
   }, []);
+
+  useEffect(() => {
+    followsService
+      .checkfollow(
+        "http://localhost:8080/checkfollow?user_id=" + updatedUser.id
+      )
+      .then((response) => {
+        if (response.data.Error === "Yes") {
+          setExclusive(true);
+        }
+      })
+      .catch((error) => console.log(error));
+
+    if (updatedUser.is_private === 1) {
+      setProfilePrivate(true);
+    } else {
+      setProfilePrivate(false);
+    }
+  }, [updatedUser]);
 
   const addChatToChatList = () => {
     ChatService.checkChat(
@@ -111,7 +134,12 @@ const User = ({
       {follows && (
         <PersonalInfo
           ownId={ownId}
-          user={updatedUser}
+          updatedUser={updatedUser}
+          setUpdatedUser={setUpdatedUser}
+          exclusive={exclusive}
+          setExclusive={setExclusive}
+          profilePrivate={profilePrivate}
+          setProfilePrivate={setProfilePrivate}
           type="user"
           handleUpdateFollows={handleUpdateFollows}
           follows={follows}

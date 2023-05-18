@@ -88,7 +88,7 @@ const NewGroup = ({handleNewGroup}) => {
 
     return (
         <div className="new-post-wrapper groups-wrapper">
-        <h3>Create a new group</h3>
+        <h3>Create new group</h3>
         <form className='post-comment-form' onSubmit={handleCreateGroup}>
         <label>Title:</label>
         <input type='text' value={title} onChange={handleTitleChange}/>
@@ -106,16 +106,14 @@ const NewGroup = ({handleNewGroup}) => {
 }
 
 //Main component
-const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
-
-    const [items, setItems] = useState([])
+const GroupList = ({items, setItems, isGroupDetailPage, setIsGroupDetailPage}) => {
     const [isCreateGroup, setIsCreateGroup] = useState(false)
     const [groupInfo, setGroupInfo] = useState({})
     const [filter, setFilter] = useState("")
-    const [initialItems, setInitialItems] = useState([])
+    const [initialItems, setInitialItems] = useState(items)
     const [filterMessage, setFilterMessage] = useState("")
 
-    const handleCreateGroup = (event) => {
+    const handleCreateGroup = () => {
         setIsCreateGroup(true)
     }
 
@@ -174,19 +172,6 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
           WebSocketService.sendMessage(payload);
     }
 
-    useEffect(() => {
-        groupService.groups().then(response => {
-            const list = []
-            response.data.forEach((data) => {
-                list.push(data)
-            })
-            setItems(list)
-            setInitialItems(list)
-        })
-        .catch(error => console.log(error))
-    }, [])
-
-
     const groupsList = []
     {items.forEach((data) => {
         const groupItemKey = "groupItem" + data.id;
@@ -201,7 +186,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
             <div className="groups-wrapper">
                 <h1>Groups</h1>
                 <br/>
-                <label className="filter-label">Search a group:</label>
+                <label className="filter-label">Search groups:</label>
                 <input type="text" value={filter} onChange={handleFilter}/>
                 <div className={filterMessage.length > 0 ? 'error filter' : 'hidden'}>{filterMessage}</div>
             </div>

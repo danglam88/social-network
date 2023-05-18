@@ -83,7 +83,7 @@ const CommentForm = ({ postId, setComments }) => {
     <div className="post-comment-form">
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="content">Create a comment:</label>
+          <label htmlFor="content">Create comment:</label>
           <textarea
             id="content"
             name="content"

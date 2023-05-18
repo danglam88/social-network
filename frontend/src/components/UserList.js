@@ -207,7 +207,7 @@ const UserList = ({
         <div className="user-list">
           <h1>Users</h1>
           <br />
-          <label className="filter-label">Search an user:</label>
+          <label className="filter-label">Search users:</label>
           <input type="text" value={filter} onChange={handleFilter} />
           <div className={filterMessage.length > 0 ? "error filter" : "hidden"}>
             {filterMessage}

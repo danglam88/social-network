@@ -152,21 +152,17 @@ function App() {
   };
 
   const handleShowGroupsList = () => {
-    handleShowPendings(user.id)
-      .then(() => {
-        groupService
-          .groups()
-          .then((response) => {
-            setGroups(response.data);
+    groupService
+      .groups()
+      .then((response) => {
+        setGroups(response.data);
 
-            setPerProfileVisible(false);
-            setUsersListVisible(false);
-            setGroupsListVisible(true);
-            setIsGroupDetailPage(false);
-            setShowUserOptions(false);
-            setShowList(false);
-          })
-          .catch((error) => console.log(error));
+        setPerProfileVisible(false);
+        setUsersListVisible(false);
+        setGroupsListVisible(true);
+        setIsGroupDetailPage(false);
+        setShowUserOptions(false);
+        setShowList(false);
       })
       .catch((error) => console.log(error));
   };
@@ -204,8 +200,6 @@ function App() {
     loginService
       .logout({})
       .then((response) => {
-        console.log(response);
-
         document.cookie =
           "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         sessionStorage.removeItem("userid");
@@ -288,6 +282,8 @@ function App() {
               )}
               {groupsListVisible && (
                 <GroupList
+                  items={groups}
+                  setItems={setGroups}
                   isGroupDetailPage={isGroupDetailPage}
                   setIsGroupDetailPage={setIsGroupDetailPage}
                 />

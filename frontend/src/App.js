@@ -150,23 +150,19 @@ function App() {
   };
 
   const handleShowGroupsList = () => {
-    handleShowPendings(user.id)
-      .then(() => {
-        groupService
-          .groups()
-          .then((response) => {
-            setGroups(response.data);
+    groupService
+      .groups()
+      .then((response) => {
+        setGroups(response.data);
 
-            setPerProfileVisible(false);
-            setUsersListVisible(false);
-            setGroupsListVisible(true);
-            setIsGroupDetailPage(false);
-            setShowUserOptions(false);
-            setShowList(false);
-          })
-          .catch((error) => console.log(error));
+        setPerProfileVisible(false);
+        setUsersListVisible(false);
+        setGroupsListVisible(true);
+        setIsGroupDetailPage(false);
+        setShowUserOptions(false);
+        setShowList(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error)); 
   };
 
   const handleShowPendings = async (userId) => {
@@ -202,8 +198,6 @@ function App() {
     loginService
       .logout({})
       .then((response) => {
-        console.log(response);
-
         document.cookie =
           "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         sessionStorage.removeItem("userid");
@@ -245,7 +239,7 @@ function App() {
             <div className="Mainpage">
               {perProfileVisible && follows && <PersonalProfile user={user} posts={posts} setPosts={setPosts} follows={follows} handleShowPendings={handleShowPendings} notifications={notifications} setNotifications={setNotifications} />}
               {usersListVisible && <UserList ownId={user.id} users={users} showUserProfile={showUserProfile} setShowUserProfile={setShowUserProfile} />}
-              {groupsListVisible && <GroupList isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
+              {groupsListVisible && <GroupList items={groups} setItems={setGroups} isGroupDetailPage={isGroupDetailPage} setIsGroupDetailPage={setIsGroupDetailPage}/>}
             </div>
             <Chat userId={user.id}/>
           </div>

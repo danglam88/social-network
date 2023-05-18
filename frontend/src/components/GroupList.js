@@ -106,16 +106,14 @@ const NewGroup = ({handleNewGroup}) => {
 }
 
 //Main component
-const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
-
-    const [items, setItems] = useState([])
+const GroupList = ({items, setItems, isGroupDetailPage, setIsGroupDetailPage}) => {
     const [isCreateGroup, setIsCreateGroup] = useState(false)
     const [groupInfo, setGroupInfo] = useState({})
     const [filter, setFilter] = useState("")
-    const [initialItems, setInitialItems] = useState([])
+    const [initialItems, setInitialItems] = useState(items)
     const [filterMessage, setFilterMessage] = useState("")
 
-    const handleCreateGroup = (event) => {
+    const handleCreateGroup = () => {
         setIsCreateGroup(true)
     }
 
@@ -173,19 +171,6 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
           };
           WebSocketService.sendMessage(payload);
     }
-
-    useEffect(() => {
-        groupService.groups().then(response => {
-            const list = []
-            response.data.forEach((data) => {
-                list.push(data)
-            })
-            setItems(list)
-            setInitialItems(list)
-        })
-        .catch(error => console.log(error))
-    }, [])
-
 
     const groupsList = []
     {items.forEach((data) => {

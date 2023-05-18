@@ -68,8 +68,6 @@ const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => 
     }
 
     groupService.join(data).then(response => {
-      console.log(response)
-
       handleSuccessInvitation()
       setIsVisible(!isVisible)
     })

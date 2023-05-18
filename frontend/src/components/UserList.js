@@ -10,12 +10,10 @@ const UserItem = ({ownId, user, handleUserProfile}) => {
     const [updatedUser, setUpdatedUser] = useState(user)
     const [followValue, setFollowValue] = useState(false)
     const [privacyImage, setPrivacyImage] = useState("http://localhost:8080/upload/public.png")
-    const [privacyText, setPrivacyText] = useState("Public")
 
     useEffect(() => {
         if (updatedUser.is_private) {
             setPrivacyImage("http://localhost:8080/upload/private.png")
-            setPrivacyText("Private")
         }
 
         followsService
@@ -80,13 +78,13 @@ const UserItem = ({ownId, user, handleUserProfile}) => {
                 <div className="user-profile-name" onClick={() => {handleShowUserProfile(updatedUser.id)}}>
                     <div className="avatar-border"><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} /></div>
                     <div>{updatedUser.nick_name}</div>
-                    <div className="icon-border"><img className="avatar-symbol" src={privacyImage} alt={privacyText} /></div>
+                    <div className="icon-border"><img className="avatar-symbol" src={privacyImage} /></div>
                 </div>
             ) : (
                 <div className="user-profile-name" onClick={() => {handleShowUserProfile(updatedUser.id)}}>
                     <div className="avatar-border"><img className="avatar-symbol" src={`http://localhost:8080${updatedUser.avatar_url}`} /></div>
                     <div>{updatedUser.first_name} {updatedUser.last_name}</div>
-                    <div className="icon-border"><img className="avatar-symbol" src={privacyImage} alt={privacyText} /></div>
+                    <div className="icon-border"><img className="avatar-symbol" src={privacyImage} /></div>
                 </div>
             )}
 

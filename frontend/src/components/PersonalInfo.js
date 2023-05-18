@@ -154,6 +154,7 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
           )}
           {profilePrivate ? (
             <div>
+              <img className="avatar-symbol" src={`${privacyIconPath}private.png`} />
               Private Profile{" "}
               {type === "own" && (
                 <button className='privacy' onClick={handleTogglePrivacy}>
@@ -167,6 +168,7 @@ const PersonalInfo = ({ownId, user, type, handleUpdateFollows, follows, setPosts
             </div>
           ) : (
             <div>
+              <img className="avatar-symbol" src={`${privacyIconPath}public.png`} />
               Public Profile{" "}
               {type === "own" && (
                 <button className='privacy' onClick={handleTogglePrivacy}>

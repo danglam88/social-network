@@ -58,7 +58,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
       return;
     }
     Message = ValidateField("Content", content, 1, 3000);
-    if ( Message !== "") {
+    if ( Message !== "" && content.length > 0) {
       setErrorMessage(Message);
       return;
     }
@@ -71,6 +71,10 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
     }
     if ( privacy === "superprivate" && users.length === 0) {
       setErrorMessage("You must select at least one follower");
+      return;
+    }
+    if ( content.length === 0 && picture === null) {
+      setErrorMessage("You must write something or attach a picture!");
       return;
     }
 
@@ -133,8 +137,19 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   return (
     <div className="new-post-wrapper">
-      <div className="accordion" onClick={() => setShowForm(!showForm)}><h2>Create new post</h2></div>
-      <div className={showForm? 'post-comment-form panel' : 'post-comment-form panel hidden'}>
+      <div className="accordion" onClick={() => setShowForm(!showForm)}>
+        <h2>
+          Create new post{" "}
+          <span className={showForm ? "arrow-up" : "arrow-down"}>
+          {showForm ? (
+            <b className="arrow-up-icon"></b>
+          ) : (
+            <b className="arrow-down-icon"></b>
+          )}
+        </span>
+        </h2>
+        </div>
+      <div className={showForm ? 'post-comment-form panel' : 'post-comment-form panel hidden'}>
         <form onSubmit={handleSubmit} className="create-post">
           <div>
             <label htmlFor="title">Title:</label>
@@ -156,7 +171,6 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
               value={content}
               onChange={handleContentChange}
               placeholder="New post content"
-              required
             />
           </div>
           {!groupId && (

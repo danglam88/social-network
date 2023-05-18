@@ -715,7 +715,13 @@ div.personal-info.main-wrapper > div:nth-child(2) > div:nth-child(3) {
   padding: 20px;
 }
 
+#privacy {
+  width:auto;
+}
+
 #users {
+  width:auto;
+  overflow-y: scroll;
   padding: 10px;
   font-size: 16px;
   border-radius: 5px;
@@ -797,9 +803,7 @@ span + .button-small {
   grid-template-columns: 1fr 1fr;
 }
 
-/*
-  Group List
-*/
+/* Group List */
 
 .Mainpage h1{
   margin-top: 0;
@@ -1177,6 +1181,8 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
 }
 
 .chat-list-container h2 {
+  position:fixed;
+  width:max-content;
   margin: 0;
   padding: 5px;
   background-color: #4C2C72;
@@ -1193,7 +1199,8 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
   border-radius: 5px;
   max-width: 200px;
   min-height: 400px;
-  overflow: hidden;
+  max-height: 600px;
+  overflow-x: scroll;
   padding: 0;
   z-index: 2;
 }
@@ -1201,6 +1208,10 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
 .chat-list-container li:hover {
   background-color: #92AFD7;
   color: white;
+}
+
+.chat-list-container li:first-child {
+  border-top: 35px #4C2C72 solid;
 }
 
 .chat-list-container li {
@@ -1222,13 +1233,30 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
 
 .accordion {
   cursor: pointer;
-  padding: 18px;
+  padding: 1px 18px;
   width: 100%;
   border: none;
   text-align: left;
   outline: none;
   font-size: 15px;
   transition: 0.4s;
+}
+
+.arrow-up-icon:before {
+  content: "▲";
+}
+
+.arrow-down-icon:before {
+  content: "▼";
+}
+
+/* Add styling for the arrow icons */
+.arrow-up,
+.arrow-down {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 12px;
+  font-style: normal !important;
 }
 
 .active, .accordion:hover {

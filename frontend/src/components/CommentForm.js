@@ -30,7 +30,7 @@ const CommentForm = ({ postId, setComments }) => {
 
     // Validation
     let Message = ValidateField("Content", content, 1, 1000);
-    if (Message !== "") {
+    if (Message !== "" && content.length > 0) {
       setErrorMessage(Message);
       return;
     }
@@ -42,6 +42,11 @@ const CommentForm = ({ postId, setComments }) => {
         setErrorMessage(Message);
         return;
       }
+    }
+
+    if (content.length === 0 && picture === null) {
+      setErrorMessage("You must write something or attach a picture!");
+      return;
     }
 
     try {
@@ -89,7 +94,6 @@ const CommentForm = ({ postId, setComments }) => {
             name="content"
             value={content}
             onChange={handleContentChange}
-            required
           />
         </div>
         <div>

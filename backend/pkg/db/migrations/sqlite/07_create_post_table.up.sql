@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS post (
     group_id INTEGER,
     visibility TINYINT(2) NOT NULL,
     title VARCHAR(30) NOT NULL,
-    content TEXT NOT NULL,
+    content TEXT,
     created_at DATETIME NOT NULL,
     img_url VARCHAR(100),
     FOREIGN KEY(creator_id) REFERENCES user(id),

@@ -170,7 +170,7 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 
 	content := r.FormValue("content")
 	descriptionErrorCheck, DescriptionErrorMessage := ValidateField("Content", content, 1, 3000)
-	if descriptionErrorCheck {
+	if descriptionErrorCheck && len(content) > 0 {
 		GetErrResponse(w, DescriptionErrorMessage, http.StatusBadRequest)
 		return
 	}
@@ -178,6 +178,11 @@ func PostAdd(w http.ResponseWriter, r *http.Request) {
 	imgUrl, imgErr := UploadFile(w, r, false)
 	if imgErr != nil {
 		GetErrResponse(w, "Invalid image", http.StatusBadRequest)
+		return
+	}
+
+	if len(imgUrl) == 0 && len(content) == 0 {
+		GetErrResponse(w, "You must write something or attach a picture!", http.StatusBadRequest)
 		return
 	}
 

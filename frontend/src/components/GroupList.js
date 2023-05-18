@@ -88,7 +88,7 @@ const NewGroup = ({handleNewGroup}) => {
 
     return (
         <div className="new-post-wrapper groups-wrapper">
-        <h3>Create a new group</h3>
+        <h3>Create new group</h3>
         <form className='post-comment-form' onSubmit={handleCreateGroup}>
         <label>Title:</label>
         <input type='text' value={title} onChange={handleTitleChange}/>
@@ -201,7 +201,7 @@ const GroupList = ({isGroupDetailPage, setIsGroupDetailPage}) => {
             <div className="groups-wrapper">
                 <h1>Groups</h1>
                 <br/>
-                <label className="filter-label">Search a group:</label>
+                <label className="filter-label">Search groups:</label>
                 <input type="text" value={filter} onChange={handleFilter}/>
                 <div className={filterMessage.length > 0 ? 'error filter' : 'hidden'}>{filterMessage}</div>
             </div>

@@ -133,7 +133,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
 
   return (
     <div className="new-post-wrapper">
-      <div className="accordion" onClick={() => setShowForm(!showForm)}><h2>Create a new post</h2></div>
+      <div className="accordion" onClick={() => setShowForm(!showForm)}><h2>Create new post</h2></div>
       <div className={showForm? 'post-comment-form panel' : 'post-comment-form panel hidden'}>
         <form onSubmit={handleSubmit} className="create-post">
           <div>

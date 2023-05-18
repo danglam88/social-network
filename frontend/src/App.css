@@ -792,6 +792,7 @@ span + .button-small {
 }
 
 .user-list-list {
+  margin-top: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }

@@ -173,26 +173,26 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
             </div>
           )}
           {type === "user" && userProfilePending ? (
-            <button className="button-small pending-users">Pending</button>
+            <div><button className="button-small pending-users">Pending</button></div>
           ) : type === "user" && userProfileFollowed ? (
-            <button
+            <div><button
               className="button-small unfollow-users"
               onClick={() => {
                 toggleFollow(false);
               }}
             >
               Unfollow
-            </button>
+            </button></div>
           ) : (
             type === "user" && (
-              <button
+              <div><button
                 className="button-small follow-users"
                 onClick={() => {
                   toggleFollow(true);
                 }}
               >
                 Follow
-              </button>
+              </button></div>
             )
           )}
           {follows && !exclusive && (

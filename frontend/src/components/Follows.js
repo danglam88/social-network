@@ -1,13 +1,25 @@
 const Follow = ({ follow }) => {
     return (
-        <>
-            {follow.nick_name ? (
-                <li><img className="avatar-symbol" src={`http://localhost:8080${follow.avatar_url}`}/>{follow.nick_name}</li>
-            ) : (
-                <li><img className="avatar-symbol" src={`http://localhost:8080${follow.avatar_url}`}/>{follow.first_name} {follow.last_name}</li>
-            )}
-        </>
-    )
+      <>
+        {follow.nick_name ? (
+          <li>
+            <div><img
+              className="avatar-symbol"
+              src={`http://localhost:8080${follow.avatar_url}`}
+            /></div>
+            <div>{follow.nick_name}</div>
+          </li>
+        ) : (
+          <li>
+            <div><img
+              className="avatar-symbol"
+              src={`http://localhost:8080${follow.avatar_url}`}
+            /></div>
+            <div>{follow.first_name} {follow.last_name}</div>
+          </li>
+        )}
+      </>
+    );
 }
 
 const Follows = ({ follows }) => {

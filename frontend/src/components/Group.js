@@ -87,14 +87,14 @@ const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats,
       {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
         showChatWindow ? (
           <div>
-            <div>Group chat for <b>{group.name}</b> has been added to the chat list</div>
+            <div className='sucsess'>Group chat for <b>{group.name}</b> has been added to the chat list</div>
             <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} 
             onNewChatCreated={fetchChats}
             chatListVisible={chatListVisible}
             />
           </div>
         ) : (
-          <div>Group chat for <b>{group.name}</b> is available in the chat list</div>
+          <div className='sucsess'>Group chat for <b>{group.name}</b> is available in the chat list</div>
         )}
       <EventList list={group.events} groupId={group.id} />
       <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />

@@ -148,14 +148,14 @@ const User = ({
         />
       )}
       {chatNotAllowed ? (
-        <div>
+        <div className='to-follow'>
           You need to follow <b>{userName}</b> in order to chat
         </div>
       ) : chatButton ? (
-        <button onClick={addChatToChatList}>Add Chat to Chat List</button>
+        <div className='add-chat'><button onClick={addChatToChatList}>Add Chat to Chat List</button></div>
       ) : showChatWindow ? (
         <div>
-          <div>
+          <div className='sucsess'>
             <b>{userName}</b> has been added to the chat list
           </div>
           <ChatWindow
@@ -168,7 +168,7 @@ const User = ({
           />
         </div>
       ) : (
-        <div>
+        <div className='sucsess'>
           <b>{userName}</b> is available in the chat list
         </div>
       )}

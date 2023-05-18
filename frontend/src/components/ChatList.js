@@ -13,7 +13,7 @@ const config = {
 const ChatList = ({ availableChats, selectedChat, onSelectChat }) => {
   return (
     <div className="chat-list-container">
-      <h2>Chat List</h2>
+      <div><h2>Chat List</h2></div>
       {availableChats.length === 0 && <div className="find-chat">Find a user and add them to your chat list from their profile</div>}
       <ul>
         {availableChats.map((chat) => {

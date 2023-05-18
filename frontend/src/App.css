@@ -384,6 +384,34 @@ u {
   border-radius: 5px;
 }
 
+.sucsess {
+  text-align: center;
+  display: inline-block;
+  color: #4C2C72;
+  border: 1px solid #4C2C72;
+  font-size: medium;
+  padding: 5px;
+  bottom: 55.5px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.to-follow {
+  text-align: center;
+  display: inline-block;
+  color: #FF2E63;
+  border: 1px solid #FF2E63;
+  font-size: medium;
+  padding: 5px;
+  bottom: 55.5px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
 .login {
   left: 100px;
   position: relative;
@@ -414,29 +442,49 @@ u {
 }
 
 .follow-options {
-  width:auto;
+  max-width: 200px;
+  max-height: 200px;
+  overflow-y: auto;
   display:flex;
   flex-direction: column;
   position: absolute;
+  border-radius: 5px;
   background-color: #DBBBF5;
   padding-inline-start: 0px;
-  margin-top: 4px;
-  align-items: center;
+  margin-top: -5px;
+  align-items: right;
 }
 
 .invite {
+  margin-top: 4px;
   padding-bottom : 10px;
 }
 
+.invite button {
+  padding: 3px;
+  width: 50px;
+  margin-left: 10px
+}
+
+.invite ul {
+  margin-top: 0px
+}
+
 .follow-options li {
+  max-height: 35px;
+  display: flex;
   list-style-type: none;
   color: #4C2C72;
-  padding: 10px;
+  padding: 8px;
 }
 
 .follow-options li:hover {
   background: #ede6f4;
   color:#4C2C72;
+}
+
+.follow-options-menu + .follow-options-menu {
+  margin-left: 140px;
 }
 
 .notification-list, .user-options {
@@ -538,6 +586,10 @@ u {
 
 /* User Page */
 /* Your profile */
+
+.Mainpage h2 {
+  padding-left: 20px;
+}
 
 .privacy-icon {
   margin-left: -6px !important;
@@ -793,6 +845,11 @@ div.personal-info.main-wrapper > div:nth-child(2) > div:nth-child(3) > div:nth-c
 /* Users */
 .follow-users {
   background-color: #998650;
+  display: inline-block;
+}
+
+.button-padding {
+  padding-left: 20px;
 }
 
 .unfowllow-users {
@@ -960,6 +1017,7 @@ ul.group-users-buttons {
   align-items: center;
   display: grid;
   grid-template-columns: 0.6fr 100px;
+  cursor: pointer
 }
 
 .user-item button {
@@ -995,6 +1053,10 @@ ul.group-users-buttons {
   margin-right: 210px;
   width: 350px;
   background-color: #DBBBF5;
+}
+
+.add-chat {
+  padding: 20px
 }
 
 div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(3) {
@@ -1065,6 +1127,7 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
 }
 
 .chatBox .chat-container {
+  display: grid;
   margin-top: 10px;
   overflow-y: scroll;
   height: 250px;
@@ -1190,14 +1253,23 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
   z-index: 3;
 }
 
+.chat-list-container {
+  max-height: 200px;
+}
+
 .chat-list-container h2 {
-  position:fixed;
+  margin-top: 10px;
   width:max-content;
   margin: 0;
   padding: 5px;
   color: white;
   text-align: center;
   border: white;
+  background-color: #4C2C72;
+}
+
+.chat-list-container div {
+  background-color: #4C2C72;
 }
 
 .chat-list {
@@ -1220,7 +1292,7 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
 }
 
 .chat-list-container li:first-child {
-  border-top: 35px #4C2C72 solid;
+  /* border-top: 35px #4C2C72 solid; */
 }
 
 .chat-list-container li {

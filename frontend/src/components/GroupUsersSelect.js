@@ -12,7 +12,6 @@ const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
   //todo checkbox can be hidden and you can add users by clicking on div  + in div can be shown extra info about user from user object(for styling)
   return (
       <li>
-        {name}
         <input
           type="checkbox"
           name= {"user_" + user.id}
@@ -35,6 +34,7 @@ const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
           }}
           checked={isChecked}
         />
+        {name}
       </li>
   )
 } 

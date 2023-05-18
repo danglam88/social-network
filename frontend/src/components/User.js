@@ -20,9 +20,7 @@ const User = ({
   const [chatNotAllowed, setChatNotAllowed] = useState(false);
   const [updatedUser, setUpdatedUser] = useState(user);
   const [exclusive, setExclusive] = useState(false);
-  const [profilePrivate, setProfilePrivate] = useState(
-    updatedUser.is_private === 1
-  );
+  const [profilePrivate, setProfilePrivate] = useState(updatedUser.is_private === 1);
 
   useEffect(() => {
     postsService

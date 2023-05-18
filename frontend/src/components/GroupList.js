@@ -16,7 +16,7 @@ const ListItem = ({group, handleSuccessJoinRequest, handleGoToDetail}) => {
             group_id : groupId
         }
         groupService.join(data)
-        .then(response => {
+        .then(() => {
           handleSuccessJoinRequest(groupId)
         })
         .catch(error => console.log(error))

@@ -51,7 +51,7 @@ function App() {
   const [showList, setShowList] = useState(false);
   const [availableChats, setAvailableChats] = useState([]);
   const [chatListVisible, setChatListVisible] = useState(false);
-  const [profilePrivate, setProfilePrivate] = useState(user?.is_private === 1);
+  const [profilePrivate, setProfilePrivate] = useState(false);
 
   useEffect(() => {
     axios
@@ -68,6 +68,11 @@ function App() {
         .perprofile()
         .then((response) => {
           setUser(response.data);
+
+          if (response.data.is_private === 1) {
+            setProfilePrivate(true);
+          }
+
           NotificationService.initialize("ws://localhost:8080/ws");
 
           handleShowPendings(response.data.id);
@@ -111,6 +116,10 @@ function App() {
       .perprofile()
       .then((response) => {
         setUser(response.data);
+
+        if (response.data.is_private === 1) {
+          setProfilePrivate(true);
+        }
 
         handleShowPendings(response.data.id);
 
@@ -196,7 +205,7 @@ function App() {
 
     loginService
       .logout({})
-      .then((response) => {
+      .then(() => {
         document.cookie =
           "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         sessionStorage.removeItem("userid");

@@ -154,7 +154,6 @@ const ChatWindow = ({
         chatId || chat.ChatID
       );
       if (response.data.Status === "not allowed to send message to this user") {
-        console.log(response.data.Status);
         setError(response.data.Status);
         onClose();
 
@@ -165,21 +164,17 @@ const ChatWindow = ({
         return;
       }
       if (response.data.created === true) {
-        console.log("New chat created");
         setNewChatCreated(true);
         if (chatListVisible) {
-          console.log("onNewChatCreated is a function");
           onNewChatCreated();
         }
       }
 
       if (!response.data.history) {
-        console.log("No chat history found, new chat created");
         recipientChatId = response.data.chat_id;
         return;
       }
       recipientChatId = response.data.chat_id;
-      console.log("Initial chat history:", response.data.history);
       const initialHistory = await response.data.history;
       setChatMessages(sortMessagesByDate(initialHistory));
       // Scroll chat textarea to the bottom when it first loads
@@ -190,7 +185,7 @@ const ChatWindow = ({
         }
       }, 50);
     } catch (error) {
-      console.error("Error fetching initial chat history:", error);
+      console.error("Error fetching initial chat history: ", error);
     }
   }, [chat.GroupID, chat.ChatID]);
 

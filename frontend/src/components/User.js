@@ -144,7 +144,7 @@ const User = ({
           You need to follow <b>{userName}</b> in order to chat
         </div>
       ) : chatButton ? (
-        <button onClick={addChatToChatList}>Add Chat to Chat List</button>
+        <div className="add-chat"><button onClick={addChatToChatList}>Add Chat to Chat List</button></div>
       ) : showChatWindow ? (
         <div>
           <div className='sucsess'>

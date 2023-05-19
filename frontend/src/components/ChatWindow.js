@@ -310,7 +310,6 @@ const ChatWindow = ({
           style={{ flex: 1, display: "flex", flexDirection: "column" }}
           onClick={handleOutsideClick}
         >
-          <button onClick={onClose}>X</button>
           <div className="chat-info">
             <div className="chat-avatar">
               <img
@@ -320,6 +319,9 @@ const ChatWindow = ({
             </div>
             <div className="chat-title">
               <h2>{username ? username : chat.DisplayName}</h2>
+            </div>
+            <div>
+              <button onClick={onClose}>X</button>
             </div>
           </div>
           <div ref={chatContainerRef} className="chat-container">

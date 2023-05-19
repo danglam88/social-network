@@ -32,7 +32,8 @@ input, body {
 }
 
 body {
-  background-color: #fbf9e5
+  background-color: #fbf9e5;
+  overflow-x: hidden;
 }
 
 /* inputs */
@@ -430,9 +431,14 @@ u {
 }
 
 .user-options-menu {
+  max-height: 35px;
   padding-top: 5px;
   display: flex;
   justify-content: flex-end;
+}
+
+ul.Menu {
+  max-height: 38px;
 }
 
 .follow-options-menu {
@@ -610,44 +616,146 @@ u {
 }
 
 @media only screen and (max-width: 500px){
-.personal-profile-wrapper {
+  .page-body{
+    width: 100vw;
+  }
+  
+  .Mainpage {
+    width: 95vw;
+  }
+
+  .main-wrapper{
+    padding: 10px !important
+  }
+  
+  #root {
+    min-width: 280px;
+  }
+  
+  .personal-profile-wrapper {
   min-width: 0;
-  /* border: 1px solid red */
-}
+  }
 
-.personal-info {
-  grid-template-columns: none !important;
-}
+  .personal-info {
+    grid-template-columns: none !important;
+  }
 
-.chat-window-modal {
-  border-radius: 5px;
-  display: block;
-  position: fixed;
-  bottom: 0;
-  left: 0px;
-  right: 0 !important;
-  margin-right: 0px !important;
-  width: 190px !important;
-  background-color: #DBBBF5;
-}
+  .chat-window-modal {
+    border-radius: 5px;
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0px;
+    right: 0 !important;
+    margin-right: 0px !important;
+    width: 190px !important;
+    background-color: #DBBBF5;
+  }
 
-.emoji-wrapper {
+  .emoji-wrapper {
   height: 100px !important;
   right: 50vw;
-}
+  }
 
-.chatBox button:first-child {
-  margin-left: 173px !important;
-}
+  .chat-info button:first-child {
+    position: relative !important;
+    margin-left: 333px;
+    padding: 10px;
+    font-size: 10px !important;
+    margin-left: 0vw !important;
+    padding: 5px !important;
+    margin-top: 0px !important;
+  }
 
-.user-list-list {
-  grid-template-columns: none !important;
-}
+  .chat-info div:last-child{
+    margin-left: auto;
+    margin-top: -17px;
+    margin-right: -4px !important;
+  }
 
-.user-item {
-  display: grid;
-  grid-template-columns: 1fr 100px !important;
-}
+  .user-list-list {
+    grid-template-columns: none !important;
+  }
+
+  .user-item {
+    display: grid;
+    grid-template-columns: 1fr 70px !important;
+  }
+
+  .sucsess {
+    max-width: 88vw;
+    margin-left: 10px;
+  }
+
+  .notification-list{
+    width: 100vw;
+  }
+
+  .notification-list li {
+    padding: 2px !important;
+    font-size: smaller;
+  }
+
+  .notification-list button {
+    font-size: small;
+  }
+
+  .chat-bubble {
+    opacity: 0.5;
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 18px !important;
+  }
+
+  .chat-list {
+    font-size: smaller;
+    max-height: 400px !important;
+    min-height: 150px !important;
+  }
+
+  .chat-list h2 {
+    font-size: medium !important;
+  }
+
+  .chat-list-container {
+    max-height: 100px;
+    max-width: 55vw;
+  }
+
+  .chat-window-modal {
+    font-size: smaller;
+    max-width: 54vw;
+    padding: 2px !important;
+    max-height: 400px;
+  }
+
+  .chat-container {
+    max-height: 150px;
+  }
+
+  div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(3) {
+    font-size: 10px !important;
+    min-width: 28px;
+  }
+
+  .chat-window-modal .chat-input-user{
+    max-width: 55vw;
+  }
+
+  .chat-window-modal img {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .chat-info {
+    height: 30px;
+    align-items: center;
+    padding: 2px
+  }
+
+  .chatBox h2 {
+    padding: 0px !important;
+  }
 
 }
 
@@ -658,7 +766,7 @@ u {
  
 .personal-info-column {
   margin-bottom: 10px;
-  display: inline-grid;
+  display: inline-block;
   align-content: space-around;
 }
 
@@ -916,15 +1024,24 @@ span + .button-small {
 }
 
 .group-column {
-  float: left;
-  width: 74%;
   text-align: left;
+  display: inline-block
 }
 
 .group-activity-link {
   text-align: center;
-  width: 13%;
-  /* text-decoration-line: underline; */
+}
+
+.small-button-wrapper {
+  display: inline-block;
+}
+
+.info-button-wrapper {
+  display: flex;
+}
+
+.info-button-wrapper div:nth-child(2){
+  margin-left: 10px;
 }
 
 .go-to {
@@ -987,6 +1104,10 @@ ul.group-users-buttons {
 
 .events-wrapper {
   padding: 20px
+}
+
+.events-wrapper h2 {
+  padding-left: 0px !important;
 }
 
 .event-info > li {
@@ -1061,6 +1182,20 @@ ul.group-users-buttons {
 }
 
 /* Chat */
+
+.chat-info div:last-child{
+  margin-left: auto;
+  margin-top: -17px;
+  margin-right: -9px;
+}
+
+.chat-info button:first-child {
+  position: relative !important;
+  margin-left: auto !important;
+  padding: 5px !important;
+  margin-top: 7px;
+}
+
 .chat-window-modal {
   border-radius: 5px;
   padding: 10px;
@@ -1074,7 +1209,7 @@ ul.group-users-buttons {
 }
 
 .add-chat {
-  padding: 20px
+  margin-left: 10px
 }
 
 div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(3) {
@@ -1100,8 +1235,6 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
 .chatBox button:first-child {
   position: absolute;
   text-align: center !important;
-  margin-left: 333px;
-  margin-top: -10px;
   padding: 10px;
   border-radius: 4px;
   font-size: 10px;
@@ -1338,7 +1471,7 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
 
 .accordion {
   cursor: pointer;
-  padding: 1px 18px;
+  padding: 1px;
   width: 100%;
   border: none;
   text-align: left;

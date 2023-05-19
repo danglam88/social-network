@@ -282,6 +282,23 @@ button:focus {
 
 /* main elements in all pages */
 
+.header-logo-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: larger;
+}
+
+.header-logo-title h1 {
+  margin: 0;
+  font-size: 4.2rem;
+  color: #4C2C72
+}
+
+.another-header-wrapper {
+  font-style: italic;
+}
+
 .page-body {
   display: flex;
 }
@@ -348,11 +365,6 @@ button:focus {
   background-color: #DBBBF5;
   padding: 20px;
   font-size: 18px;
-}
-
-.Header div:first-child {
-  display: flex;
-  align-items: center;
 }
 
 .Header div:first-child span {
@@ -489,10 +501,6 @@ ul.Menu {
   color:#4C2C72;
 }
 
-.follow-options-menu + .follow-options-menu {
-  margin-left: 140px;
-}
-
 .notification-list, .user-options {
   width:auto;
   display:flex;
@@ -560,9 +568,9 @@ ul.Menu {
     text-align: center;
   }
 
-  .Header div:first-child {
+  /* .Header div:first-child {
     margin-bottom: 10px;
-  }
+  } */
 
   .notification-icon .icon {
     margin-right: 0;
@@ -615,7 +623,25 @@ ul.Menu {
   min-width: 470px;
 }
 
-@media only screen and (max-width: 500px){
+@media only screen and (max-width: 562px){
+  .Header {
+    padding: 0px;
+    margin-bottom: 0px !important;
+  }
+
+  .header {
+    margin: 0
+  }
+  
+  .header-logo-title h1 {
+    margin: 0;
+    font-size: 2.2rem;
+  }
+
+  .header-logo-title{
+    margin: 0 !important
+  }
+  
   .page-body{
     width: 100vw;
   }
@@ -624,8 +650,22 @@ ul.Menu {
     width: 95vw;
   }
 
+  .header span{
+    border: 1px solid red;
+    max-height: 1px;
+  }
+
+  .another-header-wrapper {
+    padding: 10px;
+    font-style: italic;
+  }
+
   .main-wrapper{
     padding: 10px !important
+  }
+
+  .privacy {
+    height: 40px;
   }
   
   #root {
@@ -751,6 +791,10 @@ ul.Menu {
     height: 30px;
     align-items: center;
     padding: 2px
+  }
+
+  span.chat-time {
+    font-size: 9px !important;
   }
 
   .chatBox h2 {
@@ -1230,6 +1274,12 @@ div.chat-window-modal > div > div > div.chat-input-user > button:nth-child(2) {
 .chat-info {
   display: flex;
   border-bottom: 1px solid #4C2C72;
+}
+
+span.chat-time {
+  font-size: 12px;
+  color: grey;
+  margin-right: 10px,
 }
 
 .chatBox button:first-child {

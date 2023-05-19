@@ -222,12 +222,12 @@ function App() {
         <div>
           <div className="Header">
             <div className="header">
-              <span onClick={handleShowPersonalProfile}>
-                <i>
-                  <img src={logo} className="App-logo" alt="logo" />
-                  Interstellar
-                </i>
-              </span>
+              <div className="another-header-wrapper" onClick={handleShowPersonalProfile}>
+                <div className="header-logo-title">
+                  <div><img src={logo} className="App-logo" alt="logo" /></div>
+                  <div><h1>Interstellar</h1></div>
+                  </div>
+              </div>
             </div>
           </div>
           <ul className="Menu">

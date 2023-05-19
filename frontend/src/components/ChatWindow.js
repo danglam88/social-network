@@ -338,25 +338,13 @@ const ChatWindow = ({
                       <span style={{ fontWeight: "bold" }}>
                         {msg.username + " "}
                       </span>
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          color: "grey",
-                          marginRight: "10px",
-                        }}
-                      >
+                      <span className="chat-time">
                         {msg.created_at.replace("T", " ").replace("Z", "")}
                       </span>
                     </span>
                   ) : (
                     <span>
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          color: "grey",
-                          marginRight: "10px",
-                        }}
-                      >
+                      <span className="chat-time">
                         {msg.created_at.replace("T", " ").replace("Z", "")}
                       </span>
                       <span style={{ fontWeight: "bold" }}>{msg.username}</span>

@@ -8,13 +8,14 @@ import ChatWindow from './ChatWindow'
 import ChatService from '../services/ChatService'
 import usersService from '../services/UsersService'
 
-const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats,
-  chatListVisible }) => {
+const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats, chatListVisible }) => {
   const membersCount = group.members?.length === 0 ? 0 : group.members.length;
   const [chatButton, setChatButton] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [users, setUsers] = useState([]);
   const [chatCheckTrigger, setChatCheckTrigger] = useState(false);
+  const [userSelectList, setUserSelectList] = useState(false);
+  const [groupMemberList, setGroupMemberList] = useState(false);
 
   const fetchChats = () => {
     try {
@@ -76,10 +77,10 @@ const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats,
         {((group.members && group.members.length > 0) || (users && users.length > 0)) &&
           <div className="follow">
             {group.members && group.members.length > 0 &&
-                <FollowsWrapper userId={group.id} follows={group.members} title="Members" handleShowPendings={handleGoToDetail} />
+                <FollowsWrapper userId={group.id} follows={group.members} title="Members" handleShowPendings={handleGoToDetail} firstList={groupMemberList} setFirstList={setGroupMemberList} setSecondList={setUserSelectList} />
              }
             {users && users.length > 0 &&
-                <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name} users={users} setUsers={setUsers} />
+                <GroupUsersSelect buttonName="Invite users" groupId={group.id} groupName={group.name} users={users} setUsers={setUsers} isVisible={userSelectList} setIsVisible={setUserSelectList} setOtherList={setGroupMemberList} />
             }
           </div>}
         </div>

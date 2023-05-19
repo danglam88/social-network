@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import usersService from '../services/UsersService';
 import groupService from '../services/GroupsService';
 import WebSocketService from '../services/WebSocketService'
@@ -40,10 +40,15 @@ const SelectItem = ({user, setInvitedUsers, invitedUsers}) => {
 } 
 
 //Main component, user list for inviting to the group
-const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => {
+const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers, isVisible, setIsVisible, setOtherList}) => {
 
-  const [isVisible, setIsVisible] = useState(false)
   const [invitedUsers, setInvitedUsers] = useState([])
+
+  useEffect(() => {
+    if (isVisible) {
+      setOtherList(false)
+    }
+  }, [isVisible])
 
   const showList = () => {
 
@@ -67,7 +72,7 @@ const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => 
       users : invitedUsers.join(",")
     }
 
-    groupService.join(data).then(response => {
+    groupService.join(data).then(() => {
       handleSuccessInvitation()
       setIsVisible(!isVisible)
     })

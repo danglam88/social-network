@@ -4,7 +4,6 @@ import PostForm from "./PostForm";
 import PersonalInfo from "./PersonalInfo";
 
 const PersonalProfile = ({user, posts, setPosts, follows, handleShowPendings, profilePrivate, setProfilePrivate}) => {
-  
 
   return (
     <div className="personal-profile-wrapper">

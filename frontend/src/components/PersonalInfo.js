@@ -11,6 +11,8 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
     const [userProfilePending, setUserProfilePending] = useState(false)
     const [check_pending, setCheckPending] = useState(true)
     const [followValue, setFollowValue] = useState(false)
+    const [followerList, setFollowerList] = useState(false)
+    const [followingList, setFollowingList] = useState(false)
 
     const privacyIconPath = 'http://localhost:8080/upload/'
 
@@ -203,6 +205,9 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
                   follows={follows.followers}
                   title="Followers"
                   handleShowPendings={handleUpdateFollows}
+                  firstList={followerList}
+                  setFirstList={setFollowerList}
+                  setSecondList={setFollowingList}
                 />
               )}
               {follows.followings && follows.followings.length > 0 && (
@@ -211,6 +216,9 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
                   follows={follows.followings}
                   title="Followings"
                   handleShowPendings={handleUpdateFollows}
+                  firstList={followingList}
+                  setFirstList={setFollowingList}
+                  setSecondList={setFollowerList}
                 />
               )}
             </div>

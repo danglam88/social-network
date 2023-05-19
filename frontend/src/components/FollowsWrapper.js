@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Follows from './Follows';
 
-const FollowsWrapper = ({userId, follows, title, handleShowPendings}) => {
-    const [followsVisible, setFollowsVisible] = useState(false)
+const FollowsWrapper = ({userId, follows, title, handleShowPendings, firstList, setFirstList, setSecondList}) => {
+
+    useEffect(() => {
+        if (firstList) {
+            setSecondList(false)
+        }
+    }, [firstList])
 
     const toggleFollows = () => {
-        setFollowsVisible(!followsVisible)
+        setFirstList(!firstList)
         handleShowPendings(userId)
     }
 
@@ -18,7 +23,7 @@ const FollowsWrapper = ({userId, follows, title, handleShowPendings}) => {
     return (
         <div className="follow-options-menu">
             <div><button className="button-small" onClick={toggleFollows}>{title}</button></div>
-            {followsVisible && <Follows follows={follows} />}
+            {firstList && <Follows follows={follows} />}
         </div>
     )
 }

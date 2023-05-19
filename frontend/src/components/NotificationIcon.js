@@ -117,10 +117,6 @@ const NotificationIcon = ({ showList, setShowList, handleShowPendings, showUserO
     }
   };
 
-      
-
-
-      
   const handleClearNotification = (index) => {
     setNotifications((prevNotifications) =>
       prevNotifications.filter((_, i) => i !== index)
@@ -141,8 +137,10 @@ const NotificationIcon = ({ showList, setShowList, handleShowPendings, showUserO
     </div>
       {showList && (
         <ul className="notification-list">
+
 {notifications.map((notification, index) => {
   const notificationKey = "notification" + index;
+
   return (
     <li key={notificationKey}>
       
@@ -209,11 +207,8 @@ const NotificationIcon = ({ showList, setShowList, handleShowPendings, showUserO
             Clear
           </button>
           </span>
-
         </>
       )}
-
-            
               </li>
             )})}
         </ul>

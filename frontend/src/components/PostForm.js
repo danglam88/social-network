@@ -232,7 +232,7 @@ const PostForm = ({groupId = 0, setGroupInfo, userId, setPosts, follows}) => {
           <div>
             <button type="submit">Publish</button>
           </div>
-          {errorMessage && <div>{errorMessage}</div>}
+          {errorMessage && <div className="error register-error">{errorMessage}</div>}
         </form>
       </div>
     </div>

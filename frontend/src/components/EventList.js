@@ -97,7 +97,7 @@ const NewEvent = ({groupId, handleNewEvent}) => {
                 <div>
                     <button type="submit">Create event</button>
                 </div>
-                {errorMessage && <div>{errorMessage}</div>}
+                {errorMessage && <div className="error register-error">{errorMessage}</div>}
             </form>
             </div>
         </div>

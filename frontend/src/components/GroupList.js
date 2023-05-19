@@ -58,7 +58,7 @@ const NewGroup = ({handleNewGroup}) => {
     const handleCreateGroup = (event) => {                                                                                         
       event.preventDefault()
 
-      let Message = ValidateField("Title", title, 1, 30);
+      let Message = ValidateField("Title", title, 1, 14);
         if ( Message !== "") {
             setErrorMessage(Message);
             return;
@@ -99,7 +99,7 @@ const NewGroup = ({handleNewGroup}) => {
         <div>
             <button type="submit">Create group</button>
         </div>
-        {errorMessage && <div>{errorMessage}</div>}
+        {errorMessage && <div className="error register-error">{errorMessage}</div>}
         </form>
         </div>
     )
@@ -173,6 +173,11 @@ const GroupList = ({items, setItems, isGroupDetailPage, setIsGroupDetailPage, av
           };
           WebSocketService.sendMessage(payload);
     }
+    items.sort(function(a, b) {
+        var nameA = a.name;
+        var nameB = b.name;
+        return nameA.localeCompare(nameB);
+      });
 
     const groupsList = []
     {items.forEach((data) => {

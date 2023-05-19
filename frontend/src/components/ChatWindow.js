@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import ChatService from "../services/ChatService";
 import debounce from "lodash/debounce";
+import ValidateField from "../services/ValidationService";
 let recipientChatId;
 
 const sortMessagesByDate = (messages) => {
@@ -42,6 +43,7 @@ const ChatWindow = ({
   const [scrollToBottom, setScrollToBottom] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [error, setError] = useState(null);
+  const [messageError, setMessageError] = useState("");
   const emojis = [
     "😀",
     "😁",
@@ -221,10 +223,23 @@ const ChatWindow = ({
   }, []);
 
   const sendMessage = () => {
+    setMessageError("");
+
     if (typedMessage.trim() !== "") {
+      let errorMessage = ValidateField("Content", typedMessage, 1, 1000);
+
+      if (errorMessage) {
+        setMessageError(errorMessage);
+        return;
+      }
+
       ChatService.sendMessage(recipientChatId, typedMessage);
       setTypedMessage("");
       setScrollToBottom(true);
+    } else {
+
+      setMessageError("Message cannot be empty or contain only spaces");
+      return;
     }
   };
 
@@ -388,6 +403,7 @@ const ChatWindow = ({
               </div>
             )}
           </div>
+          <div className="chat-error">{messageError}</div>
         </div>
       ) : null}
     </div>

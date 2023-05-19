@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	db "socialnetwork/pkg/db/sqlite"
 	"strconv"
 	"strings"
 	"time"
@@ -80,22 +81,41 @@ func PostGet(w http.ResponseWriter, r *http.Request) {
 		GetErrResponse(w, "Invalid Id", http.StatusBadRequest)
 		return
 	}
+	var finalPosts []db.Post
+	if params["newsfeed"] != nil {
+		userId := GetLoggedInUserID(w, r)
+		posts, err := DB.GetNewsfeedPost(userId)
+		if err != nil {
+			GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
+			return
+		}
+		for i := range posts {
+			posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
+		}
+		//sort posts reversed
+		for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
+			posts[i], posts[j] = posts[j], posts[i]
+		}
+		finalPosts = posts
 
-	posts, err := DB.GetPosts(filterUser, filterGroup)
-	if err != nil {
-		GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
-		return
-	}
-	for i := range posts {
-		posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
-	}
-	//sort posts reversed
-	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
-		posts[i], posts[j] = posts[j], posts[i]
+	} else {
+		posts, err := DB.GetPosts(filterUser, filterGroup)
+		if err != nil {
+			GetErrResponse(w, "Error while getting posts", http.StatusBadRequest)
+			return
+		}
+		for i := range posts {
+			posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
+		}
+		//sort posts reversed
+		for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
+			posts[i], posts[j] = posts[j], posts[i]
+		}
+		finalPosts = posts
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	res, err := json.Marshal(posts)
+	res, err := json.Marshal(finalPosts)
 	if err != nil {
 		GetErrResponse(w, "Unable to marshal posts", http.StatusInternalServerError)
 	}

@@ -1,5 +1,5 @@
 export const TextRegex = /^[\x20-\x7E\n\tåäöÅÄÖ€]+$/;
-export const TagRegex = /<[^>]*>/g;
+export const TagRegex = /<[^>]+>/;
 export const ImageRegex = /(jpe?g|png|gif|svg)/;
 export const EmailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 export const PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!#$%&()*+åäöÅÄÖ]{8,}$/;

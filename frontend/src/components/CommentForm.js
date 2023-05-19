@@ -112,7 +112,7 @@ const CommentForm = ({ postId, setComments }) => {
         <div>
           <button type="submit">Reply</button>
         </div>
-        {errorMessage && <div>{errorMessage}</div>}
+        {errorMessage && <div className="error register-error">{errorMessage}</div>}
       </form>
     </div>
   );

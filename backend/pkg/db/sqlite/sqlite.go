@@ -30,6 +30,7 @@ type Post struct {
 	CreatorName   string    `json:"creator_name"`
 	CreatorAvatar string    `json:"creator_avatar"`
 	GroupID       int       `json:"group_id"`
+	GroupName     string    `json:"group_name"`
 	Visibility    int       `json:"visibility"`
 	Title         string    `json:"title"`
 	Content       string    `json:"content"`
@@ -512,6 +513,38 @@ func (db *Db) GetPosts(userfilter, groupfilter int) (posts []Post, err error) {
 	return posts, err
 }
 
+func (db *Db) GetNewsfeedPost(userId int) (posts []Post, err error) {
+	var post Post
+	var query string
+
+	query = "select id,creator_id,group_id,visibility,title,content,created_at,img_url from post where (creator_id in (select followed_id from follow_relation where follower_id=? and is_approved=1) or creator_id=? or (visibility=0 and group_id=0) or (visibility=1 and id in (select post_id from post_visibility where viewer_id=?))) or group_id in (select group_id from group_relation where user_id=? and is_approved=1)"
+
+	rows, err := db.connection.Query(query, userId, userId, userId, userId)
+	if err != nil {
+		return posts, err
+	}
+
+	for rows.Next() {
+		err := rows.Scan(&post.ID, &post.CreatorID, &post.GroupID, &post.Visibility, &post.Title, &post.Content, &post.CreatedAt, &post.ImgUrl)
+		if err != nil {
+			return posts, err
+		}
+		username, err := db.GetUserName(post.CreatorID)
+		if err != nil {
+			return posts, err
+		}
+		post.CreatorName = username
+		groupname := db.GetGroupName(post.GroupID)
+		post.GroupName = groupname
+		userAvatar := db.GetUserAvatar(post.CreatorID)
+		post.CreatorAvatar = userAvatar
+		posts = append(posts, post)
+	}
+	defer rows.Close()
+
+	return posts, err
+}
+
 // function to make a post
 func (db *Db) CreatePost(userID, groupID, visibility int, title, content, imgUrl string) (postID int64, err error) {
 
@@ -719,6 +752,17 @@ func (db *Db) GetGroup(id, userId int) (group Group, err error) {
 	return group, err
 }
 
+func (db *Db) GetGroupName(GroupID int) string {
+	var group_name string
+
+	row := db.connection.QueryRow("select group_name from user_group where id = ?", GroupID)
+	err := row.Scan(&group_name)
+	if err != nil {
+		return ""
+	}
+	return group_name
+}
+
 func (db *Db) GetEvents(groupId, userId int) (events []Event, err error) {
 
 	rows, err := db.connection.Query("select id,creator_id,title,descript,occur_time from event where group_id = ?", groupId)
@@ -869,10 +913,6 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 	}
 	defer rows.Close()
 
-	//sort chats by last message date
-	sort.Slice(chats, func(i, j int) bool {
-		return chats[i].LastMsg.After(chats[j].LastMsg)
-	})
 	//add displayname to the chats visual use
 	for i := range chats {
 		if chats[i].GroupID != 0 {
@@ -896,6 +936,16 @@ func (db *Db) GetAllChats(userId int) (chats []Chat, err error) {
 			chats[i].AvatarUrl = db.GetUser(chats[i].UserOne).AvatarUrl
 		}
 	}
+	//sort chats alphabetically
+	sort.Slice(chats, func(i, j int) bool {
+		return strings.ToLower(chats[i].DisplayName) < strings.ToLower(chats[j].DisplayName)
+	})
+
+	//sort chats by last message date
+	sort.Slice(chats, func(i, j int) bool {
+		return chats[i].LastMsg.After(chats[j].LastMsg)
+	})
+
 	return chats, err
 }
 
@@ -1183,109 +1233,8 @@ func (db *Db) GetNotGroupMembers(username string, groupId int) (users []User, er
 	return users, err
 }
 
-/*func (db *Db) GetUsers(userId int) (chats []Chat, err error) {
-
-	userChats, err := db.GetAllChats(userId)
-	if err != nil {
-		return chats, err
-	}
-	//sort userChats by last message date
-	sort.Slice(userChats, func(i, j int) bool {
-		return userChats[i].LastMsg.After(userChats[j].LastMsg)
-	})
-
-	rows, err := db.connection.Query(query)
-	if err != nil {
-		return users, err
-	}
-
-	var username string
-	var id int
-	var usersWithoutMessages []MessageUser
-	var usersWithMessages map[int]MessageUser
-
-	usersWithMessages = make(map[int]MessageUser)
-	for rows.Next() {
-
-		err := rows.Scan(&id, &username)
-		if err != nil {
-			return users, err
-		}
-
-		isExist := false
-		for i := 0; i < len(userSort); i++ {
-			if id == userSort[i] {
-				usersWithMessages[i] = MessageUser{UserName: username, Id: id, Status: false, HasMessages: true}
-				isExist = true
-				break
-			}
-		}
-
-		if !isExist {
-			usersWithoutMessages = append(usersWithoutMessages, MessageUser{UserName: username, Id: id, Status: false, HasMessages: false})
-		}
-	}
-
-	for i := 0; i < len(userSort); i++ {
-		users = append(users, usersWithMessages[i])
-	}
-
-	users = append(users, usersWithoutMessages...)
-
-	defer rows.Close()
-
-	return users, err
-	return userChats, err
-}*/
-
-/*func (db *Db) GetChatOrderByMessage(senderId int) (chatIds []int, err error) {
-	rows, err := db.connection.Query(`
-		SELECT DISTINCT chat_id
-		FROM (
-			SELECT private_chat.id AS chat_id, private_message.created_at AS created_at
-			FROM private_chat
-			JOIN private_message ON private_message.private_chatid = private_chat.id
-			WHERE private_chat.first_userid = ? OR private_chat.second_userid = ?
-			UNION ALL
-			SELECT group_chat.id AS chat_id, group_message.created_at AS created_at
-			FROM group_chat
-			JOIN group_message ON group_message.group_chatid = group_chat.id
-			JOIN group_relation ON group_relation.group_id = group_chat.group_id
-			WHERE group_relation.user_id = ? AND group_relation.is_approved = 1
-		) ORDER BY created_at DESC;
-	`, senderId, senderId, senderId)
-	if err != nil {
-		return chatIds, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var chatId int
-		if err := rows.Scan(&chatId); err != nil {
-			return chatIds, err
-		}
-		chatIds = append(chatIds, chatId)
-	}
-	if err := rows.Err(); err != nil {
-		return chatIds, err
-	}
-
-	return chatIds, nil
-}*/
-
 // can be used for both private and group chats
 func (db *Db) AddMessage(chatId, creator int, message, time string) (err error) {
-	fmt.Println("AddMessage sqlite.go 936 - chatId, creator, message, time", chatId, creator, message, time)
-
-	/*var id int64
-
-	id, err = db.getChat(groupId, from, to)
-
-	//todo err check
-	if id <= 0 {
-		id, err = db.addChat(groupId, from, to)
-	}*/
-	//id,chat_id,content,sender_id,created_at
 
 	_, err = db.connection.Exec("insert into private_message(chat_id, sender_id, content, created_at) values(?,?,?,?)", chatId, creator, message, time)
 
@@ -1345,70 +1294,6 @@ func (db *Db) GetChat(groupId, from, to int) (chatId int, err error) {
 
 	return chatId, err
 }
-
-/*func (db *Db) addGroupChat(from, to int) (chatId int64, err error) {
-
-	res, err := db.connection.Exec("insert into group_chat(group_id) values(?)", to)
-
-	if err != nil {
-		return chatId, err
-	}
-
-	chatId, err = res.LastInsertId()
-	return chatId, err
-}*/
-
-/*func (db *Db) getGroupChat(from, to int) (chatId int64, err error) {
-
-	row := db.connection.QueryRow("select id from group_chat where group_id = ?", to)
-	err = row.Scan(&chatId)
-	if err != nil {
-		return chatId, err
-	}
-	return chatId, err
-}*/
-
-/*func (db *Db) GetGroupHistory(from, to, page int) (messages []Message, err error) {
-	var id int64
-
-	id, err = db.getChat(to, 0, 0)
-
-	//todo err check
-	if id <= 0 {
-		id, err = db.addChat(to, 0, 0)
-	}
-
-	rows, err := db.connection.Query("select sender_id, content, created_at from group_message where group_chatid = ? order by id desc limit ? offset ?", id, 10, page*10)
-	if err != nil {
-		return messages, err
-	}
-
-	var message Message
-	users := make(map[int]string)
-
-	for rows.Next() {
-
-		err := rows.Scan(&message.From, &message.Message, &message.CreatedAt)
-		if err != nil {
-			return messages, err
-		}
-
-		if users[message.From] == "" {
-			users[message.From], err = db.GetUserName(message.From)
-			if err != nil {
-				return messages, err
-			}
-		}
-
-		message.Username, _ = users[message.From]
-
-		messages = append(messages, message)
-	}
-
-	defer rows.Close()
-
-	return messages, err
-}*/
 
 func (db *Db) GetHistory(groupId, from, to, page int) (messages []Message, chatId int, created bool, err error) {
 	var id int
@@ -1489,25 +1374,6 @@ func (db *Db) CreateComment(userId int, postID int, comment string, imgUrl strin
 
 	return newComment
 }
-
-/*func (db *Db) AddGroupMessage(groupId, from, to int, message, time string) error {
-
-	var id int64
-
-	id, err := db.getChat(groupId, from, to)
-
-	//todo err check
-	if id <= 0 {
-		id, err = db.addChat(groupId, from, to)
-	}
-
-	_, err = db.connection.Exec("insert into group_message(group_chatid, sender_id, content, created_at) values(?,?,?,?)", id, from, message, time)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return err
-}*/
 
 func (db *Db) GetGroupIdAndCreatorIdFromPostId(postId int) (groupId int, creatorId int, err error) {
 	err = db.connection.QueryRow("SELECT group_id, creator_id FROM post WHERE id=?", postId).Scan(&groupId, &creatorId)
@@ -1707,8 +1573,6 @@ func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, er
 		}
 
 		currentTime := time.Now()
-
-		fmt.Println("event time: ", eventTime, "now: ", currentTime)
 
 		if eventTime.Before(currentTime) {
 			continue // if event time has passed, skip this event

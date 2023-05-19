@@ -100,6 +100,12 @@ const GroupUsersSelect = ({buttonName, groupId, groupName, users, setUsers}) => 
     setInvitedUsers([])
   }
 
+  users.sort(function(a, b) {
+    var nameA = a.nick_name || a.first_name + " " + a.last_name;
+    var nameB = b.nick_name || b.first_name + " " + b.last_name;
+    return nameA.localeCompare(nameB);
+  });
+
   return (
         <div className="follow-options-menu">
           <button className="button-small" onClick={showList}>{buttonName}</button>

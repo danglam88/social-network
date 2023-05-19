@@ -409,4 +409,5 @@ const ChatWindow = ({
     </div>
   );
 };
+
 export default ChatWindow;

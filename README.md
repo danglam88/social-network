@@ -17,3 +17,5 @@ Interstellar is a dynamic social network that brings people together in a vibran
     + Email: iuliia.chipsanova@gritlab.ax, Password: Iuliia12
     + Email: malin.cangucu@gritlab.ax, Password: Malin123
     + Email: johannes.eckerman@gritlab.ax, Password: Joman123
+    + Email: super@power.rich, Password: Batman12
+    + Email: wanna@kill.batman, Password: Joker123

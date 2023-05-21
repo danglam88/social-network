@@ -1391,7 +1391,7 @@ func (db *Db) IsMember(userId, groupID int) bool {
 
 func (db *Db) GetGroupUserIds(groupId int) (userIds []int, err error) {
 
-	query := "select user_id from group_relation where group_id=?"
+	query := "select user_id from group_relation where group_id=? AND is_approved=1"
 	rows, err := db.connection.Query(query, groupId)
 	if err != nil {
 		return userIds, err

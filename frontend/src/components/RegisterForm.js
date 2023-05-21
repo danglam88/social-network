@@ -199,10 +199,10 @@ const RegisterForm = () => {
                         <div className="autologin-info">Log in automatically after registration</div>
                     </div>
                 </div>
-                <div>
+                <div className="login-button-error">
                     <button type="submit">Register</button>
+                    {errorMessage && <div className="error register-error">{errorMessage}</div>}
                 </div>
-                {errorMessage && <div className="error register-error">{errorMessage}</div>}
             </form>
             </>
         )

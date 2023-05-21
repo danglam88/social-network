@@ -677,7 +677,7 @@ func (db *Db) CreateUser(username, password, email, firstName, lastName, birth, 
 			fmt.Println(err)
 			return "500 INTERNAL SERVER ERROR"
 		}
-	} else {
+	} else if user.Email == email || (len(username) > 0 && user.NickName == username) {
 		return "400 BAD REQUEST: User already exists"
 	}
 

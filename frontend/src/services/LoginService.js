@@ -17,15 +17,11 @@ const postConfig = {
 };
 
 const login = async data => {
-  console.log(data)
-
   const request = await axios.post(loginUrl, data, postConfig)
   return request
 }
 
 const logout = async data => {
-  console.log(data)
-
   const request = await axios.post(logoutUrl, data, postConfig)
   return request
 }

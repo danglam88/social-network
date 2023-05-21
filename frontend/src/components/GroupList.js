@@ -58,7 +58,7 @@ const NewGroup = ({handleNewGroup}) => {
     const handleCreateGroup = (event) => {                                                                                         
       event.preventDefault()
 
-      let Message = ValidateField("Title", title, 1, 14);
+      let Message = ValidateField("Title", title, 1, 30);
         if ( Message !== "") {
             setErrorMessage(Message);
             return;
@@ -96,10 +96,10 @@ const NewGroup = ({handleNewGroup}) => {
         <label>Description:</label> 
         <textarea value={description} onChange={handleDescriptionChange}/>
         <br />   
-        <div>
+        <div className="login-button-error">
             <button type="submit">Create group</button>
+            {errorMessage && <div className="error register-error">{errorMessage}</div>}
         </div>
-        {errorMessage && <div className="error register-error">{errorMessage}</div>}
         </form>
         </div>
     )

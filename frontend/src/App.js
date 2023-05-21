@@ -201,7 +201,6 @@ function App() {
 
   const handleLogout = (event) => {
     event.preventDefault();
-    console.log("handle logout");
 
     loginService
       .logout({})

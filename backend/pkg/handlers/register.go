@@ -121,7 +121,7 @@ func validateForm(w http.ResponseWriter, r *http.Request, email, password, repas
 		email_error = "Email already used"
 	}
 	if email == "" {
-		email_error = "Email field can not be empty"
+		email_error = "Email field cannot be empty"
 	}
 	if password != repassword {
 		password_error = "Passwords don't match"

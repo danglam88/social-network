@@ -16,7 +16,6 @@ const LoginForm = () => {
 
   const handleLogin = (event) => {
     event.preventDefault()
-    console.log("handle login")
 
     const data = { email, password }
 

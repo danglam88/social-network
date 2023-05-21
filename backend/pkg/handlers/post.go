@@ -244,7 +244,7 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 	if len(words) > 0 {
 		for _, word := range words {
 			if len(word) > 30 {
-				errorMessage = fmt.Sprintf("%v can not contain words longer than 30 characters", fieldName)
+				errorMessage = fmt.Sprintf("%v cannot contain words longer than 30 characters each", fieldName)
 				errorCheck = true
 			}
 		}
@@ -255,13 +255,13 @@ func ValidateField(fieldName, field string, minLength, maxLength int) (errorChec
 		remove_space := strings.TrimSpace(field)
 		remove_tab := strings.Trim(remove_space, "\t")
 		if len(remove_tab) == 0 {
-			errorMessage = fieldName + " can not contain only spaces or newlines"
+			errorMessage = fieldName + " cannot be empty or contain only spaces or newlines"
 			errorCheck = true
 		}
 	}
 	regexTag := regexp.MustCompile("<[^>]*>")
 	if !errorCheck && regexTag.MatchString(field) {
-		errorMessage = fieldName + " can not contain html tags"
+		errorMessage = fieldName + " cannot contain HTML tags"
 		errorCheck = true
 	}
 

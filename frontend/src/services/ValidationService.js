@@ -12,7 +12,7 @@ function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 
     if (validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") {
       let checkEmptyField = textValue.replace(/\s/g, '');
       if (checkEmptyField.length === 0) {
-        return validateFieldName+" can not consist of only spaces or newlines";
+        return validateFieldName+" cannot be empty or consist of only spaces or newlines";
       }
     }
     if ((validateFieldName === "Email" || validateFieldName === "Password" || validateFieldName === "First name" || validateFieldName === "Last name") && textValue.length < minlength) {
@@ -34,7 +34,7 @@ function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 
       return validateFieldName+" must be regular characters";
     }
     if ((validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") && TagRegex.test(textValue)) {
-      return validateFieldName+" can not contain HTML tags";
+      return validateFieldName+" cannot contain HTML tags";
     }
     if (validateFieldName === "Nickname" && !NicknameRegex.test(textValue) && textValue.length > 0) {
       return "Nickname must be alphanumeric, with no spaces";
@@ -59,10 +59,11 @@ function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 
     }
     
     if (validateFieldName !== "Picture" && validateFieldName !== "Email" && validateFieldName !== "Age") {
+      const maxWordLength = validateFieldName === "Title" ? 14 : 30;
       var words = textValue.split(' ');
       for (var i = 0; i < words.length; i++) {
-        if (words[i].length > 30) {
-          return "Words must be less than 30 characters each";
+        if (words[i].length > maxWordLength) {
+          return `Words must be less than ${maxWordLength} characters each`;
         }
       }
     }

@@ -85,8 +85,9 @@ const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats, chatL
           </div>}
         </div>
       </div>
-      {chatButton ? <button onClick={addChatToChatList}>Add to Chat List</button> :
-        showChatWindow ? (
+      {chatButton ? (
+        <div className="add-chat"><button onClick={addChatToChatList}>Add to Chat List</button></div>
+      ) : showChatWindow ? (
           <div>
             <div className='sucsess'>Group chat for <b>{group.name}</b> has been added to the chat list</div>
             <ChatWindow chat={{ GroupID: group.id, ChatID: 0 }} 

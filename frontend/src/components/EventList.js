@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
-
 import Event from "./Event"
 import groupService from "../services/GroupsService"
 import WebSocketService from '../services/WebSocketService'
 import ValidateField from '../services/ValidationService'
-
 
 const NewEvent = ({groupId, handleNewEvent}) => {
     const [title, setTitle] = useState('')           
@@ -94,10 +92,10 @@ const NewEvent = ({groupId, handleNewEvent}) => {
                     <label>Occur date:</label><input type="datetime-local" name="dateOfBirth" value={occurDate} onChange={handleOccurDateChange} placeholder=" " required />
                 </div>
                 <br />
-                <div>
+                <div className="login-button-error">
                     <button type="submit">Create event</button>
+                    {errorMessage && <div className="error register-error">{errorMessage}</div>}
                 </div>
-                {errorMessage && <div className="error register-error">{errorMessage}</div>}
             </form>
             </div>
         </div>

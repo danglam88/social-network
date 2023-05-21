@@ -85,7 +85,7 @@ const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats, chatL
           </div>}
         </div>
       </div>
-      {chatButton ? <button onClick={addChatToChatList}>Add Chat to Chat List</button> :
+      {chatButton ? <button onClick={addChatToChatList}>Add to Chat List</button> :
         showChatWindow ? (
           <div>
             <div className='sucsess'>Group chat for <b>{group.name}</b> has been added to the chat list</div>
@@ -99,7 +99,7 @@ const Group = ({ group, setGroupInfo, handleGoToDetail, setAvailableChats, chatL
         )}
       <EventList list={group.events} groupId={group.id} />
       <PostForm groupId={group.id} setGroupInfo={setGroupInfo} />
-      {group.posts && <Posts posts={group.posts} type="group" />}
+      {group.posts && group.posts.length > 0 && <Posts posts={group.posts} />}
     </>
   );
 }

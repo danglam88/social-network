@@ -39,14 +39,14 @@ type Post struct {
 }
 
 type Comment struct {
-	ID         int
-	UserID     int
-	UserName   string
-	UserAvatar string
-	PostID     int
-	Content    string
-	CreatedAt  time.Time
-	ImgUrl     string
+	ID         int       `json:"id"`
+	UserID     int       `json:"user_id"`
+	UserName   string    `json:"user_name"`
+	UserAvatar string    `json:"user_avatar"`
+	PostID     int       `json:"post_id"`
+	Content    string    `json:"content"`
+	CreatedAt  time.Time `json:"created_at"`
+	ImgUrl     string    `json:"img_url"`
 }
 
 type User struct {
@@ -515,9 +515,7 @@ func (db *Db) GetPosts(userfilter, groupfilter int) (posts []Post, err error) {
 
 func (db *Db) GetNewsfeedPost(userId int) (posts []Post, err error) {
 	var post Post
-	var query string
-
-	query = "select id,creator_id,group_id,visibility,title,content,created_at,img_url from post where (creator_id in (select followed_id from follow_relation where follower_id=? and is_approved=1) or creator_id=? or (visibility=0 and group_id=0) or (visibility=1 and id in (select post_id from post_visibility where viewer_id=?))) or group_id in (select group_id from group_relation where user_id=? and is_approved=1)"
+	var query = "select id,creator_id,group_id,visibility,title,content,created_at,img_url from post where (creator_id in (select followed_id from follow_relation where follower_id=? and is_approved=1) or creator_id=? or (visibility=0 and group_id=0) or (visibility=1 and id in (select post_id from post_visibility where viewer_id=?))) or group_id in (select group_id from group_relation where user_id=? and is_approved=1)"
 
 	rows, err := db.connection.Query(query, userId, userId, userId, userId)
 	if err != nil {
@@ -668,11 +666,28 @@ func (db *Db) EmailExists(mail string) bool {
 }
 
 func (db *Db) CreateUser(username, password, email, firstName, lastName, birth, about, avatar string, prev int) string {
-	// insert into user table
-	_, err := db.connection.Exec("insert into user(email,passwrd,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me) values(?,?,?,?,?,?,?,?,?,?)", email, password, firstName, lastName, birth, prev, time.Now().Local().Format(time_format), avatar, username, about)
+	var user User
+
+	row := db.connection.QueryRow("select id,email,firstname,lastname,is_private,birthdate,created_at,nickname,avatar_url,about_me from user where email = ? or nickname = ?", email, username)
+	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.IsPrivate, &user.BirthDate, &user.CreatedAt, &user.NickName, &user.AvatarUrl, &user.AboutMe)
 	if err != nil {
-		log.Fatal(err)
+		if err == sql.ErrNoRows {
+			err = nil
+		} else {
+			fmt.Println(err)
+			return "500 INTERNAL SERVER ERROR"
+		}
+	} else {
+		return "400 BAD REQUEST: User already exists"
 	}
+
+	// insert into user table
+	_, err = db.connection.Exec("insert into user(email,passwrd,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me) values(?,?,?,?,?,?,?,?,?,?)", email, password, firstName, lastName, birth, prev, time.Now().Local().Format(time_format), avatar, username, about)
+	if err != nil {
+		fmt.Println(err)
+		return "500 INTERNAL SERVER ERROR"
+	}
+
 	return "200 OK"
 }
 

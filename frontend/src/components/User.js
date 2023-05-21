@@ -144,7 +144,7 @@ const User = ({
           You need to follow <b>{userName}</b> in order to chat
         </div>
       ) : chatButton ? (
-        <div className="add-chat"><button onClick={addChatToChatList}>Add Chat to Chat List</button></div>
+        <div className="add-chat"><button onClick={addChatToChatList}>Add to Chat List</button></div>
       ) : showChatWindow ? (
         <div>
           <div className='sucsess'>
@@ -165,9 +165,7 @@ const User = ({
         </div>
       )}
       <br />
-      {posts && posts.length > 0 && (
-        <Posts posts={posts} type={userName} userId={updatedUser.id} />
-      )}
+      {posts && posts.length > 0 && <Posts posts={posts} />}
     </div>
   );
 };

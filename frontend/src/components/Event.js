@@ -45,8 +45,8 @@ const Event = ({ event }) => {
       {isInPast ? (
         <div className="radio-wrapper">
           <div className="event-passed">
-            This event has alredy passed!<br></br>
-            {votes.votedYes} members attended and {votes.votedNo} didn't.
+            This event has already passed!<br></br>
+            {votes.votedYes} attended and {votes.votedNo} didn't.
           </div>
         </div>
       ) : (

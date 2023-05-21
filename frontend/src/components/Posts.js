@@ -3,7 +3,7 @@ import Comments from './Comments.js'
 import CommentForm from './CommentForm.js'
 import commentsService from '../services/CommentsService'
 
-const Post = ({post, type, userId}) => {
+const Post = ({post}) => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const Post = ({post, type, userId}) => {
       <div className="post-wrapper">
         <div className="wrote">
           <img className="avatar-symbol" src={`http://localhost:8080${post.creator_avatar}`} alt=""/>
-          {type === "you" || type !== "group" ? <span>{type} posted:</span> : userId !== post.creator_id ? <span>{post.creator_name} posted:</span> : <span>you posted:</span>}
+          <span>{post.creator_name} posted:</span>
         </div>
         <div>
           <h3>{post.title}</h3>
@@ -34,18 +34,18 @@ const Post = ({post, type, userId}) => {
             />
           </div>
         )}
-        {comments && comments.length > 0 && <Comments comments={comments} userId={userId} />}
+        {comments && comments.length > 0 && <Comments comments={comments} />}
         <CommentForm postId={post.id} setComments={setComments} />
       </div>
     );
 }
 
-const Posts = ({posts, type, userId}) => {
+const Posts = ({posts}) => {
     return (
         <div className="created-posts-wrapper main-wrapper">
-            {posts && posts.length > 0 && posts.map(post => {
+            {posts.map(post => {
                 const postKey = "post" + post.id;
-                return <Post post={post} key={postKey} type={type} userId={userId} />
+                return <Post post={post} key={postKey} />
             })}
         </div>
     )

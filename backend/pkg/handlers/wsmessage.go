@@ -377,7 +377,12 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-				res.UserName = user.NickName
+				if user.NickName != "" {
+					res.UserName = user.NickName
+				} else {
+					res.UserName = user.FirstName + " " + user.LastName
+				}
+
 				res.AvatarUrl = user.AvatarUrl
 
 				for wsclient := range c.manager.clients {

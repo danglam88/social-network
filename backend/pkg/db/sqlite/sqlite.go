@@ -111,7 +111,7 @@ type Chat struct {
 type Message struct {
 	Type      string `json:"type"`
 	From      int    `json:"from"`
-	To        int    `json:"to"` //chat id
+	To        int    `json:"to"`
 	Message   string `json:"message"`
 	UserName  string `json:"username"`
 	CreatedAt string `json:"created_at"`

@@ -744,9 +744,6 @@ func (db *Db) GetGroup(id, userId int) (group Group, err error) {
 		fmt.Println(err)
 		return group, err
 	}
-	for i := range posts {
-		posts[i].Content = strings.ReplaceAll(posts[i].Content, "\r\n", "<br>")
-	}
 
 	//sort posts reversed
 	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {

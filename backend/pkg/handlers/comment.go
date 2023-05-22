@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func CommentGet(w http.ResponseWriter, r *http.Request) {
@@ -28,9 +27,6 @@ func CommentGet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		return
-	}
-	for i := range comments {
-		comments[i].Content = strings.ReplaceAll(comments[i].Content, "\r\n", "<br>")
 	}
 
 	w.WriteHeader(http.StatusAccepted)

@@ -15,6 +15,12 @@ const Post = ({post}) => {
       .catch((error) => console.log(error));
   }, [post.id]);
 
+  const NewlineText = ({text}) => {
+    const newText = text.split('\r\n').map((str, id) => <p key={id}>{str}</p>);
+    
+    return newText;
+  }
+
   return (
       <div className="post-wrapper">
         <div className="wrote">
@@ -24,7 +30,7 @@ const Post = ({post}) => {
         <div>
           <h3>{post.title}</h3>
         </div>
-        <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
+        <div><NewlineText text={post.content}></NewlineText></div>
         <div className="created-at">created at {post.created_at.replace("T", " ").replace("Z", "")}</div>
         {post.img_url === "" ? null : (
           <div className="post-image">

@@ -1,3 +1,9 @@
+const NewlineText = ({text}) => {
+  const newText = text.split('\r\n').map((str, id) => <p key={id}>{str}</p>);
+  
+  return newText;
+}
+
 const Comment = ({ comment }) => {
     return (
       <div className="comment-wrapper">
@@ -5,7 +11,7 @@ const Comment = ({ comment }) => {
           <img className="avatar-symbol" src={`http://localhost:8080${comment.user_avatar}`} alt="" />
           <span>{comment.user_name} wrote:</span>
         </div>
-        <div className="comment-content" dangerouslySetInnerHTML={{ __html: comment.content }}></div>
+        <div className="comment-content"><NewlineText text={comment.content}></NewlineText></div>
         <div className="created-at">created at {comment.created_at.replace("T", " ").replace("Z", "")}</div>
         {comment.img_url === "" ? null : (
           <div className="comment-image">

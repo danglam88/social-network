@@ -1593,6 +1593,11 @@ func (db *Db) GetEventCreationNotifications(userId int) ([]EventNotification, er
 		eventNotifications = append(eventNotifications, eventNotification)
 	}
 
+	// sort eventNotifications descendingly by EventTime
+	sort.Slice(eventNotifications, func(i, j int) bool {
+		return eventNotifications[i].EventTime < eventNotifications[j].EventTime
+	})
+
 	return eventNotifications, nil
 }
 

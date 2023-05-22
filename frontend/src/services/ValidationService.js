@@ -69,7 +69,7 @@ function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 
     
     if (validateFieldName !== "Picture" && validateFieldName !== "Email" && validateFieldName !== "Age") {
       const maxWordLength = validateFieldName === "Title" ? 14 : 30;
-      var words = textValue.split(' ');
+      var words = textValue.split(/\s+/);
       for (var i = 0; i < words.length; i++) {
         if (words[i].length > maxWordLength) {
           return `Words must be less than ${maxWordLength} characters each`;

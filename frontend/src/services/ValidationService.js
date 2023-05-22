@@ -1,3 +1,5 @@
+import { emojis } from "../components/ChatWindow";
+
 export const TextRegex = /^[\x20-\x7E\n\tåäöÅÄÖ€]+$/;
 export const TagRegex = /<[^>]+>/;
 export const ImageRegex = /(jpe?g|png|gif|svg)/;
@@ -7,6 +9,10 @@ export const NicknameRegex = /^[a-zA-Z0-9åäöÅÄÖ]+$/;
 export const NameRegex = /^[a-zA-Z åäöÅÄÖ]+$/;
 export const MaxSize = 50000000;
 export const MaxSizeAvatar = 5000000;
+
+const escapedEmojis = emojis.map((emoji) => emoji.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+const emojiPattern = escapedEmojis.join('|');
+export const TextEmojiRegex = new RegExp(`^[\\x20-\\x7E\\n\\tåäöÅÄÖ€${emojiPattern}]+$`);
 
 function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 3000) {
     if (validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") {
@@ -30,8 +36,11 @@ function ValidateField(validateFieldName, textValue, minlength = 1, maxlength = 
     if ((validateFieldName === "Title" || validateFieldName === "Content"|| validateFieldName === "First name" || validateFieldName === "Last name" || validateFieldName === "Email" || validateFieldName === "Password") && textValue.length === 0) {
       return validateFieldName+" is required";
     }
-    if ((validateFieldName === "Title" || validateFieldName === "Content") && !TextRegex.test(textValue)) {
+    if (validateFieldName === "Title" && !TextRegex.test(textValue)) {
       return validateFieldName+" must be regular characters";
+    }
+    if (validateFieldName === "Content" && !TextEmojiRegex.test(textValue)) {
+      return validateFieldName+" must be regular characters or emojis";
     }
     if ((validateFieldName === "Title" || validateFieldName === "Content" || validateFieldName === "About me") && TagRegex.test(textValue)) {
       return validateFieldName+" cannot contain HTML tags";

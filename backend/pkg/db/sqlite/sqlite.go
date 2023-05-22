@@ -327,7 +327,7 @@ func (db *Db) ToggleFollow(followerId int, followedUser User) (err error, broadc
 	return err, broadcast
 }
 
-func (db *Db) CheckPending(followerId int, followedUser User) (isPending bool, err error) {
+func (db *Db) CheckPending(followerId int, followedUser User) (status string, err error) {
 	var isApproved int
 
 	query := "select is_approved from follow_relation where follower_id=? and followed_id=?"
@@ -335,17 +335,17 @@ func (db *Db) CheckPending(followerId int, followedUser User) (isPending bool, e
 	err = row.Scan(&isApproved)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return false, nil
+			return "Not Followed", nil
 		} else {
-			return false, err
+			return "", err
 		}
 	}
 
 	if isApproved == 0 {
-		return true, err
+		return "Pending", err
 	}
 
-	return false, err
+	return "Followed", err
 }
 
 func (db *Db) ResolvePending(userId int, follower User, accepted bool) (err error) {

@@ -40,6 +40,10 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
           .then(response => {
               if (response.data.Error === "Pending") {
                   setUserProfilePending(true)
+              } else if (response.data.Error === "Followed") {
+                setUserProfileFollowed(true);
+              } else {
+                setUserProfileFollowed(false);
               }
           })
           .then(() => {

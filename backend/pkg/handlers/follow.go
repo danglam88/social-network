@@ -170,7 +170,7 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 
 		io.WriteString(w, string(res))
 	} else {
-		isPending, err := DB.CheckPending(userId, followedUser)
+		status, err := DB.CheckPending(userId, followedUser)
 		if err != nil {
 			GetErrResponse(w, "Error while checking pending", http.StatusInternalServerError)
 			return
@@ -178,11 +178,7 @@ func ToggleFollow(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusOK)
 		response := ResponseError{Status: RESPONSE_OK}
-		if isPending {
-			response.Error = "Pending"
-		} else {
-			response.Error = "No pending"
-		}
+		response.Error = status
 		res, err := json.Marshal(response)
 		if err != nil {
 			GetErrResponse(w, err.Error(), http.StatusInternalServerError)

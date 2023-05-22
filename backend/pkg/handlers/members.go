@@ -9,6 +9,7 @@ import (
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	username := IsUser(w, r)
+	userId := GetLoggedInUserID(w, r)
 
 	params := r.URL.Query()
 
@@ -25,6 +26,9 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	if filterId > 0 {
 		users, err := DB.GetNotGroupMembers(username, filterId)
+		for i := 0; i < len(users); i++ {
+			users[i] = DB.CheckAllowedViewing(users[i], userId)
+		}
 
 		if err != nil {
 			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
@@ -40,6 +44,9 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		users, err := DB.GetAllUsers(username)
+		for i := 0; i < len(users); i++ {
+			users[i] = DB.CheckAllowedViewing(users[i], userId)
+		}
 
 		if err != nil {
 			GetErrResponse(w, err.Error(), http.StatusInternalServerError)

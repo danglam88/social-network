@@ -688,7 +688,7 @@ ul.Menu {
     left: 0px;
     right: 0 !important;
     margin-right: 0px !important;
-    width: 190px !important;
+    width: 250px !important;
     background-color: #DBBBF5;
   }
 
@@ -1351,7 +1351,7 @@ span.chat-time {
   padding: 5px;
   border-radius: 10px;
   background-color: #f8f8f8;
-  max-width: 200px;
+  max-width: 250px;
 }
 
 .chat-message {

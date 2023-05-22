@@ -32,6 +32,9 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			GetErrResponse(w, err.Error(), http.StatusInternalServerError)
 		}
+		for i := 0; i < len(group.Members); i++ {
+			group.Members[i] = DB.CheckAllowedViewing(group.Members[i], userId)
+		}
 
 		w.WriteHeader(http.StatusOK)
 		res, err := json.Marshal(group)
@@ -45,6 +48,19 @@ func GroupGet(w http.ResponseWriter, r *http.Request) {
 		groups, err := DB.GetAllGroups(userId)
 		if err != nil {
 			GetErrResponse(w, "Unable to get groups", http.StatusInternalServerError)
+		}
+		for i := 0; i < len(groups); i++ {
+			if groups[i].IsMember == false {
+				//id,creator_id,group_name,descript,created_at,avatar_url
+				groups[i].CreatorId = 0
+				groups[i].CreatedAt = time.Time{}
+				groups[i].Members = []db.User{}
+				groups[i].Posts = []db.Post{}
+			} else {
+				for j := 0; j < len(groups[i].Members); j++ {
+					groups[i].Members[j] = DB.CheckAllowedViewing(groups[i].Members[j], userId)
+				}
+			}
 		}
 
 		w.WriteHeader(http.StatusOK)

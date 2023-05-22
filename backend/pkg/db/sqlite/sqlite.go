@@ -50,17 +50,18 @@ type Comment struct {
 }
 
 type User struct {
-	ID        int    `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	BirthDate string `json:"birth_date"`
-	IsPrivate int    `json:"is_private"`
-	Password  string `json:"password"`
-	Email     string `json:"email"`
-	CreatedAt string `json:"created_at"`
-	AvatarUrl string `json:"avatar_url"`
-	NickName  string `json:"nick_name"`
-	AboutMe   string `json:"about_me"`
+	ID           int    `json:"id"`
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	BirthDate    string `json:"birth_date"`
+	IsPrivate    int    `json:"is_private"`
+	Password     string `json:"password"`
+	Email        string `json:"email"`
+	CreatedAt    string `json:"created_at"`
+	AvatarUrl    string `json:"avatar_url"`
+	NickName     string `json:"nick_name"`
+	AboutMe      string `json:"about_me"`
+	FollowStatus string `json:"follow_status"`
 }
 
 type Follows struct {
@@ -1195,6 +1196,7 @@ func (db *Db) GetUserGroups(userId int) (groups, requests, invites map[int]bool,
 
 func (db *Db) GetUser(id int) User {
 	var user User
+
 	row := db.connection.QueryRow("select id,email,firstname,lastname,is_private,birthdate,created_at,nickname,avatar_url,about_me from user where id = ?", id)
 	err := row.Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.IsPrivate, &user.BirthDate, &user.CreatedAt, &user.NickName, &user.AvatarUrl, &user.AboutMe)
 	if err != nil {
@@ -1203,9 +1205,37 @@ func (db *Db) GetUser(id int) User {
 	return user
 }
 
+func (db *Db) CheckAllowedViewing(userProf User, loggedInUser int) User {
+	var allowed int
+
+	row2 := db.connection.QueryRow("select is_approved from follow_relation where follower_id = ? and followed_id = ?", loggedInUser, userProf.ID)
+	err2 := row2.Scan(&allowed)
+	if err2 != nil {
+		userProf.FollowStatus = "Not followed"
+	} else if allowed == 0 {
+		userProf.FollowStatus = "Pending"
+	} else if allowed == 1 {
+		userProf.FollowStatus = "Followed"
+	}
+	if userProf.IsPrivate == 1 && allowed != 1 {
+		if userProf.NickName == "" {
+			userProf.NickName = userProf.FirstName + " " + userProf.LastName
+		}
+		userProf.FirstName = ""
+		userProf.LastName = ""
+		userProf.Email = ""
+		userProf.BirthDate = ""
+		userProf.CreatedAt = ""
+		userProf.AboutMe = ""
+	}
+
+	return userProf
+}
+
+// id, email, passwrd, firstname, lastname, birthdate, is_private, created_at, avatar_url, nickname, about_me
 func (db *Db) GetAllUsers(username string) (users []User, err error) {
 
-	query := "select id,email,firstname,lastname,birthdate,is_private,created_at,avatar_url,nickname,about_me from user where email != ? order by id asc"
+	query := "select id, email, firstname,lastname, birthdate, is_private, created_at, avatar_url, nickname, about_me from user where email != ? order by id asc"
 	rows, err := db.connection.Query(query, username)
 	if err != nil {
 		return users, err

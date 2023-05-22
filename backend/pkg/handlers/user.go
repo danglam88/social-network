@@ -24,6 +24,9 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	user := DB.GetUser(filterUser)
 
+	loggedInUser := GetLoggedInUserID(w, r)
+	user = DB.CheckAllowedViewing(user, loggedInUser)
+
 	w.WriteHeader(http.StatusOK)
 	res, err := json.Marshal(user)
 	if err != nil {

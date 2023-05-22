@@ -226,9 +226,9 @@ const UserList = ({
           <h1>Users</h1>
           <br />
           <label className="filter-label">Search users:</label>
-          <input type="text" value={filter} onChange={handleFilter} />
-          <div className={filterMessage.length > 0 ? "error filter" : "hidden"}>
-            {filterMessage}
+          <div className="login-button-error">
+            <input type="text" value={filter} onChange={handleFilter} />
+            {filterMessage && <div className="error filter">{filterMessage}</div>}
           </div>
           <div className="user-list-list">
             {items.map((user) => {

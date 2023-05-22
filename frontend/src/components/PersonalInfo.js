@@ -137,7 +137,7 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
             </div>
           )}
           {profilePrivate ? (
-            <div>
+            <div className="privacy-info-div">
               <div><img className="avatar-symbol" src={`${privacyIconPath}private.png`} /></div>
               <div>Private Profile{" "}</div>
               {type === "own" && (
@@ -153,7 +153,7 @@ const PersonalInfo = ({ownId, updatedUser, setUpdatedUser, exclusive, setExclusi
               )}
             </div>
           ) : (
-            <div>
+            <div className="privacy-info-div">
               <div><img className="avatar-symbol" src={`${privacyIconPath}public.png`} /></div>
               <div>Public Profile{" "}</div>
               {type === "own" && (

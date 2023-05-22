@@ -197,8 +197,10 @@ const GroupList = ({items, setItems, isGroupDetailPage, setIsGroupDetailPage, av
                 <h1>Groups</h1>
                 <br/>
                 <label className="filter-label">Search groups:</label>
-                <input type="text" value={filter} onChange={handleFilter}/>
-                <div className={filterMessage.length > 0 ? 'error filter' : 'hidden'}>{filterMessage}</div>
+                <div className="login-button-error">
+                    <input type="text" value={filter} onChange={handleFilter}/>
+                    {filterMessage && <div className="error filter">{filterMessage}</div>}
+                </div>
             </div>
             {isCreateGroup ? (<NewGroup handleNewGroup={handleNewGroup}/>) : 
             (

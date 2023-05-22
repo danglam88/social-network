@@ -1346,6 +1346,7 @@ span.chat-time {
 }
 
 .chat-message-displayed {
+  word-wrap: break-word;
   display: inline-block;
   margin-top: 10px !important;
   padding: 5px;
@@ -1503,11 +1504,16 @@ div.chat-window-modal > div > div > div.chat-container > .right-message > .chat-
 }
 
 .chat-list-container li {
+  word-break: break-all;
   border-bottom: 1px #4C2C72 solid;
   text-indent: 5px;
   padding: 10px;
   align-items: center;
   display: flex;
+}
+
+.background {
+  background-color: transparent !important;
 }
 
 .chat-list-container ul {

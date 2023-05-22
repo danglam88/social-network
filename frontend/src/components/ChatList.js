@@ -32,7 +32,10 @@ const ChatList = ({ availableChats, selectedChat, onSelectChat }) => {
                     : "normal",
               }}
             >
-               <img src={`http://localhost:8080${chat.AvatarUrl}`} className='avatar-symbol'/>{chat.DisplayName}
+              <div className='background'>
+                <img src={`http://localhost:8080${chat.AvatarUrl}`} className='avatar-symbol'/>
+              </div>
+              <div className='background'>{chat.DisplayName}</div>
             </li>
           )})}
       </ul>

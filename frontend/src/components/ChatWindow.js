@@ -126,6 +126,7 @@ const ChatWindow = ({
   onNewChatCreated,
   chatListVisible,
 }) => {
+
   const [chatMessages, setChatMessages] = useState([]);
   const [typedMessage, setTypedMessage] = useState("");
   const [page, setPage] = useState(1);
@@ -141,6 +142,7 @@ const ChatWindow = ({
   const toggleEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
   };
+
 
   const addEmoji = (emoji) => {
     setTypedMessage(typedMessage + emoji);
@@ -197,10 +199,12 @@ const ChatWindow = ({
 
   useEffect(() => {
     const callback = (messageData) => {
-      setChatMessages((previousMessages) => {
-        const updatedMessages = [...previousMessages, messageData];
-        return sortMessagesByDate(updatedMessages);
-      });
+      if (messageData.to === chat.ChatID) {
+        setChatMessages((previousMessages) => {
+          const updatedMessages = [...previousMessages, messageData];
+          return sortMessagesByDate(updatedMessages);
+        });
+      }
 
       // Scroll chat textarea to the bottom when a new message is received
       if (chatContainerRef.current) {
@@ -217,7 +221,7 @@ const ChatWindow = ({
     return () => {
       ChatService.removeMessageListener(callback);
     };
-  }, []);
+  }, [chat.ChatID]);
 
   const sendMessage = () => {
     setMessageError("");
@@ -229,7 +233,7 @@ const ChatWindow = ({
         setMessageError(errorMessage);
         return;
       }
-
+     
       ChatService.sendMessage(recipientChatId, typedMessage);
       setTypedMessage("");
       setScrollToBottom(true);

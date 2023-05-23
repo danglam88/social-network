@@ -99,7 +99,7 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 				Type:      EVENTNOTIFICATION_TYPE,
 				From:      0,
 				To:        id,
-				Message:   fmt.Sprintf("Event %s has been created in %s. Go to the group to reply", event.EventName, event.GroupName),
+				Message:   fmt.Sprintf("Go to the group %s to reply to the event %s", event.GroupName, event.EventName),
 				AvatarUrl: event.AvatarUrl,
 			}
 			message, err := json.Marshal(msg)
@@ -408,7 +408,7 @@ func (c *Client) readMessages() {
 					log.Println(err)
 				}
 
-				res.Message = res.UserName + " created an event " + res.Message + " in your group " + group.GroupName + ". Go to the group to check it out!"
+				res.Message = res.UserName + " created an event " + res.Message + " in the group " + group.GroupName + ". Go to the group to check it out!"
 				res.AvatarUrl = group.AvatarUrl
 
 				for _, groupUser := range groupUsers {

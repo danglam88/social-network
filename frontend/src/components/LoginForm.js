@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import loginService from "../services/LoginService"
+const electron = window.require('electron');
+const ipcRenderer  = electron.ipcRenderer;
 
 const LoginForm = () => {
   const [email, setEmail] = useState('')
@@ -20,16 +22,17 @@ const LoginForm = () => {
     const data = { email, password }
 
     loginService.login(data)
-      .then(response => {
-        document.cookie = `session_token=${response.data.token}; path=/;`;
-        sessionStorage.setItem("userid", response.data.user_id);
-        sessionStorage.setItem("username", response.data.user_name);
-        window.location.reload();
-      })
-      .catch(error => {
-        console.log(error)
-        setUnauthorizedAccess(true)
-      })
+    .then(response => {
+      const { token, user_id, user_name } = response.data;
+      ipcRenderer.send('login', { token, user_id, user_name });
+      sessionStorage.setItem("userid", user_id);
+      sessionStorage.setItem("username", user_name);
+      window.location.reload();
+    })
+    .catch(error => {
+      console.log(error)
+      setUnauthorizedAccess(true)
+    })
   }
 
   return (

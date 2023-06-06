@@ -12,7 +12,9 @@ const postConfig = {
   mode: 'no-cors',
   headers : {
     "Authorization": `Bearer ${clientToken}`,
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/x-www-form-urlencoded',
+    "Access-Control-Allow-Credentials": "true"
+    
   }
 };
 
